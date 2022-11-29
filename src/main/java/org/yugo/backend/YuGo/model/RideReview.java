@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "Review")
-public class Review {
+public class RideReview {
     @Getter @Setter
     @Column(name = "comment")
     private String comment;

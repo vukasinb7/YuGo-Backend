@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Ride")
@@ -37,7 +38,7 @@ public class Ride {
     @Getter @Setter
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
     @JoinTable(name = "passenger_ride", joinColumns = @JoinColumn(name = "ride_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "passenger_id", referencedColumnName = "id"))
-    private Set<Passenger> reviews = new HashSet<Passenger>();
+    private Set<Passenger> passengers = new HashSet<Passenger>();
 
     @Getter @Setter
     @JoinColumn(name = "path_id")
@@ -52,6 +53,7 @@ public class Ride {
     @OneToMany(fetch = FetchType.LAZY)
     private Set<RideReview> reviews = new HashSet<RideReview>();
 
+    @Enumerated(EnumType.ORDINAL)
     @Getter @Setter
     @Column(name = "status")
     private RideStatus status;
