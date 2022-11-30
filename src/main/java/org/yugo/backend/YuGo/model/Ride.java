@@ -77,7 +77,7 @@ public class Ride {
     @Getter @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_type_id")
-    private VehicleType vehicleType;
+    private VehicleCategoryPrice vehicleCategoryPrice;
 
     public Ride(){
 

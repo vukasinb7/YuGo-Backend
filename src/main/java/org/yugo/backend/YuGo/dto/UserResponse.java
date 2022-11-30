@@ -27,10 +27,7 @@ public class UserResponse {
     @Getter @Setter
     private String address;
 
-    @Getter @Setter
-    private String password;
-
-    public UserResponse(Integer id, String name, String lastName, String profilePicture, String phone, String email, String address, String password) {
+    public UserResponse(Integer id, String name, String lastName, String profilePicture, String phone, String email, String address) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -38,7 +35,6 @@ public class UserResponse {
         this.phone = phone;
         this.email = email;
         this.address = address;
-        this.password = password;
     }
 
     public UserResponse(User user) {

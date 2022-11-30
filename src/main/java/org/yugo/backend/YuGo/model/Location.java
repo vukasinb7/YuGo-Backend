@@ -23,4 +23,9 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private Integer id;
+
+    public Location(){
+
+    }
+
 }

@@ -3,7 +3,8 @@ package org.yugo.backend.YuGo.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
+import org.yugo.backend.YuGo.dto.UserRequest;
+import org.yugo.backend.YuGo.dto.UserResponse;
 
 
 @Entity
@@ -53,4 +54,18 @@ public abstract class User {
     @Getter @Setter
     private Integer id;
 
+    public User(){
+
+    }
+    public User(UserRequest userRequest) {
+        this.name = userRequest.getName();
+        this.lastName = userRequest.getLastName();
+        this.profilePicture = userRequest.getProfilePicture();
+        this.phone = userRequest.getPhone();
+        this.email = userRequest.getEmail();
+        this.address = userRequest.getAddress();
+        this.password = userRequest.getPassword();
+        this.isBlocked = false;
+        this.isActive = false;
+    }
 }

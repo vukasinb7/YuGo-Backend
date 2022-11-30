@@ -11,4 +11,6 @@ public interface DocumentService {
     List<Document> getAll();
 
     Optional<Document> get(Integer id);
+
+    void deleteAllForDriver(Integer driverId);
 }

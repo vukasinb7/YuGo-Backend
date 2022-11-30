@@ -4,6 +4,7 @@ package org.yugo.backend.YuGo.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.yugo.backend.YuGo.dto.VehicleRequest;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,24 +25,23 @@ public class Vehicle {
     private Driver driver;
 
     @Getter @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_id")
-    private VehicleType vehicleType;
+    @Column(name = "vehicle_category")
+    private VehicleCategory vehicleCategory;
 
     @Getter @Setter
     @Column(name = "model", nullable = false)
     private String model;
 
     @Getter @Setter
-    @Column(name = "register_plate_number", nullable = false)
-    private String registerPlateNumber;
+    @Column(name = "licence_plate_number", nullable = false)
+    private String licencePlateNumber;
 
     @Getter @Setter
     @Column(name = "number_of_seats", nullable = false)
     private int numberOfSeats;
 
     @Getter @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
     private Location currentLocation;
 
@@ -59,5 +59,19 @@ public class Vehicle {
 
     public Vehicle(){
 
+    }
+
+    public Vehicle(VehicleRequest vehicleRequest){
+        this.vehicleCategory = vehicleRequest.getVehicleCategory();
+        this.model = vehicleRequest.getModel();
+        this.licencePlateNumber = vehicleRequest.getLicenseNumber();
+        Location location = new Location();
+        location.setAddress(vehicleRequest.getCurrentLocation().getAddress());
+        location.setLatitude(vehicleRequest.getCurrentLocation().getLatitude());
+        location.setLongitude(vehicleRequest.getCurrentLocation().getLongitude());
+        this.currentLocation = location;
+        this.numberOfSeats = vehicleRequest.getPassengerSeats();
+        this.areBabiesAllowed = vehicleRequest.getBabyTransport();
+        this.arePetsAllowed = vehicleRequest.getBabyTransport();
     }
 }

@@ -3,14 +3,16 @@ package org.yugo.backend.YuGo.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.yugo.backend.YuGo.dto.UserRequest;
+import org.yugo.backend.YuGo.dto.UserResponse;
 
 import java.util.Set;
 
 @Entity
 @DiscriminatorValue("2")
 public class Driver extends User{
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "documents_id")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "driver_id")
     @Getter @Setter
     private Set<Document> documents;
 
@@ -20,8 +22,14 @@ public class Driver extends User{
     private Set<Ride> rides;
 
     @Getter @Setter
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
+    public Driver(UserRequest userRequest) {
+        super(userRequest);
+    }
+    public Driver() {
+        super();
+    }
 }

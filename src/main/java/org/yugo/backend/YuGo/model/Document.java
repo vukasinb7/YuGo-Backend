@@ -3,6 +3,7 @@ package org.yugo.backend.YuGo.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.yugo.backend.YuGo.dto.DocumentRequest;
 
 @Entity
 @Table(name = "Documents")
@@ -24,4 +25,14 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private Integer id;
+
+    public Document(){
+
+    }
+
+    public Document(String name, String image, Driver driver) {
+        this.name = name;
+        this.image = image;
+        this.driver = driver;
+    }
 }

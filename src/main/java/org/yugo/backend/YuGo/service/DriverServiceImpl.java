@@ -1,6 +1,8 @@
 package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.model.User;
@@ -50,5 +52,15 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public Optional<WorkTime> getWorkTime(Integer id) {
         return workTimeRepository.findById(id);
+    }
+
+    @Override
+    public Driver updateDriver(Driver driver){
+        return userRepository.save(driver);
+    }
+
+    @Override
+    public Page<User> getDriversPage(Pageable page){
+        return userRepository.findAllDrivers(page);
     }
 }
