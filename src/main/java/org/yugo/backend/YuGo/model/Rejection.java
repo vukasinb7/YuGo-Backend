@@ -7,17 +7,17 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Rejection")
+@Table(name = "Rejections")
 public class Rejection {
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @Getter @Setter
-    @Column(name = "ride", nullable = false)
+    @JoinColumn(name = "ride")
     private Ride ride;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @Getter @Setter
-    @Column(name = "user", nullable = false)
-    private User user;
+    @JoinColumn(name = "by_user")
+    private User byUser;
 
     @Getter @Setter
     @Column(name = "rejection_reason", nullable = false)

@@ -10,9 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Ride")
+@Table(name = "Rides")
 public class Ride {
-
     @Getter @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

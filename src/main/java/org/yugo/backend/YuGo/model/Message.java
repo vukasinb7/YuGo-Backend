@@ -7,16 +7,16 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Message")
+@Table(name = "Messages")
 public class Message {
     @OneToOne
     @Getter @Setter
-    @Column(name = "sender", nullable = false)
+    @JoinColumn(name = "sender")
     private User sender;
 
     @OneToOne
     @Getter @Setter
-    @Column(name = "receiver", nullable = false)
+    @JoinColumn(name = "receiver")
     private User receiver;
 
     @Getter @Setter

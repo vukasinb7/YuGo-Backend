@@ -10,7 +10,7 @@ import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Panic")
+@Table(name = "Panics")
 public class Panic {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

@@ -4,13 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Note")
+@Table(name = "Notes")
 public class Note {
     @Getter @Setter
     @Column(name = "message", nullable = false)

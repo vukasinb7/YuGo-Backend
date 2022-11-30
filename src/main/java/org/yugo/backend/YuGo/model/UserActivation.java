@@ -11,11 +11,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "UserActivations")
 public class UserActivation {
-
     @Getter @Setter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @Column(name = "user", nullable = false)
     private User user;
 
     @Getter @Setter

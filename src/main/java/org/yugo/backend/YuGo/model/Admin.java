@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Admin")
+@Table(name = "Admins")
 public class Admin {
     @Getter @Setter
     @Column(name = "username", nullable = false)

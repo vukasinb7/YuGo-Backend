@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "RideReviews")
-public class RideReview {
+@Table(name="VehicleReviews")
+public class VehicleReview {
     @Getter @Setter
     @Column(name = "comment")
     private String comment;
@@ -17,8 +17,8 @@ public class RideReview {
 
     @OneToOne
     @Getter @Setter
-    @JoinColumn(name = "ride")
-    private Ride ride;
+    @JoinColumn(name = "vehicle")
+    private Vehicle vehicle;
 
     @OneToOne
     @Getter @Setter

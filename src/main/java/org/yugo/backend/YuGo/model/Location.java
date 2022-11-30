@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Location")
+@Table(name = "Locations")
 public class Location {
     @Getter @Setter
     @Column(name = "address", nullable = false)

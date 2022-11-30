@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Document")
+@Table(name = "Documents")
 public class Document {
     @Getter @Setter
     @Column(name = "name", nullable = false)
@@ -14,7 +14,6 @@ public class Document {
     @Getter @Setter
     @Column(name = "image", nullable = false)
     private String image;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id")

@@ -22,7 +22,6 @@ public class Driver extends User{
     @Getter @Setter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id")
-    @Column(name = "vehicle", nullable = false)
     private Vehicle vehicle;
 
 }

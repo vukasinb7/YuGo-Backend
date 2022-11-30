@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -53,7 +54,7 @@ public class Vehicle {
     private Boolean arePetsAllowed;
 
     @Getter @Setter
-    @OneToMany(mappedBy = "Vehiles", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<VehicleReview> reviews = new HashSet<VehicleReview>();
 
     public Vehicle(){

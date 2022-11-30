@@ -7,20 +7,19 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "WorkTime")
+@Table(name = "WorkTimes")
 public class WorkTime {
     @Getter @Setter
-    @Column(name = "start", nullable = false)
-    private LocalDateTime start;
+    @Column(name = "start_time", nullable = false)
+    private LocalDateTime startTime;
 
     @Getter @Setter
-    @Column(name = "end", nullable = false)
-    private LocalDateTime end;
+    @Column(name = "end_time", nullable = false)
+    private LocalDateTime endTime;
 
     @Getter @Setter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id")
-    @Column(name = "driver", nullable = false)
     private Driver driver;
 
     @Id

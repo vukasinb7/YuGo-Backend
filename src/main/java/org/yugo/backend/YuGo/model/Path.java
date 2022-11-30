@@ -5,16 +5,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Path")
+@Table(name = "Paths")
 public class Path{
     @OneToOne
     @Getter @Setter
-    @Column(name = "starting_point", nullable = false)
+    @JoinColumn(name = "starting_point")
     private Location startingPoint;
 
     @OneToOne
     @Getter @Setter
-    @Column(name = "destination", nullable = false)
+    @JoinColumn(name = "destination")
     private Location destination;
 
     @Id
