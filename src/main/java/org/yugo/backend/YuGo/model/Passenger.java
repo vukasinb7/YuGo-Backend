@@ -18,4 +18,6 @@ public class Passenger extends User{
     @JoinColumn(name = "favourite_paths")
     @Getter @Setter
     private Set<Path> favouritePaths;
+
+
 }
