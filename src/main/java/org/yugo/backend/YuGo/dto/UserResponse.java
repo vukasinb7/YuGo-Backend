@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.yugo.backend.YuGo.model.User;
 
 public class UserResponse {
 
@@ -38,5 +39,15 @@ public class UserResponse {
         this.email = email;
         this.address = address;
         this.password = password;
+    }
+
+    public UserResponse(User user) {
+        this.id = user.getId();
+        this.name = user.getName();
+        this.lastName = user.getLastName();
+        this.profilePicture = user.getProfilePicture();
+        this.phone = user.getPhone();
+        this.email = user.getEmail();
+        this.address = user.getAddress();
     }
 }
