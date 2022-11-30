@@ -7,11 +7,11 @@ import org.yugo.backend.YuGo.repository.AdminRepository;
 import java.util.List;
 import java.util.Optional;
 
-public class AdminServiceIMPL implements AdminService {
+public class AdminServiceImpl implements AdminService {
     private final AdminRepository adminRepository;
 
     @Autowired
-    public AdminServiceIMPL(AdminRepository adminRepository){
+    public AdminServiceImpl(AdminRepository adminRepository){
         this.adminRepository = adminRepository;
     }
 

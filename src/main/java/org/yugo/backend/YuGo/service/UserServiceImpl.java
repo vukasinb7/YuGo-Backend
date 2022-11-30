@@ -1,23 +1,20 @@
 package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.model.UserActivation;
-import org.yugo.backend.YuGo.model.WorkTime;
 import org.yugo.backend.YuGo.repository.UserActivationRepository;
 import org.yugo.backend.YuGo.repository.UserRepository;
-import org.yugo.backend.YuGo.repository.WorkTimeRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public class UserServiceIMPL implements UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserActivationRepository userActivationRepository;
 
     @Autowired
-    public UserServiceIMPL(UserRepository userRepository, UserActivationRepository userActivationRepository){
+    public UserServiceImpl(UserRepository userRepository, UserActivationRepository userActivationRepository){
         this.userRepository = userRepository;
         this.userActivationRepository = userActivationRepository;
     }

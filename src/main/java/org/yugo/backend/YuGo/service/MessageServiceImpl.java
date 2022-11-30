@@ -7,11 +7,11 @@ import org.yugo.backend.YuGo.repository.MessageRepository;
 import java.util.List;
 import java.util.Optional;
 
-public class MessageServiceIMPL implements MessageService {
+public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
 
     @Autowired
-    public MessageServiceIMPL(MessageRepository messageRepository){
+    public MessageServiceImpl(MessageRepository messageRepository){
         this.messageRepository = messageRepository;
     }
 

@@ -7,11 +7,11 @@ import org.yugo.backend.YuGo.repository.NoteRepository;
 import java.util.List;
 import java.util.Optional;
 
-public class NoteServiceIMPL implements NoteService {
+public class NoteServiceImpl implements NoteService {
     private final NoteRepository noteRepository;
 
     @Autowired
-    public NoteServiceIMPL(NoteRepository noteRepository){
+    public NoteServiceImpl(NoteRepository noteRepository){
         this.noteRepository = noteRepository;
     }
 

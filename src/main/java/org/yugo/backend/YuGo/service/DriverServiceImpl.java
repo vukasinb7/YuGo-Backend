@@ -10,12 +10,12 @@ import org.yugo.backend.YuGo.repository.WorkTimeRepository;
 import java.util.List;
 import java.util.Optional;
 
-public class DriverServiceIMPL implements DriverService {
+public class DriverServiceImpl implements DriverService {
     private final UserRepository userRepository;
     private final WorkTimeRepository workTimeRepository;
 
     @Autowired
-    public DriverServiceIMPL(UserRepository userRepository, WorkTimeRepository workTimeRepository){
+    public DriverServiceImpl(UserRepository userRepository, WorkTimeRepository workTimeRepository){
         this.userRepository = userRepository;
         this.workTimeRepository = workTimeRepository;
     }

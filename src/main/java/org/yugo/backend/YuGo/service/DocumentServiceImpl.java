@@ -7,11 +7,11 @@ import org.yugo.backend.YuGo.repository.DocumentRepository;
 import java.util.List;
 import java.util.Optional;
 
-public class DocumentServiceIMPL implements DocumentService {
+public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
 
     @Autowired
-    public DocumentServiceIMPL(DocumentRepository documentRepository){
+    public DocumentServiceImpl(DocumentRepository documentRepository){
         this.documentRepository = documentRepository;
     }
 

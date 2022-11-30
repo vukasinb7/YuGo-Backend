@@ -7,11 +7,11 @@ import org.yugo.backend.YuGo.repository.LocationRepository;
 import java.util.List;
 import java.util.Optional;
 
-public class LocationServiceIMPL implements LocationService {
+public class LocationServiceImpl implements LocationService {
     private final LocationRepository locationRepository;
 
     @Autowired
-    public LocationServiceIMPL(LocationRepository locationRepository){
+    public LocationServiceImpl(LocationRepository locationRepository){
         this.locationRepository = locationRepository;
     }
 
