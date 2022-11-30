@@ -1,10 +1,13 @@
 package org.yugo.backend.YuGo.dto;
 
-import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
-public class UserDTO {
+public class UserResponse {
+
+    @Getter @Setter
+    private Integer id;
+
     @Getter @Setter
     private String name;
 
@@ -26,7 +29,8 @@ public class UserDTO {
     @Getter @Setter
     private String password;
 
-    public UserDTO(String name, String lastName, String profilePicture, String phone, String email, String address, String password) {
+    public UserResponse(Integer id, String name, String lastName, String profilePicture, String phone, String email, String address, String password) {
+        this.id = id;
         this.name = name;
         this.lastName = lastName;
         this.profilePicture = profilePicture;
