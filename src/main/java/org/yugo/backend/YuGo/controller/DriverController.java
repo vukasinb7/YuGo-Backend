@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.yugo.backend.YuGo.dto.UserRequest;
+import org.yugo.backend.YuGo.dto.UserResponse;
 import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.service.DriverService;
 
@@ -27,7 +28,7 @@ public class DriverController {
             value = "/",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Driver> createDriver(@RequestBody UserRequest driver){
+    public ResponseEntity<UserResponse> createDriver(@RequestBody UserRequest driver){
         Driver newDriver = new Driver();
         newDriver.setName(driver.getName());
         newDriver.setLastName(driver.getLastName());
@@ -37,6 +38,7 @@ public class DriverController {
         newDriver.setAddress(driver.getAddress());
         newDriver.setPassword(driver.getPassword());
         driverService.addDriver(newDriver);
-        return new ResponseEntity<Driver>(newDriver, HttpStatus.OK);
+
+        return new ResponseEntity<UserResponse>(new UserResponse(newDriver), HttpStatus.OK);
     }
 }
