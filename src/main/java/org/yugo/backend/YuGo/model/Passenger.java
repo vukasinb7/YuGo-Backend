@@ -3,6 +3,7 @@ package org.yugo.backend.YuGo.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.yugo.backend.YuGo.dto.UserRequest;
 
 import java.util.Set;
 
@@ -19,5 +20,11 @@ public class Passenger extends User{
     @Getter @Setter
     private Set<Path> favouritePaths;
 
+    public Passenger(UserRequest userRequest) {
+        super(userRequest);
+    }
 
+    public Passenger() {
+        super();
+    }
 }

@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yugo.backend.YuGo.dto.MultipleUsersResponse;
+import org.yugo.backend.YuGo.dto.AllUsersResponse;
 import org.yugo.backend.YuGo.dto.UserRequest;
 import org.yugo.backend.YuGo.dto.UserResponse;
 import org.yugo.backend.YuGo.model.Passenger;
@@ -33,14 +33,7 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<UserResponse> addPassenger(@RequestBody UserRequest user){
-        Passenger newPass = new Passenger();
-        newPass.setName(user.getName());
-        newPass.setLastName(user.getLastName());
-        newPass.setProfilePicture(user.getProfilePicture());
-        newPass.setPhone(user.getPhone());
-        newPass.setEmail(user.getEmail());
-        newPass.setAddress(user.getAddress());
-        newPass.setPassword(user.getPassword());
+        Passenger newPass = new Passenger(user);
         passengerService.add(newPass);
         return new ResponseEntity<>(new UserResponse(newPass), HttpStatus.OK);
     }
@@ -49,15 +42,15 @@ public class PassengerController {
             value = "/",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<MultipleUsersResponse> getPassengers(){
-        return new ResponseEntity<>(new MultipleUsersResponse(passengerService.getAll()), HttpStatus.OK);
+    public ResponseEntity<AllUsersResponse> getPassengers(){
+        return new ResponseEntity<>(new AllUsersResponse(passengerService.getAll()), HttpStatus.OK);
     }
 
     @PostMapping(
             value = "/{activationId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity ActivatePassenger(@PathVariable Integer activationId){
+    public ResponseEntity activatePassenger(@PathVariable Integer activationId){
         UserActivation userActivation = userService.getUserActivation(activationId).get();
         userActivation.getUser().setActive(true);
         return new ResponseEntity<>(null, HttpStatus.OK);
@@ -75,7 +68,7 @@ public class PassengerController {
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserResponse> UpdatePassenger(@RequestBody UserRequest updatedUser, @PathVariable Integer id){
+    public ResponseEntity<UserResponse> updatePassenger(@RequestBody UserRequest updatedUser, @PathVariable Integer id){
         User user = passengerService.get(id).get();
         user.setName(updatedUser.getName());
         user.setLastName(updatedUser.getLastName());
