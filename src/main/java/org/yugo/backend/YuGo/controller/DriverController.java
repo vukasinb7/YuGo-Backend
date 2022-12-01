@@ -40,7 +40,7 @@ public class DriverController {
     )
     public ResponseEntity<UserResponse> createDriver(@RequestBody UserRequest driver){
         Driver newDriver = new Driver(driver);
-        driverService.addDriver(newDriver);
+        driverService.saveDriver(newDriver);
         return new ResponseEntity<UserResponse>(new UserResponse(newDriver), HttpStatus.OK);
     }
 
@@ -120,7 +120,7 @@ public class DriverController {
         }
 
         Document document = new Document(documentRequest.getName(), documentRequest.getDocumentImage(), driver);
-        documentService.add(document);
+        documentService.save(document);
 
         response = new ResponseEntity<>(new DocumentResponse(document), HttpStatus.OK);
         return response;

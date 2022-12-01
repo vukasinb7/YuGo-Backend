@@ -16,6 +16,12 @@ import org.yugo.backend.YuGo.service.PassengerServiceImpl;
 import org.yugo.backend.YuGo.service.UserService;
 import org.yugo.backend.YuGo.service.UserServiceImpl;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/passenger")
 public class PassengerController {
@@ -34,7 +40,9 @@ public class PassengerController {
     )
     public ResponseEntity<UserResponse> addPassenger(@RequestBody UserRequest user){
         Passenger newPass = new Passenger(user);
-        passengerService.add(newPass);
+        passengerService.save(newPass);
+        UserActivation newAct = new UserActivation(newPass, LocalDateTime.now(), Duration.ZERO);
+        userService.saveUserActivation(newAct);
         return new ResponseEntity<>(new UserResponse(newPass), HttpStatus.OK);
     }
 
@@ -51,8 +59,11 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity activatePassenger(@PathVariable Integer activationId){
-        UserActivation userActivation = userService.getUserActivation(activationId).get();
-        userActivation.getUser().setActive(true);
+        Optional<UserActivation> userActivation = userService.getUserActivation(activationId);
+        if (userActivation.isPresent()){
+            userActivation.get().getUser().setActive(true);
+            userService.saveUser(userActivation.get().getUser());
+        }
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
@@ -77,6 +88,7 @@ public class PassengerController {
         user.setEmail(updatedUser.getEmail());
         user.setAddress(updatedUser.getAddress());
         user.setPassword(updatedUser.getPassword());
+        passengerService.save(user);
         return new ResponseEntity<>(new UserResponse(user), HttpStatus.OK);
     }
 }
