@@ -19,7 +19,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Document add(Document document){
+    public Document save(Document document){
         return documentRepository.save(document);
     }
 

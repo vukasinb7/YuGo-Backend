@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PanicService {
-    Panic add(Panic panic);
+    Panic save(Panic panic);
 
     List<Panic> getAll();
 

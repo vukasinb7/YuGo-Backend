@@ -1,12 +1,13 @@
 package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.model.Path;
 import org.yugo.backend.YuGo.repository.PathRepository;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class PathServiceImpl implements PathService {
     private final PathRepository pathRepository;
 
@@ -16,7 +17,7 @@ public class PathServiceImpl implements PathService {
     }
 
     @Override
-    public Path add(Path path){
+    public Path save(Path path){
         return pathRepository.save(path);
     }
 

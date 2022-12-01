@@ -7,14 +7,14 @@ import java.util.List;
 
 public interface ReviewService {
     /* =========================== VehicleReview =========================== */
-    VehicleReview addVehicleReview(VehicleReview vehicleReview);
+    VehicleReview saveVehicleReview(VehicleReview vehicleReview);
 
     VehicleReview getVehicleReview(Integer id);
 
     List<VehicleReview> getAllVehicleReviews();
 
     /* =========================== RideReview =========================== */
-    RideReview addRideReview(RideReview rideReview);
+    RideReview saveRideReview(RideReview rideReview);
 
     RideReview getRideReview(Integer id);
 

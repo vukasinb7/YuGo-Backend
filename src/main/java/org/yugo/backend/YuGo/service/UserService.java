@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    User addUser(User user);
+    User saveUser(User user);
 
     List<User> getAllUsers();
 
     Optional<User> getUser(Integer id);
 
-    UserActivation addUserActivation(UserActivation userActivation);
+    UserActivation saveUserActivation(UserActivation userActivation);
 
     List<UserActivation> getAllUserActivations();
 

@@ -17,7 +17,7 @@ public class PanicServiceImpl implements PanicService {
     }
 
     @Override
-    public Panic add(Panic panic){
+    public Panic save(Panic panic){
         return panicRepository.save(panic);
     }
 

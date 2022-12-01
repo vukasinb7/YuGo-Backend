@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PassengerService {
-    User add(User user);
+    User save(User user);
 
     List<User> getAll();
 

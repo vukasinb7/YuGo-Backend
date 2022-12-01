@@ -1,12 +1,13 @@
 package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.model.Note;
 import org.yugo.backend.YuGo.repository.NoteRepository;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class NoteServiceImpl implements NoteService {
     private final NoteRepository noteRepository;
 
@@ -16,7 +17,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note add(Note note){
+    public Note save(Note note){
         return noteRepository.save(note);
     }
 

@@ -14,7 +14,7 @@ public interface VehicleService {
     Vehicle getVehicle(Integer id);
 
     /* =========================== VehicleType =========================== */
-    VehicleCategoryPrice addVehicleType(VehicleCategoryPrice vehicleCategoryPrice);
+    VehicleCategoryPrice saveVehicleType(VehicleCategoryPrice vehicleCategoryPrice);
 
     List<VehicleCategoryPrice> getAllVehicleTypes();
 

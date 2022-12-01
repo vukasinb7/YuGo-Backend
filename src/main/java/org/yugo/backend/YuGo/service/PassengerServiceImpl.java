@@ -18,7 +18,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public User add(User user){
+    public User save(User user){
         return userRepository.save(user);
     }
 
