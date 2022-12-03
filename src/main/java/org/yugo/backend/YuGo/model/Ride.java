@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Duration;
@@ -10,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "Rides")
 public class Ride {
     @Getter @Setter
@@ -79,7 +81,4 @@ public class Ride {
     @JoinColumn(name = "vehicle_type_id")
     private VehicleCategoryPrice vehicleCategoryPrice;
 
-    public Ride(){
-
-    }
 }

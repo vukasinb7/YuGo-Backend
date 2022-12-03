@@ -3,6 +3,7 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.dto.VehicleRequest;
 
@@ -11,6 +12,7 @@ import java.util.Set;
 
 
 @Entity
+@NoArgsConstructor
 @Table(name = "Vehicles")
 public class Vehicle {
 
@@ -56,10 +58,6 @@ public class Vehicle {
     @Getter @Setter
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<VehicleReview> reviews = new HashSet<VehicleReview>();
-
-    public Vehicle(){
-
-    }
 
     public Vehicle(VehicleRequest vehicleRequest){
         this.vehicleCategory = vehicleRequest.getVehicleCategory();

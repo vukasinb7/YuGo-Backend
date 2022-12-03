@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.dto.UserRequest;
 import org.yugo.backend.YuGo.dto.UserResponse;
@@ -9,6 +10,7 @@ import org.yugo.backend.YuGo.dto.UserResponse;
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
 @DiscriminatorValue("2")
 public class Driver extends User{
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -28,8 +30,5 @@ public class Driver extends User{
 
     public Driver(UserRequest userRequest) {
         super(userRequest);
-    }
-    public Driver() {
-        super();
     }
 }

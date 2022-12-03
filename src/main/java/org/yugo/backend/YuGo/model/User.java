@@ -2,12 +2,14 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.dto.UserRequest;
 import org.yugo.backend.YuGo.dto.UserResponse;
 
 
 @Entity
+@NoArgsConstructor
 @Table(name="Users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="user_type",
@@ -54,9 +56,6 @@ public abstract class User {
     @Getter @Setter
     private Integer id;
 
-    public User(){
-
-    }
     public User(UserRequest userRequest) {
         this.name = userRequest.getName();
         this.lastName = userRequest.getLastName();
