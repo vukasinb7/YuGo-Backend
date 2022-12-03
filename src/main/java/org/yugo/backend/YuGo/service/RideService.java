@@ -11,4 +11,6 @@ public interface RideService {
     List<Ride> getAll();
 
     Optional<Ride> get(Integer id);
+
+    public Ride getActiveRideByDriver(Integer id);
 }

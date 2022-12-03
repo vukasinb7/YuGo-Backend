@@ -48,13 +48,13 @@ public class Ride {
 
     @Getter @Setter
     @Column(name = "estimated_time")
-    private Duration estimatedTime;
+    private int estimatedTime;
 
     @Getter @Setter
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH,mappedBy = "ride")
     private Set<RideReview> reviews = new HashSet<RideReview>();
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Getter @Setter
     @Column(name = "status")
     private RideStatus status;

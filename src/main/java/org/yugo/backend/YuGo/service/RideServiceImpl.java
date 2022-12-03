@@ -30,4 +30,7 @@ public class RideServiceImpl implements RideService {
     public Optional<Ride> get(Integer id) {
         return rideRepository.findById(id);
     }
+
+    @Override
+    public Ride getActiveRideByDriver(Integer id){ return rideRepository.getActiveRideByDriver(id);}
 }
