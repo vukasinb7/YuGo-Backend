@@ -43,7 +43,7 @@ public class Vehicle {
     private int numberOfSeats;
 
     @Getter @Setter
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
     private Location currentLocation;
 
