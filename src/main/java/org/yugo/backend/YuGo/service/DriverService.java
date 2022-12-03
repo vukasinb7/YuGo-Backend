@@ -6,6 +6,7 @@ import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.model.WorkTime;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,4 +24,6 @@ public interface DriverService {
     List<WorkTime> getAllWorkTimes();
 
     Optional<WorkTime> getWorkTime(Integer id);
+
+    Page<WorkTime> getDriverWorkingTimesPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
 }
