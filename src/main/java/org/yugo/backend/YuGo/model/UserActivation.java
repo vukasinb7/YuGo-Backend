@@ -28,4 +28,12 @@ public class UserActivation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private Integer id;
+
+    public UserActivation(User user, LocalDateTime dateCreated, Duration lifeSpan) {
+        this.user = user;
+        this.dateCreated = dateCreated;
+        this.lifeSpan = lifeSpan;
+    }
+
+    public UserActivation(){}
 }

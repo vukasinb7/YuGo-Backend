@@ -28,6 +28,7 @@ public class UserResponse {
     private String address;
 
     public UserResponse(Integer id, String name, String lastName, String profilePicture, String phone, String email, String address) {
+        super();
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -38,12 +39,8 @@ public class UserResponse {
     }
 
     public UserResponse(User user) {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.lastName = user.getLastName();
-        this.profilePicture = user.getProfilePicture();
-        this.phone = user.getPhone();
-        this.email = user.getEmail();
-        this.address = user.getAddress();
+        this(user.getId(), user.getName(), user.getLastName(), user.getProfilePicture(), user.getPhone(), user.getEmail(), user.getAddress());
     }
+
+    public UserResponse() {}
 }
