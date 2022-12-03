@@ -34,7 +34,7 @@ public class PassengerController {
     )
     public ResponseEntity<UserResponse> addPassenger(@RequestBody UserRequest user){
         Passenger newPass = new Passenger(user);
-        passengerService.add(newPass);
+        passengerService.save(newPass);
         return new ResponseEntity<>(new UserResponse(newPass), HttpStatus.OK);
     }
 
