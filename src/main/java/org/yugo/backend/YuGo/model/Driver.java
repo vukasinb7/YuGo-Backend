@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @DiscriminatorValue("2")
 public class Driver extends User{
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "driver_id")
     @Getter @Setter
     private Set<Document> documents;
@@ -24,7 +24,7 @@ public class Driver extends User{
     private Set<Ride> rides;
 
     @Getter @Setter
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
