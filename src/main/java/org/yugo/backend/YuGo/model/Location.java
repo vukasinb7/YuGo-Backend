@@ -2,9 +2,11 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "Locations")
 public class Location {
     @Getter @Setter
@@ -24,8 +26,5 @@ public class Location {
     @Getter @Setter
     private Integer id;
 
-    public Location(){
-
-    }
 
 }

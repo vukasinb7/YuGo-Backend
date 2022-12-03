@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Duration;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 
 @Entity
+@NoArgsConstructor
 @Table(name = "UserActivations")
 public class UserActivation {
     @Getter @Setter
@@ -34,6 +36,4 @@ public class UserActivation {
         this.dateCreated = dateCreated;
         this.lifeSpan = lifeSpan;
     }
-
-    public UserActivation(){}
 }
