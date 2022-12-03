@@ -102,10 +102,8 @@ public class DriverController {
     /*      TODO Pitanja
     *   1. Prilikom kreiranje novog vozila nema smisla prosledjivati i trenutnu lokaciju vozila
     *   2. Prilikom kreiranja novog dokumenta id vozaca se prosledjuje i kao PathVariable i u okviru RequestBody
-    *   3. Cascade ALL ne funkcionise
-    *   4. LazyLoading ne funkcionise uopste
-    *   5. WorkingHours i Driver treba da bude ManyToOne a ne OneToOne veza
-    *   6. Prilikom izmene podatak o vozacu da li je potrebno slati id vozaca u okviru RequestBody
+    *   3. Prilikom izmene podatak o vozacu da li je potrebno slati id vozaca u okviru RequestBody
+    *   4. /api/driver/{diver-id}/working-hour/{working-hour-id} ako dobavljamo podatke preko working-hour-id cemu sluzi driver-id?????
     */
 
     @PostMapping(
@@ -267,4 +265,5 @@ public class DriverController {
         WorkingTimeResponse output = new WorkingTimeResponse(driverService.saveWorkTime(wt));
         return new ResponseEntity<>(output, HttpStatus.OK);
     }
+
 }
