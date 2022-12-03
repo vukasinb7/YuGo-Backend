@@ -15,7 +15,7 @@ public class RideReview {
     @Column(name = "rating", nullable = false)
     private int rating;
 
-    @OneToOne
+    @ManyToOne
     @Getter @Setter
     @JoinColumn(name = "ride")
     private Ride ride;

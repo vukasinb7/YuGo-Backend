@@ -30,8 +30,8 @@ public class Ride {
     private double price;
 
     @Getter @Setter
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "driver_id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Driver driver;
 
     @Getter @Setter
@@ -41,7 +41,7 @@ public class Ride {
 
     @Getter @Setter
     @JoinColumn(name = "path_id")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private Path path;
 
     @Getter @Setter
@@ -49,7 +49,7 @@ public class Ride {
     private Duration estimatedTime;
 
     @Getter @Setter
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH,mappedBy = "ride")
     private Set<RideReview> reviews = new HashSet<RideReview>();
 
     @Enumerated(EnumType.ORDINAL)
@@ -59,7 +59,7 @@ public class Ride {
 
     @Getter @Setter
     @JoinColumn(name = "rejection_id")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private Rejection rejection;
 
     @Getter @Setter
@@ -75,7 +75,7 @@ public class Ride {
     private Boolean includesPets;
 
     @Getter @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "vehicle_type_id")
     private VehicleCategoryPrice vehicleCategoryPrice;
 

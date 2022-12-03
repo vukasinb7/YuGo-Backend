@@ -16,8 +16,7 @@ public class Driver extends User{
     @Getter @Setter
     private Set<Document> documents;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "ride_id")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH,mappedBy = "driver")
     @Getter @Setter
     private Set<Ride> rides;
 

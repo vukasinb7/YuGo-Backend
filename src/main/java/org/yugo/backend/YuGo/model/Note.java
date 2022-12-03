@@ -13,7 +13,7 @@ public class Note {
     @Column(name = "message", nullable = false)
     private String message;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
     @JoinColumn(name = "user_id")
     @Getter @Setter
     private User user;

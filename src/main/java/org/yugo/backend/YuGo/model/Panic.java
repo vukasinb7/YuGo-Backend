@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "Panics")
 public class Panic {
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
     @JoinColumn(name = "user_id")
     @Getter @Setter
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "ride_id")
     @Getter @Setter
     private Ride ride;

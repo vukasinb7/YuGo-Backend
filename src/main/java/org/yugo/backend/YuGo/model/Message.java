@@ -33,8 +33,9 @@ public class Message {
     private MessageType messageType;
 
     @Getter @Setter
-    @Column(name = "ride_ID")
-    private Integer rideID;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JoinColumn(name="ride_id")
+    private Ride ride;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

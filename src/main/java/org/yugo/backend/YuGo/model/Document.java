@@ -16,7 +16,7 @@ public class Document {
     @Column(name = "image", nullable = false)
     private String image;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "driver_id")
     @Getter @Setter
     private Driver driver;

@@ -10,8 +10,8 @@ import java.util.Set;
 @Entity
 @DiscriminatorValue("1")
 public class Passenger extends User{
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "rides")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "passenger_ride")
     @Getter @Setter
     private Set<Ride> rides;
 

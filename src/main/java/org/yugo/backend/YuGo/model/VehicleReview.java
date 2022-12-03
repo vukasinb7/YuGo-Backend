@@ -17,12 +17,12 @@ public class VehicleReview {
 
     @OneToOne
     @Getter @Setter
-    @JoinColumn(name = "vehicle")
+    @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
     @OneToOne
     @Getter @Setter
-    @JoinColumn(name = "passenger")
+    @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
     @Id

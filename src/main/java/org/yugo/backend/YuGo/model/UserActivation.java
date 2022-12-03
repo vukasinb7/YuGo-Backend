@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "UserActivations")
 public class UserActivation {
     @Getter @Setter
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -20,7 +20,7 @@ public class Vehicle {
     private Integer id;
 
     @Getter @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id")
     private Driver driver;
 
