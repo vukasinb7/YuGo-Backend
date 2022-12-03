@@ -1,5 +1,7 @@
 package org.yugo.backend.YuGo.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.model.UserActivation;
 
@@ -18,4 +20,6 @@ public interface UserService {
     List<UserActivation> getAllUserActivations();
 
     Optional<UserActivation> getUserActivation(Integer id);
+
+    public Page<User> getUsersPage(Pageable page);
 }

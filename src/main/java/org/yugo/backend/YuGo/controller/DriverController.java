@@ -1,11 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +14,6 @@ import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.VehicleService;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -183,9 +179,9 @@ public class DriverController {
             return response;
         }
         driver.setName(driverDTO.getName());
-        driver.setLastName(driverDTO.getLastName());
+        driver.setSurName(driverDTO.getSurName());
         driver.setProfilePicture(driverDTO.getProfilePicture());
-        driver.setPhone(driverDTO.getPhone());
+        driver.setTelephoneNumber(driverDTO.getTelephoneNumber());
         driver.setEmail(driverDTO.getEmail());
         driver.setAddress(driverDTO.getAddress());
         driverService.updateDriver(driver);

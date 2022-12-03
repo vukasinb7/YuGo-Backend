@@ -1,9 +1,10 @@
 package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.User;
-
+@NoArgsConstructor
 public class UserResponse {
 
     @Getter @Setter
@@ -13,13 +14,13 @@ public class UserResponse {
     private String name;
 
     @Getter @Setter
-    private String lastName;
+    private String surName;
 
     @Getter @Setter
     private String profilePicture;
 
     @Getter @Setter
-    private String phone;
+    private String telephoneNumber;
 
     @Getter @Setter
     private String email;
@@ -27,20 +28,18 @@ public class UserResponse {
     @Getter @Setter
     private String address;
 
-    public UserResponse(Integer id, String name, String lastName, String profilePicture, String phone, String email, String address) {
+    public UserResponse(Integer id, String name, String surName, String profilePicture, String telephoneNumber, String email, String address) {
         super();
         this.id = id;
         this.name = name;
-        this.lastName = lastName;
+        this.surName = surName;
         this.profilePicture = profilePicture;
-        this.phone = phone;
+        this.telephoneNumber = telephoneNumber;
         this.email = email;
         this.address = address;
     }
 
     public UserResponse(User user) {
-        this(user.getId(), user.getName(), user.getLastName(), user.getProfilePicture(), user.getPhone(), user.getEmail(), user.getAddress());
+        this(user.getId(), user.getName(), user.getSurName(), user.getProfilePicture(), user.getTelephoneNumber(), user.getEmail(), user.getAddress());
     }
-
-    public UserResponse() {}
 }

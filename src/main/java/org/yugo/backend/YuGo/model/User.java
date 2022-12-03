@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.dto.UserRequest;
-import org.yugo.backend.YuGo.dto.UserResponse;
 
 
 @Entity
@@ -21,15 +20,15 @@ public abstract class User {
 
     @Getter @Setter
     @Column(name = "last_name", nullable = false)
-    private String lastName;
+    private String surName;
 
     @Getter @Setter
     @Column(name = "profile_picture", nullable = false)
     private String profilePicture;
 
     @Getter @Setter
-    @Column(name = "phone", nullable = false)
-    private String phone;
+    @Column(name = "telephoneNumber", nullable = false)
+    private String telephoneNumber;
 
     @Getter @Setter
     @Column(name = "email", nullable = false)
@@ -58,9 +57,9 @@ public abstract class User {
 
     public User(UserRequest userRequest) {
         this.name = userRequest.getName();
-        this.lastName = userRequest.getLastName();
+        this.surName = userRequest.getSurName();
         this.profilePicture = userRequest.getProfilePicture();
-        this.phone = userRequest.getPhone();
+        this.telephoneNumber = userRequest.getTelephoneNumber();
         this.email = userRequest.getEmail();
         this.address = userRequest.getAddress();
         this.password = userRequest.getPassword();

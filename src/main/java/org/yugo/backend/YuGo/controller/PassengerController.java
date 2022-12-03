@@ -1,6 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +20,7 @@ import org.yugo.backend.YuGo.service.UserServiceImpl;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/passenger")
@@ -40,7 +40,7 @@ public class PassengerController {
     )
     public ResponseEntity<UserResponse> addPassenger(@RequestBody UserRequest user){
         Passenger newPass = new Passenger(user);
-        passengerService.save(newPass);
+        passengerService.insert(newPass);
         UserActivation newAct = new UserActivation(newPass, LocalDateTime.now(), Duration.ZERO);
         userService.saveUserActivation(newAct);
         return new ResponseEntity<>(new UserResponse(newPass), HttpStatus.OK);
@@ -50,8 +50,9 @@ public class PassengerController {
             value = "/",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AllUsersResponse> getPassengers(){
-        return new ResponseEntity<>(new AllUsersResponse(passengerService.getAll()), HttpStatus.OK);
+    public ResponseEntity<AllUsersResponse> getAllPassengers(@RequestParam int page, @RequestParam int size){
+        Page<User> passengers = passengerService.getPassengersPage(PageRequest.of(page, size));
+        return new ResponseEntity<>(new AllUsersResponse(passengers.get()), HttpStatus.OK);
     }
 
     @PostMapping(
@@ -71,7 +72,7 @@ public class PassengerController {
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserResponse> getPassengers(@PathVariable Integer id){
+    public ResponseEntity<UserResponse> getPassenger(@PathVariable Integer id){
         return new ResponseEntity<>(new UserResponse(passengerService.get(id).get()), HttpStatus.OK);
     }
 
@@ -82,13 +83,32 @@ public class PassengerController {
     public ResponseEntity<UserResponse> updatePassenger(@RequestBody UserRequest updatedUser, @PathVariable Integer id){
         User user = passengerService.get(id).get();
         user.setName(updatedUser.getName());
-        user.setLastName(updatedUser.getLastName());
+        user.setSurName(updatedUser.getSurName());
         user.setProfilePicture(updatedUser.getProfilePicture());
-        user.setPhone(updatedUser.getPhone());
+        user.setTelephoneNumber(updatedUser.getTelephoneNumber());
         user.setEmail(updatedUser.getEmail());
         user.setAddress(updatedUser.getAddress());
         user.setPassword(updatedUser.getPassword());
-        passengerService.save(user);
+        passengerService.insert(user);
         return new ResponseEntity<>(new UserResponse(user), HttpStatus.OK);
     }
+
+//    @GetMapping(
+//            value = "/{id}/ride",
+//            produces = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    ResponseEntity<List<UserResponse>> getPassengerRides(@PathVariable Integer id, @RequestParam int page,
+//                                                         @RequestParam int size, @RequestParam String sort,
+//                                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+//                                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
+//        Page<Ride> rides = passengerService.getPassengerRidesPage(id, from, to,
+//                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
+//
+//
+//        List<UserResponse> output = new ArrayList<>();
+//        for(User u : drivers){
+//            output.add(new UserResponse(u));
+//        }
+//        return new ResponseEntity<>(output, HttpStatus.OK);
+//    }
 }

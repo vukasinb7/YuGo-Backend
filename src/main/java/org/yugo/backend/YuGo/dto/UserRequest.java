@@ -8,13 +8,13 @@ public class UserRequest {
     private String name;
 
     @Getter @Setter
-    private String lastName;
+    private String surName;
 
     @Getter @Setter
     private String profilePicture;
 
     @Getter @Setter
-    private String phone;
+    private String telephoneNumber;
 
     @Getter @Setter
     private String email;
@@ -25,11 +25,11 @@ public class UserRequest {
     @Getter @Setter
     private String password;
 
-    public UserRequest(String name, String lastName, String profilePicture, String phone, String email, String address, String password) {
+    public UserRequest(String name, String surName, String profilePicture, String telephoneNumber, String email, String address, String password) {
         this.name = name;
-        this.lastName = lastName;
+        this.surName = surName;
         this.profilePicture = profilePicture;
-        this.phone = phone;
+        this.telephoneNumber = telephoneNumber;
         this.email = email;
         this.address = address;
         this.password = password;
