@@ -10,6 +10,7 @@ import org.yugo.backend.YuGo.model.WorkTime;
 import org.yugo.backend.YuGo.repository.UserRepository;
 import org.yugo.backend.YuGo.repository.WorkTimeRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,5 +63,10 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public Page<User> getDriversPage(Pageable page){
         return userRepository.findAllDrivers(page);
+    }
+
+    @Override
+    public Page<WorkTime> getDriverWorkingTimesPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end){
+        return workTimeRepository.findWorkTimesByDriverAndStartTimeAndEndTimePageable(driverId, page, start, end);
     }
 }

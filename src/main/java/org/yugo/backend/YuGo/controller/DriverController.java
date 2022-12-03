@@ -1,21 +1,23 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
-import org.yugo.backend.YuGo.model.Document;
-import org.yugo.backend.YuGo.model.Driver;
-import org.yugo.backend.YuGo.model.User;
-import org.yugo.backend.YuGo.model.Vehicle;
+import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.DocumentService;
 import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.VehicleService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -223,11 +225,46 @@ public class DriverController {
         return response;
     }
 
-//    @GetMapping(
-//            value = "/{id}/working-hours",
-//            produces = MediaType.APPLICATION_JSON_VALUE
-//    )
-//    ResponseEntity<List<WorkingTimeRespone>> getWorkingHours(@RequestParam int page, @RequestParam int size, @RequestParam String from, @RequestParam String to){
-//
-//    }
+    @GetMapping(
+            value = "/{id}/working-hours",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    ResponseEntity<List<WorkingTimeResponse>> getWorkingHours(@PathVariable(value = "id") Integer id, @RequestParam int page, @RequestParam int size, @RequestParam String from, @RequestParam String to){
+        Driver driver = (Driver) driverService.getDriver(id).orElse(null);
+        ResponseEntity<List<WorkingTimeResponse>> response;
+        if(driver == null){
+            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return response;
+        }
+        LocalDateTime fromLDT = LocalDateTime.parse(from);
+        LocalDateTime toLDT = LocalDateTime.parse(to);
+        Page<WorkTime> workTimes = driverService.getDriverWorkingTimesPage(id, PageRequest.of(page, size), fromLDT, toLDT);
+        List<WorkingTimeResponse> output = new ArrayList<>();
+        for(WorkTime wt : workTimes){
+            output.add(new WorkingTimeResponse(wt));
+        }
+
+        return new ResponseEntity<>(output, HttpStatus.OK);
+    }
+
+    @PostMapping(
+            value = "/{id}/working-hours",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    ResponseEntity<WorkingTimeResponse> createDriver(@PathVariable Integer id, @RequestBody WorkingTimeRequest workingTimeRequest){
+        Driver driver = (Driver) driverService.getDriver(id).orElse(null);
+        ResponseEntity<WorkingTimeResponse> response;
+        if(driver == null){
+            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return response;
+        }
+        WorkTime wt = new WorkTime();
+        wt.setDriver(driver);
+        wt.setStartTime(LocalDateTime.parse(workingTimeRequest.getStart()));
+        wt.setEndTime(LocalDateTime.parse(workingTimeRequest.getEnd()));
+
+        WorkingTimeResponse output = new WorkingTimeResponse(driverService.saveWorkTime(wt));
+        return new ResponseEntity<>(output, HttpStatus.OK);
+    }
 }
