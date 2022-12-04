@@ -22,4 +22,10 @@ public interface UserService {
     Optional<UserActivation> getUserActivation(Integer id);
 
     public Page<User> getUsersPage(Pageable page);
+
+    public void authenticateUser(String email, String password);
+
+    public boolean blockUser(Integer userId);
+
+    public boolean unblockUser(Integer userId);
 }

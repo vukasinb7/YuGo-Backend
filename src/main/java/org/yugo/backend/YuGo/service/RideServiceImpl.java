@@ -41,7 +41,11 @@ public class RideServiceImpl implements RideService {
     @Override
     public Ride getActiveRideByPassenger(Integer id){ return rideRepository.getActiveRideByPassenger(id);}
 
-    public Page<Ride> findRidesForPassenger(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page){
+    public Page<Ride> getPassengerRides(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page){
         return rideRepository.findRidesForPassenger(passengerID, from, to, page);
+    }
+
+    public Page<Ride> getUserRides(Integer userID, LocalDateTime from, LocalDateTime to, Pageable page){
+        return rideRepository.findRidesForUser(userID, from, to, page);
     }
 }

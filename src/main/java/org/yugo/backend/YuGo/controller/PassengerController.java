@@ -10,14 +10,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
+import org.yugo.backend.YuGo.mapper.UserResponseMapper;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.model.UserActivation;
-import org.yugo.backend.YuGo.service.PassengerService;
-import org.yugo.backend.YuGo.service.PassengerServiceImpl;
-import org.yugo.backend.YuGo.service.UserService;
-import org.yugo.backend.YuGo.service.UserServiceImpl;
+import org.yugo.backend.YuGo.service.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -29,15 +27,17 @@ import java.util.Optional;
 public class PassengerController {
     private final PassengerService passengerService;
     private final UserService userService;
+    private final RideService rideService;
 
     @Autowired
-    public PassengerController(PassengerServiceImpl passengerServiceImpl, UserServiceImpl userServiceImpl){
+    public PassengerController(PassengerServiceImpl passengerServiceImpl, UserServiceImpl userServiceImpl, RideServiceImpl rideServiceImpl){
         this.passengerService = passengerServiceImpl;
         this.userService = userServiceImpl;
+        this.rideService = rideServiceImpl;
     }
 
     @PostMapping(
-            value = "/",
+            value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<UserResponse> addPassenger(@RequestBody UserRequest user){
@@ -45,11 +45,11 @@ public class PassengerController {
         passengerService.insert(newPass);
         UserActivation newAct = new UserActivation(newPass, LocalDateTime.now(), Duration.ZERO);
         userService.saveUserActivation(newAct);
-        return new ResponseEntity<>(new UserResponse(newPass), HttpStatus.OK);
+        return new ResponseEntity<>(UserResponseMapper.fromUsertoDTO(newPass), HttpStatus.OK);
     }
 
     @GetMapping(
-            value = "/",
+            value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<AllUsersResponse> getAllPassengers(@RequestParam int page, @RequestParam int size){
@@ -75,7 +75,7 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<UserResponse> getPassenger(@PathVariable Integer id){
-        return new ResponseEntity<>(new UserResponse(passengerService.get(id).get()), HttpStatus.OK);
+        return new ResponseEntity<>(UserResponseMapper.fromUsertoDTO(passengerService.get(id).get()), HttpStatus.OK);
     }
 
     @PutMapping(
@@ -92,7 +92,7 @@ public class PassengerController {
         user.setAddress(updatedUser.getAddress());
         user.setPassword(updatedUser.getPassword());
         passengerService.insert(user);
-        return new ResponseEntity<>(new UserResponse(user), HttpStatus.OK);
+        return new ResponseEntity<>(UserResponseMapper.fromUsertoDTO(user), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -103,7 +103,7 @@ public class PassengerController {
                                                          @RequestParam int size, @RequestParam String sort,
                                                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
                                                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
-        Page<Ride> rides = passengerService.getPassengerRidesPage(id, from, to,
+        Page<Ride> rides = rideService.getPassengerRides(id, from, to,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
         return new ResponseEntity<>(new AllRidesResponse(rides.stream()), HttpStatus.OK);

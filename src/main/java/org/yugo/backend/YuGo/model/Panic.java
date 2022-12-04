@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.persistence.FetchType;
@@ -10,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "Panics")
 public class Panic {
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
@@ -24,7 +26,7 @@ public class Panic {
 
     @Getter @Setter
     @Column(name = "time_pressed", nullable = false)
-    private LocalDateTime timePressed;
+    private LocalDateTime time;
 
     @Getter @Setter
     @Column(name = "reason", nullable = false)
@@ -35,10 +37,10 @@ public class Panic {
     @Getter @Setter
     private Integer id;
 
-    public Panic(User user, Ride ride, LocalDateTime timePressed, String reason) {
+    public Panic(User user, Ride ride, LocalDateTime time, String reason) {
         this.user = user;
         this.ride = ride;
-        this.timePressed = timePressed;
+        this.time = time;
         this.reason = reason;
     }
 }

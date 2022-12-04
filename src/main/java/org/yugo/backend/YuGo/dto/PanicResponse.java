@@ -33,6 +33,6 @@ public class PanicResponse {
         this.reason = reason;
     }
     public PanicResponse(Panic panic){
-        this(panic.getId(),panic.getUser().getId(),panic.getRide().getId(),panic.getTimePressed(),panic.getReason());
+        this(panic.getId(),panic.getUser().getId(),panic.getRide().getId(),panic.getTime(),panic.getReason());
     }
 }

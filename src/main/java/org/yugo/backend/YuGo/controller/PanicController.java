@@ -22,7 +22,7 @@ public class PanicController {
     }
 
     @GetMapping(
-            value = "/",
+            value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<AllPanicsResponse> getPanics(){

@@ -56,4 +56,31 @@ public class UserServiceImpl implements UserService {
     public Page<User> getUsersPage(Pageable page){
         return userRepository.findAllUsers(page);
     }
+
+    @Override
+    public void authenticateUser(String email, String password){
+        userRepository.authenticateUser(email, password);
+    }
+
+    @Override
+    public boolean blockUser(Integer userId){
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()){
+            user.get().setBlocked(true);
+            userRepository.save( user.get());
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean unblockUser(Integer userId){
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()){
+            user.get().setBlocked(false);
+            userRepository.save( user.get());
+            return true;
+        }
+        return false;
+    }
 }

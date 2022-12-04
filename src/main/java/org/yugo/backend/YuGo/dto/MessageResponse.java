@@ -1,11 +1,13 @@
 package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.Message;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
 public class MessageResponse {
     @Getter @Setter
     private Integer id;

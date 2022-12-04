@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.User;
@@ -27,4 +28,7 @@ public interface UserRepository extends JpaRepository<User,Integer> {
 
     @Query(value = "SELECT * FROM USERS", nativeQuery = true)
     public Page<User> findAllUsers(Pageable page);
+
+    @Query(value = "SELECT * FROM USERS WHERE email = :email AND password = :password AND is_blocked = false AND is_active = true", nativeQuery = true)
+    public User authenticateUser(@Param("email") String email,@Param("password") String password);
 }

@@ -19,5 +19,7 @@ public interface RideService {
 
     public Ride insert(Ride ride);
 
-    public Page<Ride> findRidesForPassenger(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page);
+    public Page<Ride> getPassengerRides(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page);
+
+    public Page<Ride> getUserRides(Integer userID, LocalDateTime from, LocalDateTime to, Pageable page);
 }

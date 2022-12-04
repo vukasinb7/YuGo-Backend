@@ -18,7 +18,7 @@ public class AllPanicsResponse {
     private List<Panic> results;
 
     public AllPanicsResponse(List<Panic> panics){
-        this.totalCount = panics.size();
         this.results = panics;
+        this.totalCount = results.size();
     }
 }

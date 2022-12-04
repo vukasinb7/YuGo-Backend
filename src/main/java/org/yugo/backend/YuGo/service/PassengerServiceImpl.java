@@ -40,11 +40,6 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public Page<Ride> getPassengerRidesPage(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page){
-        return rideRepository.findRidesForPassenger(passengerID, from, to, page);
-    }
-
-    @Override
     public Page<User> getPassengersPage(Pageable page){
         return userRepository.findAllPassengers(page);
     }

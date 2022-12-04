@@ -12,7 +12,6 @@ import java.util.Optional;
 public interface PassengerService {
     User insert(User user);
     List<User> getAll();
-    Page<Ride> getPassengerRidesPage(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page);
     Page<User> getPassengersPage(Pageable page);
     Optional<User> get(Integer id);
 }
