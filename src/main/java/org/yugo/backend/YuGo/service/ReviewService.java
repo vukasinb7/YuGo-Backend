@@ -7,16 +7,21 @@ import java.util.List;
 
 public interface ReviewService {
     /* =========================== VehicleReview =========================== */
-    VehicleReview addVehicleReview(VehicleReview vehicleReview);
+    VehicleReview insertVehicleReview(VehicleReview vehicleReview);
 
     VehicleReview getVehicleReview(Integer id);
+
+    List<VehicleReview> getVehicleReviewsByVehicle(Integer id);
+
 
     List<VehicleReview> getAllVehicleReviews();
 
     /* =========================== RideReview =========================== */
-    RideReview addRideReview(RideReview rideReview);
+    RideReview insertRideReview(RideReview rideReview);
 
     RideReview getRideReview(Integer id);
 
     List<RideReview> getAllRideReviews();
+
+    List<RideReview> getRideReviewsByDriver(Integer id);
 }

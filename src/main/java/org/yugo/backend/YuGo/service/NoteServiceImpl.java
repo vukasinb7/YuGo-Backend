@@ -1,12 +1,15 @@
 package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.model.Note;
 import org.yugo.backend.YuGo.repository.NoteRepository;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class NoteServiceImpl implements NoteService {
     private final NoteRepository noteRepository;
 
@@ -16,7 +19,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note add(Note note){
+    public Note save(Note note){
         return noteRepository.save(note);
     }
 
@@ -28,5 +31,10 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public Optional<Note> get(Integer id) {
         return noteRepository.findById(id);
+    }
+
+    @Override
+    public Page<Note> getUserNotes(Integer userId, Pageable page){
+        return noteRepository.findUserNotes(userId, page);
     }
 }

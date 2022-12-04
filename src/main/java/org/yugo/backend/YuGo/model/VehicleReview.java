@@ -2,9 +2,11 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
 @Table(name="VehicleReviews")
 public class VehicleReview {
     @Getter @Setter
@@ -15,18 +17,30 @@ public class VehicleReview {
     @Column(name = "rating", nullable = false)
     private int rating;
 
-    @OneToOne
+    @ManyToOne
     @Getter @Setter
-    @JoinColumn(name = "vehicle")
+    @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
     @OneToOne
     @Getter @Setter
-    @JoinColumn(name = "passenger")
+    @JoinColumn(name = "passenger_id")
     private Passenger passenger;
+
+    @ManyToOne
+    @Getter @Setter
+    @JoinColumn(name = "ride")
+    private Ride ride;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private Integer id;
+
+    public VehicleReview(String comment, int rating, Vehicle vehicle, Passenger passenger) {
+        this.comment = comment;
+        this.rating = rating;
+        this.vehicle = vehicle;
+        this.passenger = passenger;
+    }
 }

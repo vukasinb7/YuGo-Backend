@@ -1,12 +1,14 @@
 package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.model.Message;
 import org.yugo.backend.YuGo.repository.MessageRepository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
 
@@ -16,7 +18,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Message add(Message message){
+    public Message save(Message message){
         return messageRepository.save(message);
     }
 
@@ -28,5 +30,10 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Optional<Message> get(Integer id) {
         return messageRepository.findById(id);
+    }
+
+    @Override
+    public List<Message> getUserMessages(Integer userId){
+        return messageRepository.getMessagesForUser(userId);
     }
 }

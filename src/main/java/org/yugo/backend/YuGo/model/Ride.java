@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Duration;
@@ -10,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "Rides")
 public class Ride {
     @Getter @Setter
@@ -30,8 +32,8 @@ public class Ride {
     private double price;
 
     @Getter @Setter
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "driver_id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Driver driver;
 
     @Getter @Setter
@@ -41,25 +43,29 @@ public class Ride {
 
     @Getter @Setter
     @JoinColumn(name = "path_id")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private Path path;
 
     @Getter @Setter
     @Column(name = "estimated_time")
-    private Duration estimatedTime;
+    private int estimatedTime;
 
     @Getter @Setter
-    @OneToMany(fetch = FetchType.LAZY)
-    private Set<RideReview> reviews = new HashSet<RideReview>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH,mappedBy = "ride")
+    private Set<RideReview> rideReviews = new HashSet<RideReview>();
 
-    @Enumerated(EnumType.ORDINAL)
+    @Getter @Setter
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH,mappedBy = "ride")
+    private Set<VehicleReview> vehicleReviews = new HashSet<VehicleReview>();
+
+    @Enumerated(EnumType.STRING)
     @Getter @Setter
     @Column(name = "status")
     private RideStatus status;
 
     @Getter @Setter
     @JoinColumn(name = "rejection_id")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private Rejection rejection;
 
     @Getter @Setter
@@ -75,11 +81,8 @@ public class Ride {
     private Boolean includesPets;
 
     @Getter @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "vehicle_type_id")
-    private VehicleType vehicleType;
+    private VehicleCategoryPrice vehicleCategoryPrice;
 
-    public Ride(){
-
-    }
 }

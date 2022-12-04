@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PathService {
-    Path add(Path path);
+    Path save(Path path);
 
     List<Path> getAll();
 

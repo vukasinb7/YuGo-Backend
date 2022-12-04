@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RejectionService {
-    Rejection add(Rejection rejection);
+    Rejection save(Rejection rejection);
 
     List<Rejection> getAll();
 

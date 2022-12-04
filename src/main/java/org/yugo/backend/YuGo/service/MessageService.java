@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MessageService {
-    Message add(Message message);
+    Message save(Message message);
 
     List<Message> getAll();
 
     Optional<Message> get(Integer id);
+
+    List<Message> getUserMessages(Integer userId);
 }

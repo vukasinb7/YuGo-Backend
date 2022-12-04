@@ -1,22 +1,22 @@
 package org.yugo.backend.YuGo.service;
 
 import org.yugo.backend.YuGo.model.Vehicle;
-import org.yugo.backend.YuGo.model.VehicleType;
+import org.yugo.backend.YuGo.model.VehicleCategoryPrice;
 
 import java.util.List;
 
 public interface VehicleService {
     /* =========================== Vehicle =========================== */
-    Vehicle addVehicle(Vehicle vehicle);
+    Vehicle saveVehicle(Vehicle vehicle);
 
     List<Vehicle> getAllVehicles();
 
     Vehicle getVehicle(Integer id);
 
     /* =========================== VehicleType =========================== */
-    VehicleType addVehicleType(VehicleType vehicleType);
+    VehicleCategoryPrice saveVehicleType(VehicleCategoryPrice vehicleCategoryPrice);
 
-    List<VehicleType> getAllVehicleTypes();
+    List<VehicleCategoryPrice> getAllVehicleTypes();
 
-    VehicleType getVehicleType(Integer id);
+    VehicleCategoryPrice getVehicleType(Integer id);
 }

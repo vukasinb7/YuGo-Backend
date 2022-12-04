@@ -1,12 +1,13 @@
 package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.model.Admin;
 import org.yugo.backend.YuGo.repository.AdminRepository;
-
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class AdminServiceImpl implements AdminService {
     private final AdminRepository adminRepository;
 
@@ -16,7 +17,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Admin add(Admin admin){
+    public Admin save(Admin admin){
         return adminRepository.save(admin);
     }
 

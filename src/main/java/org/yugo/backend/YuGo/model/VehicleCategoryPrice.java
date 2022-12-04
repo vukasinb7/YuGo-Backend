@@ -2,26 +2,25 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "VehicleTypes")
-public class VehicleType {
+@NoArgsConstructor
+@Table(name = "VehicleCategoryPrices")
+public class VehicleCategoryPrice {
 
     @Getter @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Enumerated(EnumType.ORDINAL)
     @Getter @Setter
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "category", nullable = false)
+    private VehicleCategory name;
 
     @Getter @Setter
     @Column(name = "price_per_km", nullable = false)
     private double pricePerKM;
-
-    public VehicleType(){
-
-    }
 }

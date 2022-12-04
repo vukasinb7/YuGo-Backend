@@ -2,11 +2,13 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import org.yugo.backend.YuGo.dto.UserDetailedIn;
 
 
 @Entity
+@NoArgsConstructor
 @Table(name="Users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="user_type",
@@ -18,15 +20,15 @@ public abstract class User {
 
     @Getter @Setter
     @Column(name = "last_name", nullable = false)
-    private String lastName;
+    private String surName;
 
     @Getter @Setter
     @Column(name = "profile_picture", nullable = false)
     private String profilePicture;
 
     @Getter @Setter
-    @Column(name = "phone", nullable = false)
-    private String phone;
+    @Column(name = "telephoneNumber", nullable = false)
+    private String telephoneNumber;
 
     @Getter @Setter
     @Column(name = "email", nullable = false)
@@ -53,4 +55,15 @@ public abstract class User {
     @Getter @Setter
     private Integer id;
 
+    public User(UserDetailedIn userDetailedIn) {
+        this.name = userDetailedIn.getName();
+        this.surName = userDetailedIn.getSurName();
+        this.profilePicture = userDetailedIn.getProfilePicture();
+        this.telephoneNumber = userDetailedIn.getTelephoneNumber();
+        this.email = userDetailedIn.getEmail();
+        this.address = userDetailedIn.getAddress();
+        this.password = userDetailedIn.getPassword();
+        this.isBlocked = false;
+        this.isActive = false;
+    }
 }

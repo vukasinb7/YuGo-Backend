@@ -18,7 +18,7 @@ public class WorkTime {
     private LocalDateTime endTime;
 
     @Getter @Setter
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id")
     private Driver driver;
 

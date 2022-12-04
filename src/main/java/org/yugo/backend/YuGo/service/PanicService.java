@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PanicService {
-    Panic add(Panic panic);
+    Panic insert(Panic panic);
 
     List<Panic> getAll();
 
     Optional<Panic> get(Integer id);
+
 }

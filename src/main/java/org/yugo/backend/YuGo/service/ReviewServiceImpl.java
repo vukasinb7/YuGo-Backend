@@ -22,7 +22,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     /* =========================== VehicleReview =========================== */
     @Override
-    public VehicleReview addVehicleReview(VehicleReview vehicleReview){
+    public VehicleReview insertVehicleReview(VehicleReview vehicleReview){
         return vehicleReviewRepository.save(vehicleReview);
     }
 
@@ -36,9 +36,14 @@ public class ReviewServiceImpl implements ReviewService {
         return vehicleReviewRepository.findAll();
     }
 
+    @Override
+    public List<VehicleReview> getVehicleReviewsByVehicle(Integer id){
+        return vehicleReviewRepository.findReviewsByVehicle(id);
+    }
+
     /* =========================== RideReview =========================== */
     @Override
-    public RideReview addRideReview(RideReview rideReview){
+    public RideReview insertRideReview(RideReview rideReview){
         return rideReviewRepository.save(rideReview);
     }
 
@@ -51,4 +56,7 @@ public class ReviewServiceImpl implements ReviewService {
     public List<RideReview> getAllRideReviews(){
         return rideReviewRepository.findAll();
     }
+
+    @Override
+    public List<RideReview> getRideReviewsByDriver(Integer id){ return rideReviewRepository.findReviewsByDriver(id);}
 }
