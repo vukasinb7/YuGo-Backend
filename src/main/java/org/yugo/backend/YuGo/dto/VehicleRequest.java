@@ -1,10 +1,12 @@
 package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.Vehicle;
 import org.yugo.backend.YuGo.model.VehicleCategory;
 
+@NoArgsConstructor
 public class VehicleRequest {
 
     @Getter @Setter

@@ -1,9 +1,11 @@
 package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.Vehicle;
 
+@NoArgsConstructor
 public class VehicleRespone {
     @Getter @Setter
     private Integer id;

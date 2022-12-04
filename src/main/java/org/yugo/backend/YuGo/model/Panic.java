@@ -34,4 +34,11 @@ public class Panic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private Integer id;
+
+    public Panic(User user, Ride ride, LocalDateTime timePressed, String reason) {
+        this.user = user;
+        this.ride = ride;
+        this.timePressed = timePressed;
+        this.reason = reason;
+    }
 }

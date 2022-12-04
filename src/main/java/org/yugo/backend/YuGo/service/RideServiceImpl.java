@@ -33,4 +33,10 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public Ride getActiveRideByDriver(Integer id){ return rideRepository.getActiveRideByDriver(id);}
+
+    @Override
+    public Ride getActiveRideByPassenger(Integer id){ return rideRepository.getActiveRideByPassenger(id);}
+
+    @Override
+    public Ride insert(Ride ride){ return rideRepository.save(ride);}
 }

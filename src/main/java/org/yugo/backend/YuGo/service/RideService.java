@@ -13,4 +13,8 @@ public interface RideService {
     Optional<Ride> get(Integer id);
 
     public Ride getActiveRideByDriver(Integer id);
+
+    public Ride getActiveRideByPassenger(Integer id);
+
+    public Ride insert(Ride ride);
 }

@@ -29,4 +29,11 @@ public class RideReview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private Integer id;
+
+    public RideReview(String comment, int rating, Ride ride, Passenger passenger) {
+        this.comment = comment;
+        this.rating = rating;
+        this.ride = ride;
+        this.passenger = passenger;
+    }
 }

@@ -19,4 +19,9 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
 
     @Query(value = "SELECT * FROM RIDES WHERE passenger_id = passengerID AND startTime>=fromTime AND toTime>=endTime", nativeQuery = true)
     public Page<Ride> findRidesForPassenger(Integer passengerID, LocalDateTime fromTime, LocalDateTime toTime, Pageable page);
+    
+    @Query(value = "SELECT * FROM RIDES r WHERE r.status='ACTIVE' and r.id in (SELECT ur.rides_id from USERS_RIDES ur WHERE r.id=ur.rides_id and :pid=passenger_id)",
+            nativeQuery = true)
+    public Ride getActiveRideByPassenger(@Param("pid") Integer did);
+
 }

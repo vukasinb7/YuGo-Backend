@@ -1,6 +1,7 @@
 package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.mapper.UserRideResponseMapper;
 import org.yugo.backend.YuGo.model.Ride;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+@NoArgsConstructor
 public class RideResponse {
     @Getter @Setter
     private LocalDateTime startTime;

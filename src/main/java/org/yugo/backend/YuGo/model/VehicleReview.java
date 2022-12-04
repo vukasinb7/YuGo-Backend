@@ -29,4 +29,11 @@ public class VehicleReview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private Integer id;
+
+    public VehicleReview(String comment, int rating, Vehicle vehicle, Passenger passenger) {
+        this.comment = comment;
+        this.rating = rating;
+        this.vehicle = vehicle;
+        this.passenger = passenger;
+    }
 }
