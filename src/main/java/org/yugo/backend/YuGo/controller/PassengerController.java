@@ -3,14 +3,15 @@ package org.yugo.backend.YuGo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yugo.backend.YuGo.dto.AllUsersResponse;
-import org.yugo.backend.YuGo.dto.UserRequest;
-import org.yugo.backend.YuGo.dto.UserResponse;
+import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.model.Passenger;
+import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.model.UserActivation;
 import org.yugo.backend.YuGo.service.PassengerService;
@@ -20,6 +21,7 @@ import org.yugo.backend.YuGo.service.UserServiceImpl;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -93,22 +95,17 @@ public class PassengerController {
         return new ResponseEntity<>(new UserResponse(user), HttpStatus.OK);
     }
 
-//    @GetMapping(
-//            value = "/{id}/ride",
-//            produces = MediaType.APPLICATION_JSON_VALUE
-//    )
-//    ResponseEntity<List<UserResponse>> getPassengerRides(@PathVariable Integer id, @RequestParam int page,
-//                                                         @RequestParam int size, @RequestParam String sort,
-//                                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-//                                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
-//        Page<Ride> rides = passengerService.getPassengerRidesPage(id, from, to,
-//                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
-//
-//
-//        List<UserResponse> output = new ArrayList<>();
-//        for(User u : drivers){
-//            output.add(new UserResponse(u));
-//        }
-//        return new ResponseEntity<>(output, HttpStatus.OK);
-//    }
+    @GetMapping(
+            value = "/{id}/ride",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    ResponseEntity<AllRidesResponse> getPassengerRides(@PathVariable Integer id, @RequestParam int page,
+                                                         @RequestParam int size, @RequestParam String sort,
+                                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+                                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
+        Page<Ride> rides = passengerService.getPassengerRidesPage(id, from, to,
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
+
+        return new ResponseEntity<>(new AllRidesResponse(rides.stream()), HttpStatus.OK);
+    }
 }
