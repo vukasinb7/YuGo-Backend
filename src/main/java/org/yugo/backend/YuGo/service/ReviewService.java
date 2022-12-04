@@ -11,6 +11,9 @@ public interface ReviewService {
 
     VehicleReview getVehicleReview(Integer id);
 
+    List<VehicleReview> getVehicleReviewsByVehicle(Integer id);
+
+
     List<VehicleReview> getAllVehicleReviews();
 
     /* =========================== RideReview =========================== */
@@ -19,4 +22,6 @@ public interface ReviewService {
     RideReview getRideReview(Integer id);
 
     List<RideReview> getAllRideReviews();
+
+    List<RideReview> getRideReviewsByDriver(Integer id);
 }

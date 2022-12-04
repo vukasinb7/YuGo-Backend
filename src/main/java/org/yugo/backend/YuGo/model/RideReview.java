@@ -2,9 +2,11 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "RideReviews")
 public class RideReview {
     @Getter @Setter

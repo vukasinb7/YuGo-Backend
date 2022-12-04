@@ -2,9 +2,11 @@ package org.yugo.backend.YuGo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
 @Table(name="VehicleReviews")
 public class VehicleReview {
     @Getter @Setter
@@ -15,7 +17,7 @@ public class VehicleReview {
     @Column(name = "rating", nullable = false)
     private int rating;
 
-    @OneToOne
+    @ManyToOne
     @Getter @Setter
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;

@@ -52,7 +52,11 @@ public class Ride {
 
     @Getter @Setter
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH,mappedBy = "ride")
-    private Set<RideReview> reviews = new HashSet<RideReview>();
+    private Set<RideReview> rideReviews = new HashSet<RideReview>();
+
+    @Getter @Setter
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH,mappedBy = "ride")
+    private Set<VehicleReview> vehicleReviews = new HashSet<VehicleReview>();
 
     @Enumerated(EnumType.STRING)
     @Getter @Setter
