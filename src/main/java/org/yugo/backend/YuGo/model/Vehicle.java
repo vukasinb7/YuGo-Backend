@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.yugo.backend.YuGo.dto.VehicleRequest;
+import org.yugo.backend.YuGo.dto.VehicleIn;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -59,17 +59,17 @@ public class Vehicle {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<VehicleReview> reviews = new HashSet<VehicleReview>();
 
-    public Vehicle(VehicleRequest vehicleRequest){
-        this.vehicleCategory = vehicleRequest.getVehicleCategory();
-        this.model = vehicleRequest.getModel();
-        this.licencePlateNumber = vehicleRequest.getLicenseNumber();
+    public Vehicle(VehicleIn vehicleIn){
+        this.vehicleCategory = vehicleIn.getVehicleCategory();
+        this.model = vehicleIn.getModel();
+        this.licencePlateNumber = vehicleIn.getLicenseNumber();
         Location location = new Location();
-        location.setAddress(vehicleRequest.getCurrentLocation().getAddress());
-        location.setLatitude(vehicleRequest.getCurrentLocation().getLatitude());
-        location.setLongitude(vehicleRequest.getCurrentLocation().getLongitude());
+        location.setAddress(vehicleIn.getCurrentLocation().getAddress());
+        location.setLatitude(vehicleIn.getCurrentLocation().getLatitude());
+        location.setLongitude(vehicleIn.getCurrentLocation().getLongitude());
         this.currentLocation = location;
-        this.numberOfSeats = vehicleRequest.getPassengerSeats();
-        this.areBabiesAllowed = vehicleRequest.getBabyTransport();
-        this.arePetsAllowed = vehicleRequest.getBabyTransport();
+        this.numberOfSeats = vehicleIn.getPassengerSeats();
+        this.areBabiesAllowed = vehicleIn.getBabyTransport();
+        this.arePetsAllowed = vehicleIn.getBabyTransport();
     }
 }

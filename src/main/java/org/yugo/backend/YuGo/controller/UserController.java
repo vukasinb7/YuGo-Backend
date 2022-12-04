@@ -1,7 +1,6 @@
 package org.yugo.backend.YuGo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -11,8 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
-import org.yugo.backend.YuGo.mapper.MessageResponseMapper;
-import org.yugo.backend.YuGo.mapper.NoteResponseMapper;
+import org.yugo.backend.YuGo.mapper.MessageMapper;
+import org.yugo.backend.YuGo.mapper.NoteMapper;
 import org.yugo.backend.YuGo.model.Message;
 import org.yugo.backend.YuGo.model.Note;
 import org.yugo.backend.YuGo.model.Ride;
@@ -42,52 +41,52 @@ public class UserController {
             value = "/{id}/ride",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<AllRidesResponse> getUserRides(@PathVariable Integer id, @RequestParam int page,
-                                                       @RequestParam int size, @RequestParam String sort,
-                                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-                                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
+    ResponseEntity<AllRidesOut> getUserRides(@PathVariable Integer id, @RequestParam int page,
+                                             @RequestParam int size, @RequestParam String sort,
+                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
         Page<Ride> rides = rideService.getUserRides(id, from, to,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
-        return new ResponseEntity<>(new AllRidesResponse(rides.stream()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllRidesOut(rides.stream()), HttpStatus.OK);
     }
 
     @GetMapping(
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AllUsersResponse> getAllUsers(@RequestParam int page, @RequestParam int size){
+    public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam int page, @RequestParam int size){
         Page<User> users = userService.getUsersPage(PageRequest.of(page, size));
-        return new ResponseEntity<>(new AllUsersResponse(users.get()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllUsersOut(users.get()), HttpStatus.OK);
     }
 
     @PostMapping(
             value = "/login",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest){
-        userService.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword());
-        return new ResponseEntity<>(new LoginResponse(), HttpStatus.OK);
+    public ResponseEntity<LoginOut> loginUser(@RequestBody LoginIn loginIn){
+        userService.authenticateUser(loginIn.getEmail(), loginIn.getPassword());
+        return new ResponseEntity<>(new LoginOut(), HttpStatus.OK);
     }
 
     @GetMapping(
             value = "/{id}/message",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AllUserMessagesResponse> getUserMessages(@PathVariable Integer id){
-        return new ResponseEntity<>(new AllUserMessagesResponse(messageService.getUserMessages(id).stream()), HttpStatus.OK);
+    public ResponseEntity<AllUserMessagesOut> getUserMessages(@PathVariable Integer id){
+        return new ResponseEntity<>(new AllUserMessagesOut(messageService.getUserMessages(id).stream()), HttpStatus.OK);
     }
 
     @PostMapping(
             value = "/{id}/message",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<MessageResponse> sendUserMessages(@PathVariable Integer id, @RequestParam Integer receiverId, @RequestBody MessageRequest messageRequest){
+    public ResponseEntity<MessageOut> sendUserMessages(@PathVariable Integer id, @RequestParam Integer receiverId, @RequestBody MessageIn messageIn){
         Message msg = new Message(userService.getUser(id).get(), userService.getUser(receiverId).get(),
-                messageRequest.getMessage(), LocalDateTime.now(), messageRequest.getType(),
+                messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
                 null);
         messageService.save(msg);
-        return new ResponseEntity<>(MessageResponseMapper.fromMessagetoDTO(msg), HttpStatus.OK);
+        return new ResponseEntity<>(MessageMapper.fromMessagetoDTO(msg), HttpStatus.OK);
     }
 
     @PutMapping(
@@ -112,18 +111,18 @@ public class UserController {
             value = "/{id}/note",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<NoteResponse> createNote(@PathVariable Integer id, @RequestBody NoteRequest noteRequest){
-        Note note = new Note(userService.getUser(id).get(), noteRequest.getMessage(), LocalDateTime.now());
+    public ResponseEntity<NoteOut> createNote(@PathVariable Integer id, @RequestBody NoteIn noteIn){
+        Note note = new Note(userService.getUser(id).get(), noteIn.getMessage(), LocalDateTime.now());
         noteService.save(note);
-        return new ResponseEntity<>(NoteResponseMapper.fromNotetoDTO(note), HttpStatus.OK);
+        return new ResponseEntity<>(NoteMapper.fromNotetoDTO(note), HttpStatus.OK);
     }
 
     @GetMapping(
             value = "/{id}/note",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AllNotesResponse> getUserNotes(@PathVariable Integer id, @RequestParam int page, @RequestParam int size){
+    public ResponseEntity<AllNotesOut> getUserNotes(@PathVariable Integer id, @RequestParam int page, @RequestParam int size){
         Page<Note> notes = noteService.getUserNotes(id, PageRequest.of(page, size));
-        return new ResponseEntity<>(new AllNotesResponse(notes.get()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllNotesOut(notes.get()), HttpStatus.OK);
     }
 }

@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.yugo.backend.YuGo.dto.UserRequest;
-import org.yugo.backend.YuGo.dto.UserResponse;
+import org.yugo.backend.YuGo.dto.UserDetailedIn;
 
 import java.util.Set;
 
@@ -27,7 +26,7 @@ public class Driver extends User{
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
-    public Driver(UserRequest userRequest) {
-        super(userRequest);
+    public Driver(UserDetailedIn userDetailedIn) {
+        super(userDetailedIn);
     }
 }

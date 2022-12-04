@@ -5,12 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yugo.backend.YuGo.dto.LocationRespone;
-import org.yugo.backend.YuGo.dto.ReasonRequest;
-import org.yugo.backend.YuGo.dto.RideResponse;
-import org.yugo.backend.YuGo.mapper.LocationResponseMapper;
-import org.yugo.backend.YuGo.model.Ride;
-import org.yugo.backend.YuGo.model.RideStatus;
+import org.yugo.backend.YuGo.dto.LocationInOut;
+import org.yugo.backend.YuGo.mapper.LocationMapper;
 import org.yugo.backend.YuGo.model.Vehicle;
 import org.yugo.backend.YuGo.service.VehicleService;
 
@@ -28,9 +24,9 @@ public class VehicleController {
             value = "/{id}/location",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity changeLocation(@RequestBody LocationRespone locationRespone, @PathVariable Integer id){
+    public ResponseEntity changeLocation(@RequestBody LocationInOut locationInOut, @PathVariable Integer id){
         Vehicle vehicle=vehicleService.getVehicle(id);
-        vehicle.setCurrentLocation(LocationResponseMapper.fromDTOtoLocation(locationRespone));
+        vehicle.setCurrentLocation(LocationMapper.fromDTOtoLocation(locationInOut));
         return new ResponseEntity<>(null, HttpStatus.OK);
 
     }

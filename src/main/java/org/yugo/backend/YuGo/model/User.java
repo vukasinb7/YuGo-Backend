@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.yugo.backend.YuGo.dto.UserRequest;
+import org.yugo.backend.YuGo.dto.UserDetailedIn;
 
 
 @Entity
@@ -55,14 +55,14 @@ public abstract class User {
     @Getter @Setter
     private Integer id;
 
-    public User(UserRequest userRequest) {
-        this.name = userRequest.getName();
-        this.surName = userRequest.getSurName();
-        this.profilePicture = userRequest.getProfilePicture();
-        this.telephoneNumber = userRequest.getTelephoneNumber();
-        this.email = userRequest.getEmail();
-        this.address = userRequest.getAddress();
-        this.password = userRequest.getPassword();
+    public User(UserDetailedIn userDetailedIn) {
+        this.name = userDetailedIn.getName();
+        this.surName = userDetailedIn.getSurName();
+        this.profilePicture = userDetailedIn.getProfilePicture();
+        this.telephoneNumber = userDetailedIn.getTelephoneNumber();
+        this.email = userDetailedIn.getEmail();
+        this.address = userDetailedIn.getAddress();
+        this.password = userDetailedIn.getPassword();
         this.isBlocked = false;
         this.isActive = false;
     }

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.yugo.backend.YuGo.dto.UserRequest;
+import org.yugo.backend.YuGo.dto.UserDetailedIn;
 
 import java.util.Set;
 
@@ -22,7 +22,7 @@ public class Passenger extends User{
     @Getter @Setter
     private Set<Path> favouritePaths;
 
-    public Passenger(UserRequest userRequest) {
-        super(userRequest);
+    public Passenger(UserDetailedIn userDetailedIn) {
+        super(userDetailedIn);
     }
 }

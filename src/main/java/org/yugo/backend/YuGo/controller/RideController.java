@@ -28,84 +28,84 @@ public class RideController {
             value = "/active/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<RideResponse> getActiveRidesByDriver(@PathVariable Integer id){
-        return new ResponseEntity<>(new RideResponse(rideService.getActiveRideByDriver(id)), HttpStatus.OK);
+    public ResponseEntity<RideOut> getActiveRidesByDriver(@PathVariable Integer id){
+        return new ResponseEntity<>(new RideOut(rideService.getActiveRideByDriver(id)), HttpStatus.OK);
     }*/
 
     @GetMapping(
             value = "/active/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<RideResponse> getActiveRidesByPassenger(@PathVariable Integer id){
-        return new ResponseEntity<>(new RideResponse(rideService.getActiveRideByPassenger(id)), HttpStatus.OK);
+    public ResponseEntity<RideOut> getActiveRidesByPassenger(@PathVariable Integer id){
+        return new ResponseEntity<>(new RideOut(rideService.getActiveRideByPassenger(id)), HttpStatus.OK);
     }
 
     @GetMapping(
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<RideResponse> getRideById(@PathVariable Integer id){
-        return new ResponseEntity<>(new RideResponse(rideService.get(id).get()), HttpStatus.OK);
+    public ResponseEntity<RideOut> getRideById(@PathVariable Integer id){
+        return new ResponseEntity<>(new RideOut(rideService.get(id).get()), HttpStatus.OK);
     }
 
     @PutMapping(
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<RideResponse> cancelRide(@PathVariable Integer id){
+    public ResponseEntity<RideOut> cancelRide(@PathVariable Integer id){
         Ride ride =rideService.get(id).get();
         if (ride.getStatus()==RideStatus.ACCEPTED) {
             ride.setStatus(RideStatus.CANCELED);
             rideService.insert(ride);
         }
-        return new ResponseEntity<>(new RideResponse(ride), HttpStatus.OK);
+        return new ResponseEntity<>(new RideOut(ride), HttpStatus.OK);
     }
 
     @PutMapping(
             value = "/{id}/accept",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<RideResponse> acceptRide(@PathVariable Integer id){
+    public ResponseEntity<RideOut> acceptRide(@PathVariable Integer id){
         Ride ride =rideService.get(id).get();
         ride.setStatus(RideStatus.ACCEPTED);
         rideService.insert(ride);
-        return new ResponseEntity<>(new RideResponse(ride), HttpStatus.OK);
+        return new ResponseEntity<>(new RideOut(ride), HttpStatus.OK);
     }
 
     @PutMapping(
             value = "/{id}/end",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<RideResponse> endRide(@PathVariable Integer id){
+    public ResponseEntity<RideOut> endRide(@PathVariable Integer id){
         Ride ride =rideService.get(id).get();
         ride.setStatus(RideStatus.FINISHED);
         rideService.insert(ride);
-        return new ResponseEntity<>(new RideResponse(ride), HttpStatus.OK);
+        return new ResponseEntity<>(new RideOut(ride), HttpStatus.OK);
     }
 
     @PutMapping(
             value = "/{id}/panic",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<PanicResponse> addPanic(@RequestBody ReasonRequest reasonRequest, @PathVariable Integer id){
+    public ResponseEntity<PanicSimplifiedOut> addPanic(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
         Ride ride= rideService.get(id).get();
-        Panic panic= new Panic(new Passenger(),ride, LocalDateTime.now(),reasonRequest.getReason());
+        Panic panic= new Panic(new Passenger(),ride, LocalDateTime.now(), reasonIn.getReason());
         ride.setIsPanicPressed(true);
         rideService.insert(ride);
         panicService.insert(panic);
 
-        return new ResponseEntity<>(new PanicResponse(panic), HttpStatus.OK);
+        return new ResponseEntity<>(new PanicSimplifiedOut(panic), HttpStatus.OK);
     }
 
     @PutMapping(
             value = "/{id}/cancel",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<RideResponse> rejectRide(@RequestBody ReasonRequest reasonRequest, @PathVariable Integer id){
+    public ResponseEntity<RideOut> rejectRide(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
         Ride ride =rideService.get(id).get();
         ride.setStatus(RideStatus.REJECTED);
         rideService.insert(ride);
-        return new ResponseEntity<>(new RideResponse(ride), HttpStatus.OK);
+        return new ResponseEntity<>(new RideOut(ride), HttpStatus.OK);
 
     }
 
