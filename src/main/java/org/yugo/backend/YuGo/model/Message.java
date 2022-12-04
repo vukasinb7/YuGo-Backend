@@ -27,7 +27,7 @@ public class Message {
     @Column(name = "sending_time", nullable = false)
     private LocalDateTime sendingTime;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Getter @Setter
     @Column(name = "message_type", nullable = false)
     private MessageType messageType;

@@ -22,6 +22,5 @@ public class AllUsersResponse {
                 .toList();
 
         this.totalCount = results.size();
-
     }
 }

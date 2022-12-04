@@ -31,4 +31,9 @@ public class MessageServiceImpl implements MessageService {
     public Optional<Message> get(Integer id) {
         return messageRepository.findById(id);
     }
+
+    @Override
+    public List<Message> getUserMessages(Integer userId){
+        return messageRepository.getMessagesForUser(userId);
+    }
 }
