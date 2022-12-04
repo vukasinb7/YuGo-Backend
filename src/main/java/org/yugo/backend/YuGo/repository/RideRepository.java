@@ -13,12 +13,15 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 public interface RideRepository extends JpaRepository<Ride,Integer> {
-    @Query(value = "SELECT * FROM RIDES r WHERE r.driver_id = :did and r.status='ACTIVE'",
+    @Query(value = "SELECT * FROM RIDES r WHERE r.driver_id = :driver_id and r.status='ACTIVE'",
             nativeQuery = true)
     public Ride getActiveRideByDriver(@Param("did") Integer did);
     @Query(value = "SELECT * FROM RIDES r WHERE r.status='ACTIVE' and r.id in (SELECT ur.rides_id from USERS_RIDES ur WHERE r.id=ur.rides_id and :pid=passenger_id)",
+    Ride getActiveRideByDriver(@Param("driver_id") Integer driverID);
+
+    @Query(value = "SELECT * FROM RIDES r WHERE r.status='ACTIVE' and r.id in (SELECT ur.rides_id from USERS_RIDES ur WHERE r.id=ur.rides_id and :passenger_id=ur.passenger_id)",
             nativeQuery = true)
-    public Ride getActiveRideByPassenger(@Param("pid") Integer did);
+    Ride getActiveRideByPassenger(@Param("passenger_id") Integer passengerID);
 
     @Query(value = "SELECT * FROM RIDES r WHERE r.id in (SELECT ur.rides_id from USERS_RIDES ur WHERE " +
             "r.id=ur.rides_id AND passenger_id = :passengerID) AND (r.start_time>=:fromTime OR :toTime>=r.end_time)", nativeQuery = true)
