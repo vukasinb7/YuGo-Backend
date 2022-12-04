@@ -36,10 +36,10 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public Ride getActiveRideByDriver(Integer id){ return rideRepository.getActiveRideByDriver(id);}
+    public Ride getActiveRideByDriver(Integer id){ return rideRepository.findActiveRideByDriver(id);}
 
     @Override
-    public Ride getActiveRideByPassenger(Integer id){ return rideRepository.getActiveRideByPassenger(id);}
+    public Ride getActiveRideByPassenger(Integer id){ return rideRepository.findActiveRideByPassenger(id);}
 
     public Page<Ride> getPassengerRides(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page){
         return rideRepository.findRidesForPassenger(passengerID, from, to, page);
