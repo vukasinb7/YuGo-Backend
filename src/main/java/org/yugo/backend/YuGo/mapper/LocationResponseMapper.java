@@ -17,7 +17,7 @@ public class LocationResponseMapper {
         this.modelMapper = modelMapper;
     }
 
-    public static Location fromDTOtoLocation(UserRideResponse dto) {
+    public static Location fromDTOtoLocation(LocationRespone dto) {
         return modelMapper.map(dto, Location.class);
     }
 

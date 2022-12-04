@@ -22,7 +22,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     /* =========================== VehicleReview =========================== */
     @Override
-    public VehicleReview saveVehicleReview(VehicleReview vehicleReview){
+    public VehicleReview insertVehicleReview(VehicleReview vehicleReview){
         return vehicleReviewRepository.save(vehicleReview);
     }
 
@@ -43,7 +43,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     /* =========================== RideReview =========================== */
     @Override
-    public RideReview saveRideReview(RideReview rideReview){
+    public RideReview insertRideReview(RideReview rideReview){
         return rideReviewRepository.save(rideReview);
     }
 

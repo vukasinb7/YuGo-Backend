@@ -39,18 +39,18 @@ public class ReviewController {
     public ResponseEntity<ReviewResponse> addVehicleReview(@RequestBody ReviewRequest reviewRequest, @PathVariable Integer id){
         Vehicle vehicle=vehicleService.getVehicle(id);
         VehicleReview vehicleReview= new VehicleReview(reviewRequest.getComment(),reviewRequest.getRating(),vehicle,null);
-        reviewService.saveVehicleReview(vehicleReview);
+        reviewService.insertVehicleReview(vehicleReview);
         return new ResponseEntity<>(new ReviewResponse(vehicleReview), HttpStatus.OK);
     }
 
-    @PostMapping(
+    /*@PostMapping(
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<ReviewResponse> addRideReview(@RequestBody ReviewRequest reviewRequest, @PathVariable Integer id){
         Ride ride=rideService.get(id).get();
         RideReview rideReview = new RideReview(reviewRequest.getComment(),reviewRequest.getRating(),ride,null);
-        reviewService.saveRideReview(rideReview);
+        reviewService.insertRideReview(rideReview);
         return new ResponseEntity<>(new ReviewResponse(rideReview), HttpStatus.OK);
     }
 
@@ -70,7 +70,7 @@ public class ReviewController {
     public ResponseEntity<AllRideReviewsResponse> getAllRideReviews(@RequestParam int id){
         List<RideReview> rideReviews =reviewService.getRideReviewsByDriver(id);
         return new ResponseEntity<>(new AllRideReviewsResponse((Stream<RideReview>) rideReviews), HttpStatus.OK);
-    }
+    }*/
 
 
 

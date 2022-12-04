@@ -27,6 +27,11 @@ public class VehicleReview {
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
+    @ManyToOne
+    @Getter @Setter
+    @JoinColumn(name = "ride")
+    private Ride ride;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
