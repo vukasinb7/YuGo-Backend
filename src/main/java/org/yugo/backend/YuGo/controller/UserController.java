@@ -85,7 +85,7 @@ public class UserController {
         Message msg = new Message(userService.getUser(id).get(), userService.getUser(receiverId).get(),
                 messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
                 null);
-        messageService.save(msg);
+        messageService.insert(msg);
         return new ResponseEntity<>(MessageMapper.fromMessagetoDTO(msg), HttpStatus.OK);
     }
 
@@ -113,7 +113,7 @@ public class UserController {
     )
     public ResponseEntity<NoteOut> createNote(@PathVariable Integer id, @RequestBody NoteIn noteIn){
         Note note = new Note(userService.getUser(id).get(), noteIn.getMessage(), LocalDateTime.now());
-        noteService.save(note);
+        noteService.insert(note);
         return new ResponseEntity<>(NoteMapper.fromNotetoDTO(note), HttpStatus.OK);
     }
 

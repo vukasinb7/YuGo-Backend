@@ -19,7 +19,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note save(Note note){
+    public Note insert(Note note){
         return noteRepository.save(note);
     }
 
@@ -35,6 +35,6 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public Page<Note> getUserNotes(Integer userId, Pageable page){
-        return noteRepository.findUserNotes(userId, page);
+        return noteRepository.findNotesByUser(userId, page);
     }
 }

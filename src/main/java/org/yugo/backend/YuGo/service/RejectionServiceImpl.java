@@ -17,7 +17,7 @@ public class RejectionServiceImpl implements RejectionService {
     }
 
     @Override
-    public Rejection save(Rejection rejection){
+    public Rejection insert(Rejection rejection){
         return rejectionRepository.save(rejection);
     }
 

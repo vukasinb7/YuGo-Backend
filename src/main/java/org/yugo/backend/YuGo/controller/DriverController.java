@@ -38,7 +38,7 @@ public class DriverController {
     )
     public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody UserDetailedIn driver){
         Driver newDriver = new Driver(driver);
-        driverService.saveDriver(newDriver);
+        driverService.insertDriver(newDriver);
         return new ResponseEntity<UserDetailedInOut>(new UserDetailedInOut(newDriver), HttpStatus.OK);
     }
 
@@ -87,7 +87,7 @@ public class DriverController {
 
         Vehicle vehicle = new Vehicle(vehicleIn);
         vehicle.setDriver(driver);
-        vehicleService.saveVehicle(vehicle);
+        vehicleService.insertVehicle(vehicle);
 
         driver.setVehicle(vehicle);
         driverService.updateDriver(driver);
@@ -116,7 +116,7 @@ public class DriverController {
         }
 
         Document document = new Document(documentIn.getName(), documentIn.getDocumentImage(), driver);
-        documentService.save(document);
+        documentService.insert(document);
 
         response = new ResponseEntity<>(new DocumentOut(document), HttpStatus.OK);
         return response;
@@ -210,7 +210,7 @@ public class DriverController {
         vehicle = new Vehicle(vehicleIn);
         vehicle.setDriver(driver);
         vehicle.setId(vehicleId);
-        vehicleService.saveVehicle(vehicle);
+        vehicleService.insertVehicle(vehicle);
 
         driver.setVehicle(vehicle);
         driverService.updateDriver(driver);
@@ -258,7 +258,7 @@ public class DriverController {
         wt.setStartTime(LocalDateTime.parse(workingTimeIn.getStart()));
         wt.setEndTime(LocalDateTime.parse(workingTimeIn.getEnd()));
 
-        WorkingTimeOut output = new WorkingTimeOut(driverService.saveWorkTime(wt));
+        WorkingTimeOut output = new WorkingTimeOut(driverService.insertWorkTime(wt));
         return new ResponseEntity<>(output, HttpStatus.OK);
     }
 

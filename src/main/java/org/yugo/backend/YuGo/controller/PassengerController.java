@@ -43,7 +43,7 @@ public class PassengerController {
         Passenger newPass = new Passenger(user);
         passengerService.insert(newPass);
         UserActivation newAct = new UserActivation(newPass, LocalDateTime.now(), Duration.ZERO);
-        userService.saveUserActivation(newAct);
+        userService.insertUserActivation(newAct);
         return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(newPass), HttpStatus.OK);
     }
 
@@ -64,7 +64,7 @@ public class PassengerController {
         Optional<UserActivation> userActivation = userService.getUserActivation(activationId);
         if (userActivation.isPresent()){
             userActivation.get().getUser().setActive(true);
-            userService.saveUser(userActivation.get().getUser());
+            userService.insertUser(userActivation.get().getUser());
         }
         return new ResponseEntity<>(null, HttpStatus.OK);
     }

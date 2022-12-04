@@ -22,7 +22,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     /* =========================== Vehicle =========================== */
     @Override
-    public Vehicle saveVehicle(Vehicle vehicle){
+    public Vehicle insertVehicle(Vehicle vehicle){
         return vehicleRepository.save(vehicle);
     }
 
@@ -38,7 +38,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     /* =========================== VehicleType =========================== */
     @Override
-    public VehicleCategoryPrice saveVehicleType(VehicleCategoryPrice vehicleCategoryPrice){
+    public VehicleCategoryPrice insertVehicleType(VehicleCategoryPrice vehicleCategoryPrice){
         return vehicleTypeRepository.save(vehicleCategoryPrice);
     }
 

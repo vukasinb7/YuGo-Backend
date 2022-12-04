@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AdminService {
-    Admin save(Admin admin);
+    Admin insert(Admin admin);
 
     List<Admin> getAll();
 

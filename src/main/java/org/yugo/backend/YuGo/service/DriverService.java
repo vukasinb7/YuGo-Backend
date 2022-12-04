@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DriverService {
-    Driver saveDriver(Driver driver);
+    Driver insertDriver(Driver driver);
     Driver updateDriver(Driver driver);
 
     List<User> getAllDrivers();
@@ -19,7 +19,7 @@ public interface DriverService {
 
     Optional<User> getDriver(Integer id);
 
-    WorkTime saveWorkTime(WorkTime workTime);
+    WorkTime insertWorkTime(WorkTime workTime);
 
     List<WorkTime> getAllWorkTimes();
 

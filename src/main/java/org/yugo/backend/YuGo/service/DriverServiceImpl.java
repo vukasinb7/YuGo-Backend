@@ -26,7 +26,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Driver saveDriver(Driver driver){
+    public Driver insertDriver(Driver driver){
         return userRepository.save(driver);
     }
 
@@ -41,7 +41,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public WorkTime saveWorkTime(WorkTime workTime){
+    public WorkTime insertWorkTime(WorkTime workTime){
         return workTimeRepository.save(workTime);
     }
 

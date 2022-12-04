@@ -7,14 +7,14 @@ import java.util.List;
 
 public interface VehicleService {
     /* =========================== Vehicle =========================== */
-    Vehicle saveVehicle(Vehicle vehicle);
+    Vehicle insertVehicle(Vehicle vehicle);
 
     List<Vehicle> getAllVehicles();
 
     Vehicle getVehicle(Integer id);
 
     /* =========================== VehicleType =========================== */
-    VehicleCategoryPrice saveVehicleType(VehicleCategoryPrice vehicleCategoryPrice);
+    VehicleCategoryPrice insertVehicleType(VehicleCategoryPrice vehicleCategoryPrice);
 
     List<VehicleCategoryPrice> getAllVehicleTypes();
 

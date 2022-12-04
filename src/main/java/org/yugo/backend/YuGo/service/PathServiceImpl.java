@@ -17,7 +17,7 @@ public class PathServiceImpl implements PathService {
     }
 
     @Override
-    public Path save(Path path){
+    public Path insert(Path path){
         return pathRepository.save(path);
     }
 

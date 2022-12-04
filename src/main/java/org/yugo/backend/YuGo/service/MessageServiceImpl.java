@@ -18,7 +18,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Message save(Message message){
+    public Message insert(Message message){
         return messageRepository.save(message);
     }
 
@@ -34,6 +34,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<Message> getUserMessages(Integer userId){
-        return messageRepository.getMessagesForUser(userId);
+        return messageRepository.findMessagesByUser(userId);
     }
 }

@@ -3,7 +3,6 @@ package org.yugo.backend.YuGo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.repository.RideRepository;
@@ -42,10 +41,10 @@ public class RideServiceImpl implements RideService {
     public Ride getActiveRideByPassenger(Integer id){ return rideRepository.findActiveRideByPassenger(id);}
 
     public Page<Ride> getPassengerRides(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page){
-        return rideRepository.findRidesForPassenger(passengerID, from, to, page);
+        return rideRepository.findRidesByPassenger(passengerID, from, to, page);
     }
 
     public Page<Ride> getUserRides(Integer userID, LocalDateTime from, LocalDateTime to, Pageable page){
-        return rideRepository.findRidesForUser(userID, from, to, page);
+        return rideRepository.findRidesByUser(userID, from, to, page);
     }
 }

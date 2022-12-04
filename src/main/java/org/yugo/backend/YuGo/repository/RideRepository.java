@@ -6,9 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.yugo.backend.YuGo.model.Ride;
-import org.yugo.backend.YuGo.model.User;
-
-import java.util.List;
 
 import java.time.LocalDateTime;
 
@@ -23,14 +20,14 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
 
     @Query(value = "SELECT * FROM RIDES r WHERE r.id in (SELECT ur.rides_id from USERS_RIDES ur WHERE " +
             "r.id=ur.rides_id AND passenger_id = :passengerID) AND (r.start_time>=:fromTime OR :toTime>=r.end_time)", nativeQuery = true)
-    public Page<Ride> findRidesForPassenger(@Param("passengerID") Integer passengerID,
-                                            @Param("fromTime") LocalDateTime fromTime,
-                                            @Param("toTime") LocalDateTime toTime, Pageable page);
+    public Page<Ride> findRidesByPassenger(@Param("passengerID") Integer passengerID,
+                                           @Param("fromTime") LocalDateTime fromTime,
+                                           @Param("toTime") LocalDateTime toTime, Pageable page);
 
     @Query(value = "SELECT * FROM RIDES r WHERE ((r.id in (SELECT ur.rides_id from USERS_RIDES ur WHERE " +
             "r.id=ur.rides_id AND passenger_id = :userID)) OR r.driver_id = :userID) AND (r.start_time>=:fromTime OR :toTime>=r.end_time)",
             nativeQuery = true)
-    public Page<Ride> findRidesForUser(@Param("userID") Integer userID,
-                                            @Param("fromTime") LocalDateTime fromTime,
-                                            @Param("toTime") LocalDateTime toTime, Pageable page);
+    public Page<Ride> findRidesByUser(@Param("userID") Integer userID,
+                                      @Param("fromTime") LocalDateTime fromTime,
+                                      @Param("toTime") LocalDateTime toTime, Pageable page);
 }

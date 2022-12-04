@@ -19,7 +19,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Document save(Document document){
+    public Document insert(Document document){
         return documentRepository.save(document);
     }
 
@@ -36,6 +36,6 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     @Transactional
     public void deleteAllForDriver(Integer driverId) {
-        documentRepository.deleteAllByDriver_Id(driverId);
+        documentRepository.deleteAllByDriverId(driverId);
     }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DocumentService {
-    Document save(Document document);
+    Document insert(Document document);
 
     List<Document> getAll();
 

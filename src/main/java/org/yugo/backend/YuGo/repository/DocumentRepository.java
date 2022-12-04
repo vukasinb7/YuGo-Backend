@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.yugo.backend.YuGo.model.Document;
 
 public interface DocumentRepository extends JpaRepository<Document,Integer> {
-    void deleteAllByDriver_Id(Integer driverId);
+    void deleteAllByDriverId(Integer driverId);
 }
