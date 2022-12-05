@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
+import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.mapper.WorkingTimeMapper;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.DocumentService;
@@ -17,8 +18,10 @@ import org.yugo.backend.YuGo.service.RideService;
 import org.yugo.backend.YuGo.service.VehicleService;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/driver")
@@ -40,10 +43,10 @@ public class DriverController {
             value = "/",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody UserDetailedIn driver){
-        Driver newDriver = new Driver(driver);
-        driverService.insertDriver(newDriver);
-        return new ResponseEntity<>(new UserDetailedInOut(newDriver), HttpStatus.OK);
+    public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody UserDetailedIn driverIn){
+        Driver driver = UserDetailedMapper.fromDTOtoDriver(driverIn);
+        Driver driverNew = driverService.insertDriver(driver);
+        return new ResponseEntity<>(new UserDetailedInOut(driverNew), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -64,15 +67,14 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<VehicleOut> getVehicle(@PathVariable Integer id){
-        Driver driver = (Driver) driverService.getDriver(id).orElse(null);
-        ResponseEntity<VehicleOut> response;
-        if(driver == null){
-            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            return response;
+        Optional<User> driverOpt = driverService.getDriver(id);
+
+        if(driverOpt.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        Driver driver = (Driver) driverOpt.get();
         Vehicle vehicle = driver.getVehicle();
-        response = new ResponseEntity<>(new VehicleOut(vehicle), HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(new VehicleOut(vehicle), HttpStatus.OK);
     }
     @PostMapping(
             value = "/{id}/vehicle",
@@ -80,22 +82,14 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<VehicleOut> createVehicle(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
-        Driver driver = (Driver) driverService.getDriver(id).orElse(null);
-        ResponseEntity<VehicleOut> response;
-        if(driver == null){
-            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            return response;
+        Optional<User> driverOpt = driverService.getDriver(id);
+        if(driverOpt.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-
+        Driver driver = (Driver)driverOpt.get();
         Vehicle vehicle = new Vehicle(vehicleIn);
-        vehicle.setDriver(driver);
-        vehicleService.insertVehicle(vehicle);
-
-        driver.setVehicle(vehicle);
-        driverService.updateDriver(driver);
-
-        response = new ResponseEntity<>(new VehicleOut(vehicle), HttpStatus.OK);
-        return response;
+        Vehicle vehicleUpdated = driverService.changeVehicle(driver, vehicle);
+        return new ResponseEntity<>(new VehicleOut(vehicleUpdated), HttpStatus.OK);
     }
     @PostMapping(
             value = "/{id}/documents",
@@ -103,18 +97,15 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<DocumentOut> createDocument(@PathVariable Integer id, @RequestBody DocumentIn documentIn){
-        Driver driver = (Driver) driverService.getDriver(id).orElse(null);
-        ResponseEntity<DocumentOut> response;
-        if(driver == null){
-            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            return response;
+        Optional<User> driverOpt = driverService.getDriver(id);
+        if(driverOpt.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-
+        Driver driver = (Driver)driverOpt.get();
         Document document = new Document(documentIn.getName(), documentIn.getDocumentImage(), driver);
         documentService.insert(document);
 
-        response = new ResponseEntity<>(new DocumentOut(document), HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(new DocumentOut(document), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -122,12 +113,11 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<Iterable<DocumentOut>> getDocuments(@PathVariable Integer id){
-        Driver driver = (Driver) driverService.getDriver(id).orElse(null);
-        ResponseEntity<Iterable<DocumentOut>> response;
-        if(driver == null){
-            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            return response;
+        Optional<User> driverOpt = driverService.getDriver(id);
+        if(driverOpt.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        Driver driver = (Driver) driverOpt.get();
         List<DocumentOut> documents = new ArrayList<>();
         for(Document d : driver.getDocuments()){
             documents.add(new DocumentOut(d));
@@ -140,8 +130,8 @@ public class DriverController {
             value = "/{id}/documents"
     )
     ResponseEntity<Void> deleteDocuments(@PathVariable Integer id){
-        Driver driver = (Driver) driverService.getDriver(id).orElse(null);
-        if(driver == null){
+        Optional<User> driverOpt = driverService.getDriver(id);
+        if(driverOpt.isEmpty()){
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
         documentService.deleteAllForDriver(id);
@@ -152,13 +142,9 @@ public class DriverController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<List<UserDetailedInOut>> getDrivers(@RequestParam int page, @RequestParam int size){
+    ResponseEntity<AllUsersOut> getDrivers(@RequestParam int page, @RequestParam int size){
         Page<User> drivers = driverService.getDriversPage(PageRequest.of(page, size));
-        List<UserDetailedInOut> output = new ArrayList<>();
-        for(User u : drivers){
-            output.add(new UserDetailedInOut(u));
-        }
-        return new ResponseEntity<>(output, HttpStatus.OK);
+        return new ResponseEntity<>(new AllUsersOut(drivers.stream()), HttpStatus.OK);
     }
 
     @PutMapping(
@@ -166,21 +152,14 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<UserDetailedInOut> updateDriver(@PathVariable Integer id, @RequestBody UserDetailedInOut driverDTO){
-        Driver driver = (Driver) driverService.getDriver(id).orElse(null);
-        ResponseEntity<UserDetailedInOut> response;
-        if(driver == null){
-            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            return response;
+    ResponseEntity<UserDetailedInOut> updateDriver(@PathVariable Integer id, @RequestBody UserDetailedIn driverDTO){
+        Driver driver = (Driver) UserDetailedMapper.fromDTOtoDriver(driverDTO);
+        driver.setId(id);
+        User userUpdated = driverService.updateDriver(driver);
+        if(userUpdated == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        driver.setName(driverDTO.getName());
-        driver.setSurName(driverDTO.getSurname());
-        driver.setProfilePicture(driverDTO.getProfilePicture());
-        driver.setTelephoneNumber(driverDTO.getTelephoneNumber());
-        driver.setEmail(driverDTO.getEmail());
-        driver.setAddress(driverDTO.getAddress());
-        driverService.updateDriver(driver);
-        return new ResponseEntity<>(new UserDetailedInOut(driver), HttpStatus.OK);
+        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(driver), HttpStatus.OK);
     }
 
     @PutMapping(
@@ -189,29 +168,15 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<VehicleOut> updateVehicle(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
-        Driver driver = (Driver) driverService.getDriver(id).orElse(null);
-        ResponseEntity<VehicleOut> response;
-        if(driver == null){
-            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            return response;
+        Optional<User> driverOpt = driverService.getDriver(id);
+        if(driverOpt.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        Driver driver = (Driver) driverOpt.get();
+        Vehicle vehicle = new Vehicle(vehicleIn);
+        Vehicle vehicleUpdated = driverService.changeVehicle(driver, vehicle);
 
-        Vehicle vehicle = driver.getVehicle();
-        Integer vehicleId = null;
-        if(vehicle != null){
-            vehicleId = vehicle.getId();
-        }
-
-        vehicle = new Vehicle(vehicleIn);
-        vehicle.setDriver(driver);
-        vehicle.setId(vehicleId);
-        vehicleService.insertVehicle(vehicle);
-
-        driver.setVehicle(vehicle);
-        driverService.updateDriver(driver);
-
-        response = new ResponseEntity<>(new VehicleOut(vehicle), HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(new VehicleOut(vehicleUpdated), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -223,11 +188,9 @@ public class DriverController {
                                                       @RequestParam(name = "size") int size,
                                                       @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
                                                       @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
-        Driver driver = (Driver) driverService.getDriver(id).orElse(null);
-        ResponseEntity<AllWorkTimeOut> response;
-        if(driver == null){
-            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            return response;
+        Optional<User> driverOpt = driverService.getDriver(id);
+        if(driverOpt.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
         Page<WorkTime> workTimes = driverService.getDriverWorkingTimesPage(id, PageRequest.of(page, size), from, to);
@@ -239,19 +202,10 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<WorkTimeOut> getWorkTimeForDriver(@PathVariable Integer id, @RequestBody WorkTimeIn workTimeIn){
-        Driver driver = (Driver) driverService.getDriver(id).orElse(null);
-        ResponseEntity<WorkTimeOut> response;
-        if(driver == null){
-            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            return response;
-        }
+    ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@PathVariable Integer id, @RequestBody WorkTimeIn workTimeIn){
         WorkTime wt = new WorkTime();
-        wt.setDriver(driver);
-        wt.setStartTime(LocalDateTime.parse(workTimeIn.getStart()));
-        wt.setEndTime(LocalDateTime.parse(workTimeIn.getEnd()));
-
-        WorkTimeOut output = new WorkTimeOut(driverService.insertWorkTime(wt));
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+        WorkTimeOut output = new WorkTimeOut(driverService.insertWorkTime(id, wt));
         return new ResponseEntity<>(output, HttpStatus.OK);
     }
 
@@ -260,14 +214,11 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<WorkTimeOut> getWorkTimeById(@PathVariable(value = "working-hour-id") Integer id){
-        WorkTime wt = driverService.getWorkTime(id).orElse(null);
-        ResponseEntity<WorkTimeOut> response;
-        if(wt == null){
-            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            return response;
+        Optional<WorkTime> workTimeOpt = driverService.getWorkTime(id);
+        if(workTimeOpt.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        response = new ResponseEntity<>(WorkingTimeMapper.fromWorkTimeToDTO(wt), HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(WorkingTimeMapper.fromWorkTimeToDTO(workTimeOpt.get()), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -283,7 +234,7 @@ public class DriverController {
         return new ResponseEntity<>(new AllRidesOut(rides.stream()), HttpStatus.OK);
     }
 
-    @PostMapping(
+    @PutMapping(
             value = "/working-hour/{working-hour-id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE

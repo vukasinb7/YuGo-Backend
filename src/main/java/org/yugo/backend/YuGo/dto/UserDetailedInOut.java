@@ -40,6 +40,6 @@ public class UserDetailedInOut {
     }
 
     public UserDetailedInOut(User user) {
-        this(user.getId(), user.getName(), user.getSurName(), user.getProfilePicture(), user.getTelephoneNumber(), user.getEmail(), user.getAddress());
+        this(user.getId(), user.getName(), user.getSurname(), user.getProfilePicture(), user.getTelephoneNumber(), user.getEmail(), user.getAddress());
     }
 }

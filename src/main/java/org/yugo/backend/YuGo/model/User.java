@@ -20,7 +20,7 @@ public abstract class User {
 
     @Getter @Setter
     @Column(name = "last_name", nullable = false)
-    private String surName;
+    private String surname;
 
     @Getter @Setter
     @Column(name = "profile_picture", nullable = false)
@@ -57,7 +57,7 @@ public abstract class User {
 
     public User(UserDetailedIn userDetailedIn) {
         this.name = userDetailedIn.getName();
-        this.surName = userDetailedIn.getSurname();
+        this.surname = userDetailedIn.getSurname();
         this.profilePicture = userDetailedIn.getProfilePicture();
         this.telephoneNumber = userDetailedIn.getTelephoneNumber();
         this.email = userDetailedIn.getEmail();
