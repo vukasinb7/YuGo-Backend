@@ -19,13 +19,6 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Query(value = "SELECT * FROM USERS WHERE user_type = 2", nativeQuery = true)
     public Page<User> findAllDrivers(Pageable page);
 
-    @Query(value = "SELECT * FROM USERS u WHERE u.user_type = 1",
-            nativeQuery = true)
-    public List<User> findAllPassengers();
-
-    @Query(value = "SELECT * FROM USERS WHERE user_type = 1", nativeQuery = true)
-    public Page<User> findAllPassengers(Pageable page);
-
     @Query(value = "SELECT * FROM USERS", nativeQuery = true)
     public Page<User> findAllUsers(Pageable page);
 
