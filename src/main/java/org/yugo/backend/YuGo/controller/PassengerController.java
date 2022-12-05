@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -51,9 +52,9 @@ public class PassengerController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AllUsersOut> getAllPassengers(@RequestParam int page, @RequestParam(name = "size") int size){
-        Page<User> passengers = passengerService.getPassengersPage(PageRequest.of(page, size));
-        return new ResponseEntity<>(new AllUsersOut(passengers), HttpStatus.OK);
+    public ResponseEntity<AllPassengersOut> getAllPassengers(@RequestParam int page, @RequestParam(name = "size") int size){
+        Page<Passenger> passengers = passengerService.getPassengersPage(PageRequest.of(page, size));
+        return new ResponseEntity<>(new AllPassengersOut(passengers), HttpStatus.OK);
     }
 
     @PostMapping(
@@ -72,9 +73,9 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<UserDetailedInOut> getPassenger(@PathVariable Integer id){
-        Optional<User> userOpt = passengerService.get(id);
-        if (userOpt.isPresent()){
-            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(userOpt.get()), HttpStatus.OK);
+        Optional<Passenger> passengerOpt = passengerService.get(id);
+        if (passengerOpt.isPresent()){
+            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passengerOpt.get()), HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
@@ -84,10 +85,10 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody UserDetailedIn updatedUserDTO, @PathVariable Integer id){
-        Passenger passengerUpdate = new Passenger(updatedUserDTO);
-        User updatedUser = passengerService.update(id, passengerUpdate);
-        if (updatedUser != null){
-            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedUser), HttpStatus.OK);
+        Passenger updateForPassenger = new Passenger(updatedUserDTO);
+        Passenger updatedPassenger = passengerService.update(id, updateForPassenger);
+        if (updatedPassenger != null){
+            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedPassenger), HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
