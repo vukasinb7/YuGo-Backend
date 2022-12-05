@@ -83,4 +83,16 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+    @Override
+    public boolean activateUser(Integer activationId){
+        Optional<UserActivation> userActivationOpt = userActivationRepository.findById(activationId);
+        if (userActivationOpt.isPresent()){
+            UserActivation userActivation = userActivationOpt.get();
+            userActivation.getUser().setActive(true);
+            userActivationRepository.save(userActivation);
+            return true;
+        }
+        return false;
+    }
 }

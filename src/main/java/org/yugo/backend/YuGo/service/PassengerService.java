@@ -11,6 +11,7 @@ import java.util.Optional;
 
 public interface PassengerService {
     User insert(User user);
+    User update(Integer userId, User updatedUser);
     List<User> getAll();
     Page<User> getPassengersPage(Pageable page);
     Optional<User> get(Integer id);

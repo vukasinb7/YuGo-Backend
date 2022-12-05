@@ -16,8 +16,8 @@ public class PanicController {
     private final PanicService panicService;
 
     @Autowired
-    public PanicController(PanicServiceImpl panicServiceImpl){
-        this.panicService = panicServiceImpl;
+    public PanicController(PanicService panicService){
+        this.panicService = panicService;
     }
 
     @GetMapping(

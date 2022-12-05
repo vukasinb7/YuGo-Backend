@@ -29,12 +29,12 @@ public class UserController {
     private final NoteService noteService;
 
     @Autowired
-    public UserController(UserServiceImpl userServiceImpl, MessageServiceImpl messageServiceImpl,
-                          RideServiceImpl rideServiceImpl, NoteServiceImpl noteServiceImpl){
-        this.userService = userServiceImpl;
-        this.messageService = messageServiceImpl;
-        this.rideService = rideServiceImpl;
-        this.noteService = noteServiceImpl;
+    public UserController(UserService userService, MessageService messageService,
+                          RideService rideService, NoteService noteService){
+        this.userService = userService;
+        this.messageService = messageService;
+        this.rideService = rideService;
+        this.noteService = noteService;
     }
 
     @GetMapping(

@@ -174,7 +174,7 @@ public class DriverController {
             return response;
         }
         driver.setName(driverDTO.getName());
-        driver.setSurName(driverDTO.getSurName());
+        driver.setSurName(driverDTO.getSurname());
         driver.setProfilePicture(driverDTO.getProfilePicture());
         driver.setTelephoneNumber(driverDTO.getTelephoneNumber());
         driver.setEmail(driverDTO.getEmail());
