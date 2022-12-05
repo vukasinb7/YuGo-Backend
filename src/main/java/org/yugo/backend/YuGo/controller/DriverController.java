@@ -204,8 +204,14 @@ public class DriverController {
     )
     ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@PathVariable Integer id, @RequestBody WorkTimeIn workTimeIn){
         WorkTime wt = new WorkTime();
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
-        WorkTimeOut output = new WorkTimeOut(driverService.insertWorkTime(id, wt));
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        wt.setStartTime(LocalDateTime.parse(workTimeIn.getStart(), formatter));
+        wt.setEndTime(LocalDateTime.parse(workTimeIn.getEnd(), formatter));
+        WorkTime workTimeNew = driverService.insertWorkTime(id, wt);
+        if(workTimeNew == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        WorkTimeOut output = new WorkTimeOut(workTimeNew);
         return new ResponseEntity<>(output, HttpStatus.OK);
     }
 
