@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
-public class UserRideOut {
+public class RideSimplifiedOut {
     @Getter @Setter
     private Integer id;
     @Getter @Setter
@@ -35,7 +35,7 @@ public class UserRideOut {
     @Getter @Setter
     boolean petTransport;
 
-    public UserRideOut(Ride ride) {
+    public RideSimplifiedOut(Ride ride) {
         this.id = ride.getId();
         this.locations = ride.getPaths().stream().map(PathMapper::fromPathtoDTO).toList();
         this.startTime = ride.getStartTime();

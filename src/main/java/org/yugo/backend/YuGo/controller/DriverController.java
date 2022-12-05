@@ -144,7 +144,7 @@ public class DriverController {
     )
     ResponseEntity<AllUsersOut> getDrivers(@RequestParam int page, @RequestParam int size){
         Page<User> drivers = driverService.getDriversPage(PageRequest.of(page, size));
-        return new ResponseEntity<>(new AllUsersOut(drivers.stream()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllUsersOut(drivers), HttpStatus.OK);
     }
 
     @PutMapping(
@@ -231,7 +231,7 @@ public class DriverController {
                                                   @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
                                                   @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
         Page<Ride> rides = rideService.getRidesByDriverPage(id, PageRequest.of(page, size), from, to);
-        return new ResponseEntity<>(new AllRidesOut(rides.stream()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllRidesOut(rides), HttpStatus.OK);
     }
 
     @PutMapping(

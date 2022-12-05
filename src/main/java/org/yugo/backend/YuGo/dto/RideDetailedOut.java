@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
-public class RideOut {
+public class RideDetailedOut {
     @Getter @Setter
     private LocalDateTime startTime;
 
@@ -34,31 +34,17 @@ public class RideOut {
     private String vehicleType;
 
     @Getter @Setter
-    boolean babyTransport;
+    private boolean babyTransport;
 
     @Getter @Setter
-    boolean petTransport;
+    private boolean petTransport;
 
     @Getter @Setter
-    private List<PathInOut> address;
+    private List<PathInOut> locations;
 
     @Getter @Setter
     private String status;
-
-    public RideOut(LocalDateTime startTime, LocalDateTime endTime, Double totalCost, UserSimplifiedOut driver, List<UserSimplifiedOut> passengers, int estimatedTimeInMinutes, String vehicleType, boolean babyTransport, boolean petTransport, List<PathInOut> address, String status) {
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.totalCost = totalCost;
-        this.driver = driver;
-        this.passengers = passengers;
-        this.estimatedTimeInMinutes = estimatedTimeInMinutes;
-        this.vehicleType = vehicleType;
-        this.babyTransport = babyTransport;
-        this.petTransport = petTransport;
-        this.address = address;
-        this.status = status;
-    }
-    public RideOut(Ride ride) {
+    public RideDetailedOut(Ride ride) {
         UserSimplifiedOut driver=new UserSimplifiedOut(ride.getDriver());
         List<UserSimplifiedOut> passengers= ride.getPassengers().stream().map(UserSimplifiedMapper::fromUsertoDTO).toList();
         List<PathInOut> locations=ride.getPaths().stream().map(PathMapper::fromPathtoDTO).toList();
@@ -71,7 +57,7 @@ public class RideOut {
         this.vehicleType = ride.getDriver().getVehicle().getVehicleCategory().toString();
         this.babyTransport = ride.getIncludesBabies();
         this.petTransport = ride.getIncludesPets();
-        this.address = locations;
+        this.locations = locations;
         this.status = ride.getStatus().toString();
     }
 }
