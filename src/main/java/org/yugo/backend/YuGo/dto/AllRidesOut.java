@@ -17,8 +17,8 @@ public class AllRidesOut {
     @Getter @Setter
     private List<UserRideOut> results;
 
-    public AllRidesOut(Stream<Ride> rideStream){
-        this.results = rideStream
+    public AllRidesOut(List<Ride> rides){
+        this.results = rides.stream()
                 .map(UserRideMapper::fromRidetoDTO)
                 .toList();
         this.totalCount = results.size();

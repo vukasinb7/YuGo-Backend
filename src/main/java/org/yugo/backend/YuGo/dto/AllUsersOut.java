@@ -17,8 +17,8 @@ public class AllUsersOut {
     @Getter @Setter
     private List<UserDetailedInOut> results;
 
-    public AllUsersOut(Stream<User> users){
-        this.results = users
+    public AllUsersOut(List<User> users){
+        this.results = users.stream()
                 .map(UserDetailedMapper::fromUsertoDTO)
                 .toList();
 

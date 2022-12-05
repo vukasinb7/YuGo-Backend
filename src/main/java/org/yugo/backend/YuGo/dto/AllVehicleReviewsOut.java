@@ -16,8 +16,8 @@ public class AllVehicleReviewsOut {
     @Getter @Setter
     private List<ReviewOut> results;
 
-    public AllVehicleReviewsOut(Stream<VehicleReview> reviews){
-        this.results = reviews
+    public AllVehicleReviewsOut(List<VehicleReview> reviews){
+        this.results = reviews.stream()
                 .map(VehicleReviewMapper::fromVehicleReviewtoDTO)
                 .toList();
 

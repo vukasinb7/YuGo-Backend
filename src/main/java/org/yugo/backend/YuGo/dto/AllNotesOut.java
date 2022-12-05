@@ -15,8 +15,8 @@ public class AllNotesOut {
     @Getter @Setter
     private List<NoteOut> results;
 
-    public AllNotesOut(Stream<Note> noteStream){
-        this.results = noteStream.map(NoteMapper::fromNotetoDTO)
+    public AllNotesOut(List<Note> notes){
+        this.results = notes.stream().map(NoteMapper::fromNotetoDTO)
                 .toList();
 
         this.totalCount = results.size();

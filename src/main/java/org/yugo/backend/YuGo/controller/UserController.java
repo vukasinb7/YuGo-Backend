@@ -49,7 +49,7 @@ public class UserController {
         Page<Ride> rides = rideService.getUserRides(id, from, to,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
-        return new ResponseEntity<>(new AllRidesOut(rides.stream()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllRidesOut(rides.toList()), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -58,7 +58,7 @@ public class UserController {
     )
     public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam int page, @RequestParam int size){
         Page<User> users = userService.getUsersPage(PageRequest.of(page, size));
-        return new ResponseEntity<>(new AllUsersOut(users.get()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllUsersOut(users.toList()), HttpStatus.OK);
     }
 
     @PostMapping(
@@ -75,7 +75,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<AllUserMessagesOut> getUserMessages(@PathVariable Integer id){
-        return new ResponseEntity<>(new AllUserMessagesOut(messageService.getUserMessages(id).stream()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllUserMessagesOut(messageService.getUserMessages(id)), HttpStatus.OK);
     }
 
     @PostMapping(
@@ -137,6 +137,6 @@ public class UserController {
     )
     public ResponseEntity<AllNotesOut> getUserNotes(@PathVariable Integer id, @RequestParam int page, @RequestParam int size){
         Page<Note> notes = noteService.getUserNotes(id, PageRequest.of(page, size));
-        return new ResponseEntity<>(new AllNotesOut(notes.get()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllNotesOut(notes.toList()), HttpStatus.OK);
     }
 }
