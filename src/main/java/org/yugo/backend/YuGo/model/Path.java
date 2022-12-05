@@ -7,12 +7,12 @@ import lombok.Setter;
 @Entity
 @Table(name = "Paths")
 public class Path{
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     @Getter @Setter
     @JoinColumn(name = "starting_point")
-    private Location startingPoint;
+    private Location departure;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     @Getter @Setter
     @JoinColumn(name = "destination")
     private Location destination;

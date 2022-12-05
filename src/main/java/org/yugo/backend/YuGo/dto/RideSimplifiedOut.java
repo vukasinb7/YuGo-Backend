@@ -37,15 +37,15 @@ public class RideSimplifiedOut {
 
     public RideSimplifiedOut(Ride ride) {
         this.id = ride.getId();
-        this.locations = ride.getPaths().stream().map(PathMapper::fromPathtoDTO).toList();
+        this.locations = ride.getLocations().stream().map(PathMapper::fromPathtoDTO).toList();
         this.startTime = ride.getStartTime();
         this.endTime = ride.getEndTime();
-        this.totalCost = ride.getPrice();
+        this.totalCost = ride.getTotalCost();
         this.driver =new UserSimplifiedOut(ride.getDriver());
         this.passengers = ride.getPassengers().stream().map(UserSimplifiedMapper::fromUsertoDTO).toList();
-        this.estimatedTimeInMinutes = ride.getEstimatedTime();
+        this.estimatedTimeInMinutes = ride.getEstimatedTimeInMinutes();
         this.vehicleType = ride.getDriver().getVehicle().getVehicleCategory().toString();
-        this.babyTransport = ride.getIncludesBabies();
-        this.petTransport = ride.getIncludesPets();
+        this.babyTransport = ride.getBabyTransport();
+        this.petTransport = ride.getPetTransport();
     }
 }

@@ -1,10 +1,13 @@
 package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.mapper.LocationMapper;
+import org.yugo.backend.YuGo.model.Location;
 import org.yugo.backend.YuGo.model.Path;
 
+@NoArgsConstructor
 public class PathInOut {
 
     @Getter @Setter
@@ -18,9 +21,6 @@ public class PathInOut {
         this.destination = destination;
     }
 
-    public PathInOut(Path path){
-        this(LocationMapper.fromLocationtoDTO(path.getStartingPoint()),LocationMapper.fromLocationtoDTO(path.getDestination()));
-    }
 
 
 }

@@ -47,13 +47,13 @@ public class RideDetailedOut {
     public RideDetailedOut(Ride ride) {
         UserSimplifiedOut driver=new UserSimplifiedOut(ride.getDriver());
         List<UserSimplifiedOut> passengers= ride.getPassengers().stream().map(UserSimplifiedMapper::fromUsertoDTO).toList();
-        List<PathInOut> locations=ride.getPaths().stream().map(PathMapper::fromPathtoDTO).toList();
+        List<PathInOut> locations=ride.getLocations().stream().map(PathMapper::fromPathtoDTO).toList();
         this.startTime = ride.getStartTime();
         this.endTime = ride.getEndTime();
-        this.totalCost = ride.getPrice();
+        this.totalCost = ride.getTotalCost();
         this.driver = driver;
         this.passengers = passengers;
-        this.estimatedTimeInMinutes = ride.getEstimatedTime();
+        this.estimatedTimeInMinutes = ride.getEstimatedTimeInMinutes();
         this.vehicleType = ride.getDriver().getVehicle().getVehicleCategory().toString();
         this.babyTransport = ride.getIncludesBabies();
         this.petTransport = ride.getIncludesPets();

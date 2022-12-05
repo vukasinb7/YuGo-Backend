@@ -6,44 +6,47 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
+import org.yugo.backend.YuGo.mapper.PathMapper;
+import org.yugo.backend.YuGo.mapper.RideMapper;
+import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.*;
+import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.PanicService;
+import org.yugo.backend.YuGo.service.PassengerService;
 import org.yugo.backend.YuGo.service.RideService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/ride")
 public class RideController {
     private final RideService rideService;
     private final PanicService panicService;
+    private final PassengerService passengerService;
+
+    private final DriverService driverService;
 
     @Autowired
-    public RideController(RideService rideService, PanicService panicService){
+    public RideController(RideService rideService, PanicService panicService, PassengerService passengerService,DriverService driverService){
         this.rideService=rideService;
         this.panicService=panicService;
+        this.passengerService=passengerService;
+        this.driverService=driverService;
     }
 
     @PostMapping(
             value = "/",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    /*public ResponseEntity<RideDetailedOut> addRide(@RequestBody RideIn rideIn){
-        Ride ride= new Ride(rideIn);
-        //rideService.insert(ride);
-        return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
-    }*/
 
-    /*@GetMapping(
-            value = "/active/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<RideDetailedOut> getActiveRidesByDriver(@PathVariable Integer id){
-        return new ResponseEntity<>(new RideDetailedOut(rideService.getActiveRideByDriver(id)), HttpStatus.OK);
-    }*/
 
     @GetMapping(
-            value = "/active/{id}",
+            value = "/passenger/{id}/active",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<RideDetailedOut> getActiveRidesByPassenger(@PathVariable Integer id){
@@ -64,11 +67,11 @@ public class RideController {
     )
     public ResponseEntity<RideDetailedOut> cancelRide(@PathVariable Integer id){
         Ride ride =rideService.get(id).get();
-        if (ride.getStatus()==RideStatus.ACCEPTED) {
+        if (ride.getStatus()!=RideStatus.ACTIVE) {
             ride.setStatus(RideStatus.CANCELED);
             rideService.insert(ride);
         }
-        return new ResponseEntity<>(new RideDetailedOut(ride), HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(

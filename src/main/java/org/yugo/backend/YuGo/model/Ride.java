@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.dto.RideIn;
+import org.yugo.backend.YuGo.dto.UserSimplifiedOut;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -31,10 +32,10 @@ public class Ride {
 
     @Getter @Setter
     @Column(name = "price", nullable = false)
-    private double price;
+    private double totalCost;
 
     @Getter @Setter
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "driver_id")
     private Driver driver;
 
@@ -45,12 +46,12 @@ public class Ride {
 
     @Getter @Setter
     @JoinColumn(name = "path_id")
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    private List<Path> paths;
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Path> locations;
 
     @Getter @Setter
     @Column(name = "estimated_time")
-    private int estimatedTime;
+    private int estimatedTimeInMinutes;
 
     @Getter @Setter
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH,mappedBy = "ride")
@@ -67,7 +68,7 @@ public class Ride {
 
     @Getter @Setter
     @JoinColumn(name = "rejection_id")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     private Rejection rejection;
 
     @Getter @Setter
@@ -76,15 +77,32 @@ public class Ride {
 
     @Getter @Setter
     @Column(name = "includes_babies")
-    private Boolean includesBabies;
+    private Boolean babyTransport;
 
     @Getter @Setter
     @Column(name = "includes_pets")
-    private Boolean includesPets;
+    private Boolean petTransport;
 
     @Getter @Setter
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "vehicle_type_id")
     private VehicleCategoryPrice vehicleCategoryPrice;
 
+    public Ride(LocalDateTime startTime, LocalDateTime endTime, double price, Driver driver, Set<Passenger> passengers, List<Path> paths, int estimatedTime, Set<RideReview> rideReviews, Set<VehicleReview> vehicleReviews, RideStatus status, Rejection rejection, Boolean isPanicPressed, Boolean includesBabies, Boolean includesPets, VehicleCategoryPrice vehicleCategoryPrice) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.totalCost = price;
+        this.driver = driver;
+        this.passengers = passengers;
+        this.locations = paths;
+        this.estimatedTimeInMinutes = estimatedTime;
+        this.rideReviews = rideReviews;
+        this.vehicleReviews = vehicleReviews;
+        this.status = status;
+        this.rejection = rejection;
+        this.isPanicPressed = isPanicPressed;
+        this.babyTransport = includesBabies;
+        this.petTransport = includesPets;
+        this.vehicleCategoryPrice = vehicleCategoryPrice;
+    }
 }
