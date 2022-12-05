@@ -51,7 +51,7 @@ public class PassengerController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AllUsersOut> getAllPassengers(@RequestParam int page, @RequestParam int size){
+    public ResponseEntity<AllUsersOut> getAllPassengers(@RequestParam int page, @RequestParam(name = "size") int size){
         Page<User> passengers = passengerService.getPassengersPage(PageRequest.of(page, size));
         return new ResponseEntity<>(new AllUsersOut(passengers), HttpStatus.OK);
     }
@@ -96,10 +96,10 @@ public class PassengerController {
             value = "/{id}/ride",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<AllRidesOut> getPassengerRides(@PathVariable Integer id, @RequestParam int page,
-                                                  @RequestParam int size, @RequestParam String sort,
-                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
+    ResponseEntity<AllRidesOut> getPassengerRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
+                                                  @RequestParam(name = "size") int size, @RequestParam(name = "sort") String sort,
+                                                  @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+                                                  @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
         Page<Ride> rides = rideService.getPassengerRides(id, from, to,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 

@@ -42,10 +42,10 @@ public class UserController {
             value = "/{id}/ride",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<AllRidesOut> getUserRides(@PathVariable Integer id, @RequestParam int page,
-                                             @RequestParam int size, @RequestParam String sort,
-                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
+    ResponseEntity<AllRidesOut> getUserRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
+                                             @RequestParam(name = "size") int size, @RequestParam(name = "sort") String sort,
+                                             @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+                                             @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
         Page<Ride> rides = rideService.getUserRides(id, from, to,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
@@ -56,7 +56,7 @@ public class UserController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam int page, @RequestParam int size){
+    public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size){
         Page<User> users = userService.getUsersPage(PageRequest.of(page, size));
         return new ResponseEntity<>(new AllUsersOut(users), HttpStatus.OK);
     }
@@ -82,7 +82,7 @@ public class UserController {
             value = "/{id}/message",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestParam Integer senderId, @RequestBody MessageIn messageIn){
+    public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestParam(name = "senderId") Integer senderId, @RequestBody MessageIn messageIn){
         Optional<User> senderOpt = userService.getUser(senderId);
         Optional<User> receiverOpt = userService.getUser(id);
         if (senderOpt.isPresent() && receiverOpt.isPresent()) {
@@ -135,7 +135,8 @@ public class UserController {
             value = "/{id}/note",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AllNotesOut> getUserNotes(@PathVariable Integer id, @RequestParam int page, @RequestParam int size){
+    public ResponseEntity<AllNotesOut> getUserNotes(@PathVariable Integer id, @RequestParam(name = "page") int page,
+                                                    @RequestParam(name = "size") int size){
         Page<Note> notes = noteService.getUserNotes(id, PageRequest.of(page, size));
         return new ResponseEntity<>(new AllNotesOut(notes), HttpStatus.OK);
     }
