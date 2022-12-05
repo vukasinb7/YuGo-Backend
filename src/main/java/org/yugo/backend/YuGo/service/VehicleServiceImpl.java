@@ -8,6 +8,7 @@ import org.yugo.backend.YuGo.repository.VehicleRepository;
 import org.yugo.backend.YuGo.repository.VehicleTypeRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
@@ -26,6 +27,13 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.save(vehicle);
     }
 
+    @Override public Vehicle updateVehicle(Vehicle vehicle){
+        Optional<Vehicle> vehicleOpt = vehicleRepository.findById(vehicle.getId());
+        if(vehicleOpt.isEmpty()){
+            return null;
+        }
+        return vehicleRepository.save(vehicle);
+    }
     @Override
     public List<Vehicle> getAllVehicles(){
         return vehicleRepository.findAll();

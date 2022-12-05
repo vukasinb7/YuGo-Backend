@@ -47,4 +47,8 @@ public class RideServiceImpl implements RideService {
     public Page<Ride> getUserRides(Integer userID, LocalDateTime from, LocalDateTime to, Pageable page){
         return rideRepository.findRidesByUser(userID, from, to, page);
     }
+
+    public Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end){
+        return rideRepository.findRidesByDriverAndStartTimeAndEndTimePageable(driverId, page, start, end);
+    }
 }

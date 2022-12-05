@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface RideService {
     Ride insert(Ride ride);
     Optional<Ride> get(Integer id);
+
+    public Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
     List<Ride> getAll();
     Ride getActiveRideByDriver(Integer id);
     Ride getActiveRideByPassenger(Integer id);
