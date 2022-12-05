@@ -4,10 +4,16 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.yugo.backend.YuGo.dto.LocationInOut;
+import org.yugo.backend.YuGo.dto.RideIn;
+import org.yugo.backend.YuGo.dto.UserSimplifiedOut;
+import org.yugo.backend.YuGo.mapper.LocationMapper;
+import org.yugo.backend.YuGo.mapper.UserSimplifiedMapper;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -42,9 +48,8 @@ public class Ride {
     private Set<Passenger> passengers = new HashSet<Passenger>();
 
     @Getter @Setter
-    @JoinColumn(name = "path_id")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    private Path path;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    private Set<Location> paths;
 
     @Getter @Setter
     @Column(name = "estimated_time")
@@ -84,5 +89,21 @@ public class Ride {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "vehicle_type_id")
     private VehicleCategoryPrice vehicleCategoryPrice;
+
+    public Ride(RideIn ride){
+        Set<Location> locations= (Set<Location>) ride.getLocations().stream().map(LocationMapper::fromDTOtoLocation).toList();
+        this.startTime = LocalDateTime.now();
+        this.endTime = LocalDateTime.now();
+        this.price = 1000;
+        this.driver = new Driver();
+        this.passengers = (Set<Passenger>) ride.getPassengers().stream().map(UserSimplifiedMapper::fromDTOtoUser);
+        this.estimatedTime = 2;
+        this.vehicleCategoryPrice =new VehicleCategoryPrice(VehicleCategory.STANDARD,100);
+        this.includesBabies = ride.isBabyTransport();
+        this.includesPets = ride.isPetTransport();
+        this.paths = locations;
+        this.status = RideStatus.PENDING;
+
+    }
 
 }

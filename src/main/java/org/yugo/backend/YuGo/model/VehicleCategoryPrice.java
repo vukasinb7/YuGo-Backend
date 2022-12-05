@@ -23,4 +23,9 @@ public class VehicleCategoryPrice {
     @Getter @Setter
     @Column(name = "price_per_km", nullable = false)
     private double pricePerKM;
+
+    public VehicleCategoryPrice(VehicleCategory name, double pricePerKM) {
+        this.name = name;
+        this.pricePerKM = pricePerKM;
+    }
 }

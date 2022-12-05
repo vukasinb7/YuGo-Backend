@@ -6,12 +6,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.yugo.backend.YuGo.dto.AllRideReviewsOut;
+import org.yugo.backend.YuGo.dto.AllVehicleReviewsOut;
 import org.yugo.backend.YuGo.dto.ReviewIn;
 import org.yugo.backend.YuGo.dto.ReviewOut;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.ReviewService;
 import org.yugo.backend.YuGo.service.RideService;
 import org.yugo.backend.YuGo.service.VehicleService;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/review")
@@ -28,7 +33,7 @@ public class ReviewController {
     }
 
     @PostMapping(
-            value = "/{id}",
+            value = "/vehicle/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<ReviewOut> addVehicleReview(@RequestBody ReviewIn reviewIn, @PathVariable Integer id){
@@ -38,9 +43,9 @@ public class ReviewController {
         return new ResponseEntity<>(new ReviewOut(vehicleReview), HttpStatus.OK);
     }
 
-    /*
+
     @PostMapping(
-            value = "/{id}",
+            value = "/driver/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<ReviewOut> addRideReview(@RequestBody ReviewIn reviewIn, @PathVariable Integer id){
@@ -51,7 +56,7 @@ public class ReviewController {
     }
 
     @GetMapping(
-            value = "/",
+            value = "vehicle/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<AllVehicleReviewsOut> getAllVehicleReviews(@RequestParam int id){
@@ -60,13 +65,13 @@ public class ReviewController {
     }
 
     @GetMapping(
-            value = "/",
+            value = "driver/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<AllRideReviewsOut> getAllRideReviews(@RequestParam int id){
         List<RideReview> rideReviews =reviewService.getRideReviewsByDriver(id);
         return new ResponseEntity<>(new AllRideReviewsOut((Stream<RideReview>) rideReviews), HttpStatus.OK);
-    }*/
+    }
 
 
 
