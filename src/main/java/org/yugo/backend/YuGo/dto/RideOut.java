@@ -3,7 +3,6 @@ package org.yugo.backend.YuGo.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.yugo.backend.YuGo.mapper.LocationMapper;
 import org.yugo.backend.YuGo.mapper.UserSimplifiedMapper;
 import org.yugo.backend.YuGo.model.Ride;
 
@@ -61,7 +60,7 @@ public class RideOut {
     public RideOut(Ride ride) {
         UserSimplifiedOut driver=new UserSimplifiedOut(ride.getDriver());
         List<UserSimplifiedOut> passengers= ride.getPassengers().stream().map(UserSimplifiedMapper::fromUsertoDTO).toList();
-        List<LocationInOut> locations= ride.getPaths().stream().map(LocationMapper::fromLocationtoDTO).toList();
+        List<LocationInOut> locations=List.of(new LocationInOut(ride.getPath().getStartingPoint()),new LocationInOut(ride.getPath().getDestination())) ;
         this.startTime = ride.getStartTime();
         this.endTime = ride.getEndTime();
         this.totalCost = ride.getPrice();
