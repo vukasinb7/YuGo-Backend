@@ -10,7 +10,7 @@ public class UserDetailedIn {
     private String name;
 
     @Getter @Setter
-    private String surName;
+    private String surname;
 
     @Getter @Setter
     private String profilePicture;
@@ -27,9 +27,9 @@ public class UserDetailedIn {
     @Getter @Setter
     private String password;
 
-    public UserDetailedIn(String name, String surName, String profilePicture, String telephoneNumber, String email, String address, String password) {
+    public UserDetailedIn(String name, String surname, String profilePicture, String telephoneNumber, String email, String address, String password) {
         this.name = name;
-        this.surName = surName;
+        this.surname = surname;
         this.profilePicture = profilePicture;
         this.telephoneNumber = telephoneNumber;
         this.email = email;

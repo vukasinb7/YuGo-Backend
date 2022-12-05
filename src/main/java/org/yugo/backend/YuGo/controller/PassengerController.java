@@ -29,10 +29,10 @@ public class PassengerController {
     private final RideService rideService;
 
     @Autowired
-    public PassengerController(PassengerServiceImpl passengerServiceImpl, UserServiceImpl userServiceImpl, RideServiceImpl rideServiceImpl){
-        this.passengerService = passengerServiceImpl;
-        this.userService = userServiceImpl;
-        this.rideService = rideServiceImpl;
+    public PassengerController(PassengerService passengerService, UserService userService, RideService rideService){
+        this.passengerService = passengerService;
+        this.userService = userService;
+        this.rideService = rideService;
     }
 
     @PostMapping(
@@ -61,12 +61,10 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity activatePassenger(@PathVariable Integer activationId){
-        Optional<UserActivation> userActivation = userService.getUserActivation(activationId);
-        if (userActivation.isPresent()){
-            userActivation.get().getUser().setActive(true);
-            userService.insertUser(userActivation.get().getUser());
+        if (userService.activateUser(activationId)){
+            return new ResponseEntity<>(null, HttpStatus.OK);
         }
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(
@@ -74,24 +72,24 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<UserDetailedInOut> getPassenger(@PathVariable Integer id){
-        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passengerService.get(id).get()), HttpStatus.OK);
+        Optional<User> userOpt = passengerService.get(id);
+        if (userOpt.isPresent()){
+            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(userOpt.get()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody UserDetailedIn updatedUser, @PathVariable Integer id){
-        User user = passengerService.get(id).get();
-        user.setName(updatedUser.getName());
-        user.setSurName(updatedUser.getSurName());
-        user.setProfilePicture(updatedUser.getProfilePicture());
-        user.setTelephoneNumber(updatedUser.getTelephoneNumber());
-        user.setEmail(updatedUser.getEmail());
-        user.setAddress(updatedUser.getAddress());
-        user.setPassword(updatedUser.getPassword());
-        passengerService.insert(user);
-        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(user), HttpStatus.OK);
+    public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody UserDetailedIn updatedUserDTO, @PathVariable Integer id){
+        Passenger passengerUpdate = new Passenger(updatedUserDTO);
+        User updatedUser = passengerService.update(id, passengerUpdate);
+        if (updatedUser != null){
+            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedUser), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(

@@ -57,7 +57,7 @@ public abstract class User {
 
     public User(UserDetailedIn userDetailedIn) {
         this.name = userDetailedIn.getName();
-        this.surName = userDetailedIn.getSurName();
+        this.surName = userDetailedIn.getSurname();
         this.profilePicture = userDetailedIn.getProfilePicture();
         this.telephoneNumber = userDetailedIn.getTelephoneNumber();
         this.email = userDetailedIn.getEmail();

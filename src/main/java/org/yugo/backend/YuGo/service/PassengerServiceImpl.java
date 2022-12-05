@@ -30,6 +30,23 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
+    public User update(Integer userId, User updatedUser){
+        Optional<User> userOpt = get(userId);
+        if (userOpt.isPresent()){
+            User user = userOpt.get();
+            user.setName(updatedUser.getName());
+            user.setSurName(updatedUser.getSurName());
+            user.setProfilePicture(updatedUser.getProfilePicture());
+            user.setTelephoneNumber(updatedUser.getTelephoneNumber());
+            user.setEmail(updatedUser.getEmail());
+            user.setAddress(updatedUser.getAddress());
+            user.setPassword(updatedUser.getPassword());
+            return  userRepository.save(user);
+        }
+        return null;
+    }
+
+    @Override
     public List<User> getAll() {
         return userRepository.findAllPassengers();
     }
