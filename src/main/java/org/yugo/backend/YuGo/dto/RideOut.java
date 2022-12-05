@@ -3,6 +3,7 @@ package org.yugo.backend.YuGo.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.yugo.backend.YuGo.mapper.PathMapper;
 import org.yugo.backend.YuGo.mapper.UserSimplifiedMapper;
 import org.yugo.backend.YuGo.model.Ride;
 
@@ -39,12 +40,12 @@ public class RideOut {
     boolean petTransport;
 
     @Getter @Setter
-    private List<LocationInOut> address;
+    private List<PathInOut> address;
 
     @Getter @Setter
     private String status;
 
-    public RideOut(LocalDateTime startTime, LocalDateTime endTime, Double totalCost, UserSimplifiedOut driver, List<UserSimplifiedOut> passengers, int estimatedTimeInMinutes, String vehicleType, boolean babyTransport, boolean petTransport, List<LocationInOut> address, String status) {
+    public RideOut(LocalDateTime startTime, LocalDateTime endTime, Double totalCost, UserSimplifiedOut driver, List<UserSimplifiedOut> passengers, int estimatedTimeInMinutes, String vehicleType, boolean babyTransport, boolean petTransport, List<PathInOut> address, String status) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.totalCost = totalCost;
@@ -60,7 +61,7 @@ public class RideOut {
     public RideOut(Ride ride) {
         UserSimplifiedOut driver=new UserSimplifiedOut(ride.getDriver());
         List<UserSimplifiedOut> passengers= ride.getPassengers().stream().map(UserSimplifiedMapper::fromUsertoDTO).toList();
-        List<LocationInOut> locations=List.of(new LocationInOut(ride.getPath().getStartingPoint()),new LocationInOut(ride.getPath().getDestination())) ;
+        List<PathInOut> locations=ride.getPaths().stream().map(PathMapper::fromPathtoDTO).toList();
         this.startTime = ride.getStartTime();
         this.endTime = ride.getEndTime();
         this.totalCost = ride.getPrice();

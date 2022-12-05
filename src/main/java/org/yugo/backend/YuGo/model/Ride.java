@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.yugo.backend.YuGo.dto.RideIn;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
@@ -43,8 +45,8 @@ public class Ride {
 
     @Getter @Setter
     @JoinColumn(name = "path_id")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    private Path path;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    private List<Path> paths;
 
     @Getter @Setter
     @Column(name = "estimated_time")
