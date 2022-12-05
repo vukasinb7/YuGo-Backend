@@ -26,4 +26,5 @@ public interface DriverService {
     Optional<WorkTime> getWorkTime(Integer id);
 
     Page<WorkTime> getDriverWorkingTimesPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
+    WorkTime updateWorkTime(WorkTime workTime);
 }

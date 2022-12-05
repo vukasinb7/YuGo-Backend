@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.yugo.backend.YuGo.model.Ride;
+import org.yugo.backend.YuGo.model.WorkTime;
 
 import java.time.LocalDateTime;
 
@@ -30,4 +31,7 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
     public Page<Ride> findRidesByUser(@Param("userID") Integer userID,
                                       @Param("fromTime") LocalDateTime fromTime,
                                       @Param("toTime") LocalDateTime toTime, Pageable page);
+
+    @Query(value = "SELECT ride FROM Ride ride WHERE ride.driver.id = ?1 and ride.startTime >= ?2 and ride.endTime < ?3 ORDER BY ride.id")
+    public Page<Ride> findRidesByDriverAndStartTimeAndEndTimePageable(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
 }

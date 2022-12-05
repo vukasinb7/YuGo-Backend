@@ -6,7 +6,7 @@ import lombok.Setter;
 import org.yugo.backend.YuGo.model.WorkTime;
 
 @NoArgsConstructor
-public class WorkingTimeIn {
+public class WorkTimeIn {
 
     @Getter @Setter
     private String start;
@@ -14,12 +14,12 @@ public class WorkingTimeIn {
     @Getter @Setter
     private String end;
 
-    public WorkingTimeIn(String start, String end) {
+    public WorkTimeIn(String start, String end) {
         this.start = start;
         this.end = end;
     }
 
-    public WorkingTimeIn(WorkTime workTime){
+    public WorkTimeIn(WorkTime workTime){
         this(workTime.getStartTime().toString(), workTime.getEndTime().toString());
     }
 }

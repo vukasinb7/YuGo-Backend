@@ -69,4 +69,13 @@ public class DriverServiceImpl implements DriverService {
     public Page<WorkTime> getDriverWorkingTimesPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end){
         return workTimeRepository.findWorkTimesByDriverAndStartTimeAndEndTimePageable(driverId, page, start, end);
     }
+
+    @Override
+    public WorkTime updateWorkTime(WorkTime workTime){
+        Optional<WorkTime> workTimeOpt = workTimeRepository.findById(workTime.getId());
+        if(workTimeOpt.isEmpty()){
+            return null;
+        }
+        return workTimeRepository.save(workTime);
+    }
 }

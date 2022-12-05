@@ -3,14 +3,17 @@ package org.yugo.backend.YuGo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
+import org.yugo.backend.YuGo.mapper.WorkingTimeMapper;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.DocumentService;
 import org.yugo.backend.YuGo.service.DriverService;
+import org.yugo.backend.YuGo.service.RideService;
 import org.yugo.backend.YuGo.service.VehicleService;
 
 import java.time.LocalDateTime;
@@ -24,12 +27,13 @@ public class DriverController {
     private final DriverService driverService;
     private final VehicleService vehicleService;
     private final DocumentService documentService;
-
+    private final RideService rideService;
     @Autowired
-    public DriverController(DriverService driverService, VehicleService vehicleService, DocumentService documentService) {
+    public DriverController(DriverService driverService, VehicleService vehicleService, DocumentService documentService, RideService rideService) {
         this.driverService = driverService;
         this.vehicleService = vehicleService;
         this.documentService = documentService;
+        this.rideService = rideService;
     }
 
     @PostMapping(
@@ -39,7 +43,7 @@ public class DriverController {
     public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody UserDetailedIn driver){
         Driver newDriver = new Driver(driver);
         driverService.insertDriver(newDriver);
-        return new ResponseEntity<UserDetailedInOut>(new UserDetailedInOut(newDriver), HttpStatus.OK);
+        return new ResponseEntity<>(new UserDetailedInOut(newDriver), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -48,13 +52,11 @@ public class DriverController {
     )
     public ResponseEntity<UserDetailedInOut> getDriver(@PathVariable Integer id){
         Driver driver = (Driver) driverService.getDriver(id).orElse(null);
-        ResponseEntity<UserDetailedInOut> response;
         if(driver == null){
-            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }else {
-            response = new ResponseEntity<>(new UserDetailedInOut(driver), HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return response;
+        return new ResponseEntity<>(new UserDetailedInOut(driver), HttpStatus.OK);
+
     }
 
     @GetMapping(
@@ -95,13 +97,6 @@ public class DriverController {
         response = new ResponseEntity<>(new VehicleOut(vehicle), HttpStatus.OK);
         return response;
     }
-    /*      TODO Pitanja
-    *   1. Prilikom kreiranje novog vozila nema smisla prosledjivati i trenutnu lokaciju vozila
-    *   2. Prilikom kreiranja novog dokumenta id vozaca se prosledjuje i kao PathVariable i u okviru RequestBody
-    *   3. Prilikom izmene podatak o vozacu da li je potrebno slati id vozaca u okviru RequestBody
-    *   4. /api/driver/{diver-id}/working-hour/{working-hour-id} ako dobavljamo podatke preko working-hour-id cemu sluzi driver-id?????
-    */
-
     @PostMapping(
             value = "/{id}/documents",
             produces = MediaType.APPLICATION_JSON_VALUE,
@@ -223,22 +218,20 @@ public class DriverController {
             value = "/{id}/working-hours",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<List<WorkingTimeOut>> getWorkingHours(@PathVariable(value = "id") Integer id, @RequestParam int page, @RequestParam int size, @RequestParam String from, @RequestParam String to){
+    ResponseEntity<AllWorkTimeOut> getWorkingTimes(@PathVariable(value = "id") Integer id,
+                                                      @RequestParam(name = "page") int page,
+                                                      @RequestParam(name = "size") int size,
+                                                      @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+                                                      @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
         Driver driver = (Driver) driverService.getDriver(id).orElse(null);
-        ResponseEntity<List<WorkingTimeOut>> response;
+        ResponseEntity<AllWorkTimeOut> response;
         if(driver == null){
             response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             return response;
         }
-        LocalDateTime fromLDT = LocalDateTime.parse(from);
-        LocalDateTime toLDT = LocalDateTime.parse(to);
-        Page<WorkTime> workTimes = driverService.getDriverWorkingTimesPage(id, PageRequest.of(page, size), fromLDT, toLDT);
-        List<WorkingTimeOut> output = new ArrayList<>();
-        for(WorkTime wt : workTimes){
-            output.add(new WorkingTimeOut(wt));
-        }
 
-        return new ResponseEntity<>(output, HttpStatus.OK);
+        Page<WorkTime> workTimes = driverService.getDriverWorkingTimesPage(id, PageRequest.of(page, size), from, to);
+        return new ResponseEntity<>(new AllWorkTimeOut(workTimes.stream()), HttpStatus.OK);
     }
 
     @PostMapping(
@@ -246,20 +239,61 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<WorkingTimeOut> createDriver(@PathVariable Integer id, @RequestBody WorkingTimeIn workingTimeIn){
+    ResponseEntity<WorkTimeOut> getWorkTimeForDriver(@PathVariable Integer id, @RequestBody WorkTimeIn workTimeIn){
         Driver driver = (Driver) driverService.getDriver(id).orElse(null);
-        ResponseEntity<WorkingTimeOut> response;
+        ResponseEntity<WorkTimeOut> response;
         if(driver == null){
             response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             return response;
         }
         WorkTime wt = new WorkTime();
         wt.setDriver(driver);
-        wt.setStartTime(LocalDateTime.parse(workingTimeIn.getStart()));
-        wt.setEndTime(LocalDateTime.parse(workingTimeIn.getEnd()));
+        wt.setStartTime(LocalDateTime.parse(workTimeIn.getStart()));
+        wt.setEndTime(LocalDateTime.parse(workTimeIn.getEnd()));
 
-        WorkingTimeOut output = new WorkingTimeOut(driverService.insertWorkTime(wt));
+        WorkTimeOut output = new WorkTimeOut(driverService.insertWorkTime(wt));
         return new ResponseEntity<>(output, HttpStatus.OK);
     }
 
+    @GetMapping(
+            value = "/working-hour/{working-hour-id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    ResponseEntity<WorkTimeOut> getWorkTimeById(@PathVariable(value = "working-hour-id") Integer id){
+        WorkTime wt = driverService.getWorkTime(id).orElse(null);
+        ResponseEntity<WorkTimeOut> response;
+        if(wt == null){
+            response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return response;
+        }
+        response = new ResponseEntity<>(WorkingTimeMapper.fromWorkTimeToDTO(wt), HttpStatus.OK);
+        return response;
+    }
+
+    @GetMapping(
+            value = "/{id}/ride",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    ResponseEntity<AllRidesOut> getRidesForDriver(@PathVariable(value = "id") Integer id,
+                                                  @RequestParam(name = "page") int page,
+                                                  @RequestParam(name = "size") int size,
+                                                  @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+                                                  @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
+        Page<Ride> rides = rideService.getRidesByDriverPage(id, PageRequest.of(page, size), from, to);
+        return new ResponseEntity<>(new AllRidesOut(rides.stream()), HttpStatus.OK);
+    }
+
+    @PostMapping(
+            value = "/working-hour/{working-hour-id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    ResponseEntity<WorkTimeOut> updateWorkTime(@PathVariable(value = "working-hour-id") Integer id, @RequestBody WorkTimeIn workTimeIn){
+        WorkTime workTime = WorkingTimeMapper.fromDTOtoWorkTime(workTimeIn);
+        WorkTime workTimeUpdated = driverService.updateWorkTime(workTime);
+        if(workTimeUpdated == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(WorkingTimeMapper.fromWorkTimeToDTO(workTimeUpdated), HttpStatus.OK);
+    }
 }
