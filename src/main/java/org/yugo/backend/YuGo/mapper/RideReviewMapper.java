@@ -21,7 +21,7 @@ public class RideReviewMapper {
         return modelMapper.map(dto, RideReview.class);
     }
 
-    public static ReviewOut fromRideReviewtoDTO(RideReview dto) {
-        return modelMapper.map(dto, ReviewOut.class);
+    public static ReviewOut fromRideReviewtoDTO(RideReview rideReview) {
+        return modelMapper.map(rideReview, ReviewOut.class);
     }
 }

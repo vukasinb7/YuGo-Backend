@@ -19,7 +19,7 @@ public class RideMapper {
         return modelMapper.map(dto, Ride.class);
     }
 
-    public static RideOut fromRidetoDTO(Ride dto) {
-        return modelMapper.map(dto, RideOut.class);
+    public static RideOut fromRidetoDTO(Ride ride) {
+        return modelMapper.map(ride, RideOut.class);
     }
 }

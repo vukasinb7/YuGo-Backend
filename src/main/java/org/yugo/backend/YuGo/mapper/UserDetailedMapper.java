@@ -18,7 +18,7 @@ public class UserDetailedMapper {
         return modelMapper.map(dto, User.class);
     }
 
-    public static UserDetailedInOut fromUsertoDTO(User dto) {
-        return modelMapper.map(dto, UserDetailedInOut.class);
+    public static UserDetailedInOut fromUsertoDTO(User user) {
+        return modelMapper.map(user, UserDetailedInOut.class);
     }
 }

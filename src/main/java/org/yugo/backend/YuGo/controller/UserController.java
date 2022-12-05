@@ -19,6 +19,7 @@ import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.service.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -81,8 +82,8 @@ public class UserController {
             value = "/{id}/message",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<MessageOut> sendUserMessages(@PathVariable Integer id, @RequestParam Integer receiverId, @RequestBody MessageIn messageIn){
-        Message msg = new Message(userService.getUser(id).get(), userService.getUser(receiverId).get(),
+    public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestParam Integer senderId, @RequestBody MessageIn messageIn){
+        Message msg = new Message(userService.getUser(senderId).get(), userService.getUser(id).get(),
                 messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
                 null);
         messageService.insert(msg);
@@ -112,9 +113,13 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<NoteOut> createNote(@PathVariable Integer id, @RequestBody NoteIn noteIn){
-        Note note = new Note(userService.getUser(id).get(), noteIn.getMessage(), LocalDateTime.now());
-        noteService.insert(note);
-        return new ResponseEntity<>(NoteMapper.fromNotetoDTO(note), HttpStatus.OK);
+        Optional<User> userOpt = userService.getUser(id);
+        if (userOpt.isPresent()){
+            Note note = new Note(userOpt.get(), noteIn.getMessage(), LocalDateTime.now());
+            noteService.insert(note);
+            return new ResponseEntity<>(NoteMapper.fromNotetoDTO(note), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(
