@@ -49,7 +49,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public WorkTime insertWorkTime(Integer driverId, WorkTime workTime){
         Optional<User> driverOpt = userRepository.findById(driverId);
-        if(driverOpt.isEmpty()){
+        if(driverOpt.isEmpty() || driverOpt.get().getClass() != Driver.class){
             return null;
         }
         Driver driver = (Driver) driverOpt.get();
