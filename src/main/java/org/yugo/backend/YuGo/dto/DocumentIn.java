@@ -12,12 +12,8 @@ public class DocumentIn {
     @Getter @Setter
     private String documentImage;
 
-    @Getter @Setter
-    private Integer driverId;
-
-    public DocumentIn(String name, String documentImage, Integer driverId) {
+    public DocumentIn(String name, String documentImage) {
         this.name = name;
         this.documentImage = documentImage;
-        this.driverId = driverId;
     }
 }
