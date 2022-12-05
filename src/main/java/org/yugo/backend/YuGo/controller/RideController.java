@@ -6,10 +6,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
+import org.yugo.backend.YuGo.mapper.RideMapper;
+import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.PanicService;
 import org.yugo.backend.YuGo.service.RideService;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @RestController
@@ -23,6 +26,16 @@ public class RideController {
         this.rideService=rideService;
         this.panicService=panicService;
     }
+
+    @PostMapping(
+            value = "/",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    /*public ResponseEntity<RideOut> addRide(@RequestBody RideIn rideIn){
+        Ride ride= new Ride(rideIn);
+        //rideService.insert(ride);
+        return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
+    }*/
 
     /*@GetMapping(
             value = "/active/{id}",

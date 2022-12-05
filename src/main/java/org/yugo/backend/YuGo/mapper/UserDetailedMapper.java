@@ -21,7 +21,7 @@ public class UserDetailedMapper {
     }
     public static Driver fromDTOtoDriver(UserDetailedIn dto){return modelMapper.map(dto, Driver.class);}
 
-    public static UserDetailedInOut fromUsertoDTO(User dto) {
-        return modelMapper.map(dto, UserDetailedInOut.class);
+    public static UserDetailedInOut fromUsertoDTO(User user) {
+        return modelMapper.map(user, UserDetailedInOut.class);
     }
 }

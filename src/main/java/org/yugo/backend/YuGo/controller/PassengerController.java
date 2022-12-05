@@ -53,7 +53,7 @@ public class PassengerController {
     )
     public ResponseEntity<AllUsersOut> getAllPassengers(@RequestParam int page, @RequestParam int size){
         Page<User> passengers = passengerService.getPassengersPage(PageRequest.of(page, size));
-        return new ResponseEntity<>(new AllUsersOut(passengers.get()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllUsersOut(passengers.toList()), HttpStatus.OK);
     }
 
     @PostMapping(
@@ -103,6 +103,6 @@ public class PassengerController {
         Page<Ride> rides = rideService.getPassengerRides(id, from, to,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
-        return new ResponseEntity<>(new AllRidesOut(rides.stream()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllRidesOut(rides.toList()), HttpStatus.OK);
     }
 }

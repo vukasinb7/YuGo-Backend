@@ -25,4 +25,5 @@ public class Passenger extends User{
     public Passenger(UserDetailedIn userDetailedIn) {
         super(userDetailedIn);
     }
+
 }

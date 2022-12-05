@@ -19,7 +19,7 @@ public abstract class User {
     private String name;
 
     @Getter @Setter
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "surname", nullable = false)
     private String surname;
 
     @Getter @Setter
@@ -27,7 +27,7 @@ public abstract class User {
     private String profilePicture;
 
     @Getter @Setter
-    @Column(name = "telephoneNumber", nullable = false)
+    @Column(name = "telephone_number", nullable = false)
     private String telephoneNumber;
 
     @Getter @Setter

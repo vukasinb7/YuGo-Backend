@@ -27,7 +27,7 @@ public class Message {
 
     @Getter @Setter
     @Column(name = "sending_time", nullable = false)
-    private LocalDateTime sendingTime;
+    private LocalDateTime timeOfSending;
 
     @Enumerated(EnumType.STRING)
     @Getter @Setter
@@ -44,11 +44,11 @@ public class Message {
     @Getter @Setter
     private Integer id;
 
-    public Message(User sender, User receiver, String messageContent, LocalDateTime sendingTime, MessageType messageType, Ride ride) {
+    public Message(User sender, User receiver, String messageContent, LocalDateTime timeOfSending, MessageType messageType, Ride ride) {
         this.sender = sender;
         this.receiver = receiver;
         this.messageContent = messageContent;
-        this.sendingTime = sendingTime;
+        this.timeOfSending = timeOfSending;
         this.messageType = messageType;
         this.ride = ride;
     }

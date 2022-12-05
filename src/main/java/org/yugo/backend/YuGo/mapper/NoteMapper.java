@@ -19,7 +19,7 @@ public class NoteMapper {
         return modelMapper.map(dto, Note.class);
     }
 
-    public static NoteOut fromNotetoDTO(Note dto) {
-        return modelMapper.map(dto, NoteOut.class);
+    public static NoteOut fromNotetoDTO(Note note) {
+        return modelMapper.map(note, NoteOut.class);
     }
 }

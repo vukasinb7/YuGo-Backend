@@ -19,7 +19,7 @@ public class LocationMapper {
         return modelMapper.map(dto, Location.class);
     }
 
-    public static LocationInOut fromLocationtoDTO(Location dto) {
-        return modelMapper.map(dto, LocationInOut.class);
+    public static LocationInOut fromLocationtoDTO(Location location) {
+        return modelMapper.map(location, LocationInOut.class);
     }
 }

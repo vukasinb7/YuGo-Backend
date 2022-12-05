@@ -20,7 +20,7 @@ public class VehicleReviewMapper {
         return modelMapper.map(dto, VehicleReview.class);
     }
 
-    public static ReviewOut fromVehicleReviewtoDTO(VehicleReview dto) {
-        return modelMapper.map(dto, ReviewOut.class);
+    public static ReviewOut fromVehicleReviewtoDTO(VehicleReview vehicleReview) {
+        return modelMapper.map(vehicleReview, ReviewOut.class);
     }
 }

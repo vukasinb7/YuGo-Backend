@@ -15,8 +15,8 @@ public class AllUserMessagesOut {
     @Getter @Setter
     private List<MessageOut> results;
 
-    public AllUserMessagesOut(Stream<Message> messageStream){
-        this.results = messageStream
+    public AllUserMessagesOut(List<Message> messages){
+        this.results = messages.stream()
                 .map(MessageMapper::fromMessagetoDTO)
                 .toList();
 

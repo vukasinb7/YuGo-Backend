@@ -17,8 +17,8 @@ public class AllRideReviewsOut {
     private List<ReviewOut> results;
 
 
-    public AllRideReviewsOut(Stream<RideReview> reviews){
-        this.results = reviews
+    public AllRideReviewsOut(List<RideReview> reviews){
+        this.results = reviews.stream()
                 .map(RideReviewMapper::fromRideReviewtoDTO)
                 .toList();
 
