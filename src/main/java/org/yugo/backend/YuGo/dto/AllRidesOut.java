@@ -3,6 +3,7 @@ package org.yugo.backend.YuGo.dto;
 import lombok.Getter;
 import lombok.Setter;
 import org.yugo.backend.YuGo.mapper.RideMapper;
+import org.yugo.backend.YuGo.mapper.UserRideMapper;
 import org.yugo.backend.YuGo.model.Ride;
 
 import java.util.List;
@@ -14,11 +15,11 @@ public class AllRidesOut {
     private int totalCount;
 
     @Getter @Setter
-    private List<RideOut> results;
+    private List<UserRideOut> results;
 
     public AllRidesOut(Stream<Ride> rideStream){
         this.results = rideStream
-                .map(RideMapper::fromRidetoDTO)
+                .map(UserRideMapper::fromRidetoDTO)
                 .toList();
         this.totalCount = results.size();
     }

@@ -83,11 +83,16 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestParam Integer senderId, @RequestBody MessageIn messageIn){
-        Message msg = new Message(userService.getUser(senderId).get(), userService.getUser(id).get(),
-                messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
-                null);
-        messageService.insert(msg);
-        return new ResponseEntity<>(MessageMapper.fromMessagetoDTO(msg), HttpStatus.OK);
+        Optional<User> sender = userService.getUser(senderId);
+        Optional<User> receiver = userService.getUser(id);
+        if (sender.isPresent() && receiver.isPresent()) {
+            Message msg = new Message(sender.get(), receiver.get(),
+                    messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
+                    null);
+            messageService.insert(msg);
+            return new ResponseEntity<>(MessageMapper.fromMessagetoDTO(msg), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(
@@ -95,8 +100,10 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity blockUser(@PathVariable Integer id){
-        userService.blockUser(id);
-        return new ResponseEntity<>(null , HttpStatus.NO_CONTENT);
+        if (userService.blockUser(id)) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(
@@ -104,8 +111,10 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity unblockUser(@PathVariable Integer id){
-        userService.unblockUser(id);
-        return new ResponseEntity<>(null , HttpStatus.NO_CONTENT);
+        if (userService.unblockUser(id)) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @PostMapping(

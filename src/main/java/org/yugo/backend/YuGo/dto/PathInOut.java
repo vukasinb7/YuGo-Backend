@@ -19,7 +19,7 @@ public class PathInOut {
     }
 
     public PathInOut(Path path){
-        this(LocationMapper.fromLocationtoDTO( path.getStartingPoint()),LocationMapper.fromLocationtoDTO(path.getDestination()));
+        this(LocationMapper.fromLocationtoDTO(path.getStartingPoint()),LocationMapper.fromLocationtoDTO(path.getDestination()));
     }
 
 
