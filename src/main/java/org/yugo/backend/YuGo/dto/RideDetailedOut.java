@@ -55,8 +55,8 @@ public class RideDetailedOut {
         this.passengers = passengers;
         this.estimatedTimeInMinutes = ride.getEstimatedTimeInMinutes();
         this.vehicleType = ride.getDriver().getVehicle().getVehicleCategory().toString();
-        this.babyTransport = ride.getIncludesBabies();
-        this.petTransport = ride.getIncludesPets();
+        this.babyTransport = ride.getBabyTransport();
+        this.petTransport = ride.getPetTransport();
         this.locations = locations;
         this.status = ride.getStatus().toString();
     }

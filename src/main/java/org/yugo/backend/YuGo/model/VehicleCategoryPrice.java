@@ -15,7 +15,7 @@ public class VehicleCategoryPrice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Getter @Setter
     @Column(name = "category", nullable = false)
     private VehicleCategory name;

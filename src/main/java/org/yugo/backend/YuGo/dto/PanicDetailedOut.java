@@ -30,7 +30,7 @@ public class PanicDetailedOut {
         this.user = UserDetailedMapper.fromUsertoDTO(user);
         this.ride = RideMapper.fromRidetoDTO(ride);
         this.time = time;
-        this.locations = ride.getPaths().stream().map(PathMapper::fromPathtoDTO).toList();
+        this.locations = ride.getLocations().stream().map(PathMapper::fromPathtoDTO).toList();
         this.reason = reason;
     }
 }

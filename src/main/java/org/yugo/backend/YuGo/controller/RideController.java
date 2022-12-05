@@ -9,6 +9,7 @@ import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.mapper.PathMapper;
 import org.yugo.backend.YuGo.mapper.RideMapper;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
+import org.yugo.backend.YuGo.mapper.UserSimplifiedMapper;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.PanicService;
@@ -43,7 +44,24 @@ public class RideController {
             value = "/",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    public ResponseEntity<RideDetailedOut> addRide(@RequestBody RideIn rideIn){
+        Set<Passenger> passengers=new HashSet<>();
+        for (UserSimplifiedOut user:rideIn.getPassengers()) {
+            passengers.add(passengerService.get(user.getId()).get());
+        }
+        Driver driver= (Driver) driverService.getDriver(2).get();
+        Ride ride= new Ride(LocalDateTime.now(),LocalDateTime.now(),100,driver,passengers,rideIn.getLocations().stream().map(PathMapper::fromDTOtoPath).toList(),10,new HashSet<>(),new HashSet<>(),RideStatus.PENDING,null,false,rideIn.isBabyTransport(),rideIn.isPetTransport(),null);
+        rideService.insert(ride);
+        return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
+    }
 
+    @GetMapping(
+            value = "/driver/{id}/active",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<RideDetailedOut> getActiveRidesByDriver(@PathVariable Integer id){
+        return new ResponseEntity<>(new RideDetailedOut(rideService.getActiveRideByDriver(id)), HttpStatus.OK);
+    }
 
     @GetMapping(
             value = "/passenger/{id}/active",
