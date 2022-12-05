@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 import org.yugo.backend.YuGo.mapper.NoteMapper;
 import org.yugo.backend.YuGo.model.Note;
 
@@ -10,15 +11,15 @@ import java.util.stream.Stream;
 
 public class AllNotesOut {
     @Getter @Setter
-    private int totalCount;
+    private long totalCount;
 
     @Getter @Setter
     private List<NoteOut> results;
 
-    public AllNotesOut(List<Note> notes){
+    public AllNotesOut(Page<Note> notes){
         this.results = notes.stream().map(NoteMapper::fromNotetoDTO)
                 .toList();
 
-        this.totalCount = results.size();
+        this.totalCount = notes.getTotalElements();
     }
 }

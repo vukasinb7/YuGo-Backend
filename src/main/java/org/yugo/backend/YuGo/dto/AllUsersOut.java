@@ -3,6 +3,7 @@ package org.yugo.backend.YuGo.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.User;
 
@@ -17,11 +18,11 @@ public class AllUsersOut {
     @Getter @Setter
     private List<UserDetailedInOut> results;
 
-    public AllUsersOut(List<User> users){
+    public AllUsersOut(Page<User> users){
         this.results = users.stream()
                 .map(UserDetailedMapper::fromUsertoDTO)
                 .toList();
 
-        this.totalCount = results.size();
+        this.totalCount = users.getTotalElements();
     }
 }

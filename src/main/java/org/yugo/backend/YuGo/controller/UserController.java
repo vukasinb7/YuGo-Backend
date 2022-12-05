@@ -49,7 +49,7 @@ public class UserController {
         Page<Ride> rides = rideService.getUserRides(id, from, to,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
-        return new ResponseEntity<>(new AllRidesOut(rides.toList()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllRidesOut(rides), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -58,7 +58,7 @@ public class UserController {
     )
     public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam int page, @RequestParam int size){
         Page<User> users = userService.getUsersPage(PageRequest.of(page, size));
-        return new ResponseEntity<>(new AllUsersOut(users.toList()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllUsersOut(users), HttpStatus.OK);
     }
 
     @PostMapping(
@@ -83,10 +83,10 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestParam Integer senderId, @RequestBody MessageIn messageIn){
-        Optional<User> sender = userService.getUser(senderId);
-        Optional<User> receiver = userService.getUser(id);
-        if (sender.isPresent() && receiver.isPresent()) {
-            Message msg = new Message(sender.get(), receiver.get(),
+        Optional<User> senderOpt = userService.getUser(senderId);
+        Optional<User> receiverOpt = userService.getUser(id);
+        if (senderOpt.isPresent() && receiverOpt.isPresent()) {
+            Message msg = new Message(senderOpt.get(), receiverOpt.get(),
                     messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
                     null);
             messageService.insert(msg);
@@ -137,6 +137,6 @@ public class UserController {
     )
     public ResponseEntity<AllNotesOut> getUserNotes(@PathVariable Integer id, @RequestParam int page, @RequestParam int size){
         Page<Note> notes = noteService.getUserNotes(id, PageRequest.of(page, size));
-        return new ResponseEntity<>(new AllNotesOut(notes.toList()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllNotesOut(notes), HttpStatus.OK);
     }
 }
