@@ -18,4 +18,6 @@ public interface ReviewService {
     List<RideReview> getRideReviewsByVehicle(Integer id);
     List<RideReview> getDriverReviewsByRide(Integer id);
     List<RideReview> getVehicleReviewsByRide(Integer id);
+    RideReview getDriverReviewsByRideByPassenger(Integer id,Integer passengerId);
+    RideReview getVehicleReviewsByRideByPassenger(Integer id,Integer passengerId);
 }

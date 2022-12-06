@@ -51,4 +51,9 @@ public class ReviewServiceImpl implements ReviewService {
     public List<RideReview> getVehicleReviewsByRide(Integer id) {
         return rideReviewRepository.findVehicleReviewsByRide(id);
     }
+    @Override
+    public RideReview getDriverReviewsByRideByPassenger(Integer id,Integer passengerId){return rideReviewRepository.findDriverReviewsByRideByPassenger(id,passengerId);}
+
+    @Override
+    public RideReview getVehicleReviewsByRideByPassenger(Integer id,Integer passengerId){return rideReviewRepository.findVehicleReviewsByRideByPassenger(id,passengerId);}
 }

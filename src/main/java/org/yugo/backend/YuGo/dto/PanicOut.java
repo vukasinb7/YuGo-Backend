@@ -16,7 +16,7 @@ public class PanicOut {
     @Getter @Setter
     Integer id;
     @Getter @Setter
-    UserDetailedInOut user;
+    UserDetailedOut user;
     @Getter @Setter
     RideDetailedOut ride;
     @Getter @Setter
@@ -24,9 +24,9 @@ public class PanicOut {
     @Getter @Setter
     String reason;
 
-    public PanicOut(Integer id, User user, Ride ride, LocalDateTime time, String reason) {
+    public PanicOut(Integer id, UserDetailedOut user, Ride ride, LocalDateTime time, String reason) {
         this.id = id;
-        this.user = UserDetailedMapper.fromUsertoDTO(user);
+        this.user = user;
         this.ride = RideMapper.fromRidetoDTO(ride);
         this.time = time;
         this.reason = reason;
@@ -34,7 +34,7 @@ public class PanicOut {
 
     public PanicOut(Panic panic) {
         this.id = panic.getId();
-        this.user = UserDetailedMapper.fromUsertoDTO(panic.getUser());
+        this.user = new UserDetailedOut(panic.getUser());
         this.ride = RideMapper.fromRidetoDTO(panic.getRide());
         this.time = panic.getTime();
         this.reason = panic.getReason();

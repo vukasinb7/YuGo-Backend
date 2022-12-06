@@ -17,6 +17,7 @@ import org.yugo.backend.YuGo.service.ReviewService;
 import org.yugo.backend.YuGo.service.RideService;
 import org.yugo.backend.YuGo.service.VehicleService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -78,10 +79,16 @@ public class ReviewController {
             value = "ride/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AcumulatedReviewsOut> getAllRideReviews(@PathVariable int id){
-        List<RideReview> vehicleReviews = reviewService.getVehicleReviewsByRide(id);
-        List<RideReview> driverReviews = reviewService.getDriverReviewsByRide(id);
-        return new ResponseEntity<>(new AcumulatedReviewsOut(vehicleReviews,driverReviews), HttpStatus.OK);
+    public ResponseEntity<List<AcumulatedReviewsOut>> getAllRideReviews(@PathVariable int id){
+        List<AcumulatedReviewsOut> result= new ArrayList<>();
+        for (Passenger passenger:rideService.get(id).get().getPassengers()) {
+            RideReview vehicleReviews = reviewService.getVehicleReviewsByRideByPassenger(id,passenger.getId());
+            RideReview driverReviews = reviewService.getDriverReviewsByRideByPassenger(id,passenger.getId());
+            result.add(new AcumulatedReviewsOut(vehicleReviews,driverReviews));
+
+        }
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
