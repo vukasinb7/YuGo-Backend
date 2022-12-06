@@ -135,7 +135,7 @@ public class DriverController {
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
         documentService.deleteAllForDriver(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(
