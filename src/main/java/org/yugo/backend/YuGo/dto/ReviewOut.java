@@ -25,7 +25,4 @@ public class ReviewOut {
     public ReviewOut(VehicleReview vehicleReview){
         this(vehicleReview.getId(),vehicleReview.getRating(),vehicleReview.getComment());
     }
-    public ReviewOut(RideReview rideReview){
-        this(rideReview.getId(),rideReview.getRating(),rideReview.getComment());
-    }
 }
