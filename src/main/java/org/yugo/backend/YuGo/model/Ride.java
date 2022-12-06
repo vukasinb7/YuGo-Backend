@@ -57,9 +57,6 @@ public class Ride {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH,mappedBy = "ride")
     private Set<RideReview> rideReviews = new HashSet<RideReview>();
 
-    @Getter @Setter
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH,mappedBy = "ride")
-    private Set<VehicleReview> vehicleReviews = new HashSet<VehicleReview>();
 
     @Enumerated(EnumType.STRING)
     @Getter @Setter
@@ -88,7 +85,7 @@ public class Ride {
     @JoinColumn(name = "vehicle_type_id")
     private VehicleCategoryPrice vehicleCategoryPrice;
 
-    public Ride(LocalDateTime startTime, LocalDateTime endTime, double price, Driver driver, Set<Passenger> passengers, List<Path> paths, int estimatedTime, Set<RideReview> rideReviews, Set<VehicleReview> vehicleReviews, RideStatus status, Rejection rejection, Boolean isPanicPressed, Boolean includesBabies, Boolean includesPets, VehicleCategoryPrice vehicleCategoryPrice) {
+    public Ride(LocalDateTime startTime, LocalDateTime endTime, double price, Driver driver, Set<Passenger> passengers, List<Path> paths, int estimatedTime, Set<RideReview> rideReviews, RideStatus status, Rejection rejection, Boolean isPanicPressed, Boolean includesBabies, Boolean includesPets, VehicleCategoryPrice vehicleCategoryPrice) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.totalCost = price;
@@ -97,7 +94,6 @@ public class Ride {
         this.locations = paths;
         this.estimatedTimeInMinutes = estimatedTime;
         this.rideReviews = rideReviews;
-        this.vehicleReviews = vehicleReviews;
         this.status = status;
         this.rejection = rejection;
         this.isPanicPressed = isPanicPressed;
