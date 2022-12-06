@@ -3,7 +3,6 @@ package org.yugo.backend.YuGo.dto;
 import lombok.Getter;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.VehicleCategory;
-import org.yugo.backend.YuGo.model.VehicleReview;
 
 import java.util.List;
 

@@ -21,4 +21,8 @@ public class ReviewOut {
         this.rating = rating;
         this.comment = review;
     }
+
+    public ReviewOut(RideReview vehicleReview) {
+        this(vehicleReview.getId(), vehicleReview.getRating(), vehicleReview.getComment());
+    }
 }
