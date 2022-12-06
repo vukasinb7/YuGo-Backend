@@ -1,8 +1,8 @@
 package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.yugo.backend.YuGo.mapper.PathMapper;
 import org.yugo.backend.YuGo.mapper.RideMapper;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.Panic;
@@ -10,8 +10,8 @@ import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.model.User;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
+@NoArgsConstructor
 public class PanicOut {
     @Getter @Setter
     Integer id;

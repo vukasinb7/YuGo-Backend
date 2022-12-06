@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 public class Message {
     @OneToOne
     @Getter @Setter
-    @JoinColumn(name = "sender")
+    @JoinColumn(name = "sender_id")
     private User sender;
 
     @OneToOne
     @Getter @Setter
-    @JoinColumn(name = "receiver")
+    @JoinColumn(name = "receiver_id")
     private User receiver;
 
     @Getter @Setter

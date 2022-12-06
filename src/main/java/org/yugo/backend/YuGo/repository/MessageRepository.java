@@ -8,6 +8,6 @@ import org.yugo.backend.YuGo.model.Message;
 import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message,Integer> {
-    @Query(value = "SELECT * FROM MESSAGES WHERE receiver = :userID", nativeQuery = true)
+    @Query(value = "SELECT * FROM MESSAGES WHERE receiver_id = :userID", nativeQuery = true)
     List<Message> findMessagesByUser(@Param("userID") Integer userID);
 }
