@@ -134,7 +134,10 @@ public class RideController {
     )
     public ResponseEntity<RideDetailedOut> rejectRide(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
         Ride ride =rideService.get(id).get();
+
         ride.setStatus(RideStatus.REJECTED);
+        Rejection rejection =new Rejection(ride,passengerService.get(1).get(),reasonIn.getReason(),LocalDateTime.now());
+        ride.setRejection(rejection);
         rideService.insert(ride);
         return new ResponseEntity<>(new RideDetailedOut(ride), HttpStatus.OK);
 

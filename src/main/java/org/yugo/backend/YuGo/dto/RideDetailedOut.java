@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.mapper.PathMapper;
 import org.yugo.backend.YuGo.mapper.UserSimplifiedMapper;
+import org.yugo.backend.YuGo.model.Rejection;
 import org.yugo.backend.YuGo.model.Ride;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,9 @@ import java.util.List;
 
 @NoArgsConstructor
 public class RideDetailedOut {
+
+    @Getter @Setter
+    private Integer id;
     @Getter @Setter
     private LocalDateTime startTime;
     @Getter @Setter
@@ -31,11 +35,14 @@ public class RideDetailedOut {
     @Getter @Setter
     private boolean petTransport;
     @Getter @Setter
+    private RejectionOut rejection;
+    @Getter @Setter
     private List<PathInOut> locations;
     @Getter @Setter
     private String status;
 
     public RideDetailedOut(Ride ride) {
+        this.id= ride.getId();
         this.startTime = ride.getStartTime();
         this.endTime = ride.getEndTime();
         this.totalCost = ride.getTotalCost();
@@ -47,5 +54,7 @@ public class RideDetailedOut {
         this.petTransport = ride.getPetTransport();
         this.locations = ride.getLocations().stream().map(PathMapper::fromPathtoDTO).toList();
         this.status = ride.getStatus().toString();
+        if (ride.getRejection()!=null)
+            this.rejection=new RejectionOut(ride.getRejection());
     }
 }
