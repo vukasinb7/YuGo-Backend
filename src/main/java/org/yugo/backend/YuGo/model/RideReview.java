@@ -27,15 +27,21 @@ public class RideReview {
     @JoinColumn(name = "passenger")
     private Passenger passenger;
 
+    @Enumerated(EnumType.STRING)
+    @Getter @Setter
+    @Column(name = "type")
+    private ReviewType type;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private Integer id;
 
-    public RideReview(String comment, int rating, Ride ride, Passenger passenger) {
+    public RideReview(String comment, int rating, Ride ride, Passenger passenger, ReviewType type) {
         this.comment = comment;
         this.rating = rating;
         this.ride = ride;
         this.passenger = passenger;
+        this.type = type;
     }
 }

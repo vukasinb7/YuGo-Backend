@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @DiscriminatorValue("1")
 public class Passenger extends User{
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "passenger_ride")
     @Getter @Setter
     private Set<Ride> rides;

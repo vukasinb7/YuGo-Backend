@@ -18,11 +18,11 @@ public class AllRideReviewsOut {
     private List<ReviewOut> results;
 
 
-    public AllRideReviewsOut(Page<RideReview> reviews){
+    public AllRideReviewsOut(List<RideReview> reviews){
         this.results = reviews.stream()
                 .map(RideReviewMapper::fromRideReviewtoDTO)
                 .toList();
 
-        this.totalCount = reviews.getTotalElements();
+        this.totalCount = reviews.size();
     }
 }

@@ -55,10 +55,6 @@ public class Vehicle {
     @Column(name = "are_pets_allowed", nullable = false)
     private Boolean arePetsAllowed;
 
-    @Getter @Setter
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<VehicleReview> reviews = new HashSet<VehicleReview>();
-
     public Vehicle(VehicleIn vehicleIn){
         this.vehicleCategory = vehicleIn.getVehicleCategory();
         this.model = vehicleIn.getModel();

@@ -1,22 +1,12 @@
 package org.yugo.backend.YuGo.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.yugo.backend.YuGo.model.RideReview;
-import org.yugo.backend.YuGo.model.VehicleReview;
 
 import java.util.List;
 
 public interface ReviewService {
-    /* =========================== VehicleReview =========================== */
-    VehicleReview insertVehicleReview(VehicleReview vehicleReview);
-
-    VehicleReview getVehicleReview(Integer id);
-
-    List<VehicleReview> getVehicleReviewsByVehicle(Integer id);
-
-
-    List<VehicleReview> getAllVehicleReviews();
-
-    /* =========================== RideReview =========================== */
     RideReview insertRideReview(RideReview rideReview);
 
     RideReview getRideReview(Integer id);
@@ -24,4 +14,8 @@ public interface ReviewService {
     List<RideReview> getAllRideReviews();
 
     List<RideReview> getRideReviewsByDriver(Integer id);
+
+    List<RideReview> getRideReviewsByVehicle(Integer id);
+    List<RideReview> getDriverReviewsByRide(Integer id);
+    List<RideReview> getVehicleReviewsByRide(Integer id);
 }
