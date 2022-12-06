@@ -4,14 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.yugo.backend.YuGo.dto.RideIn;
-import org.yugo.backend.YuGo.dto.UserSimplifiedOut;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
@@ -83,9 +80,9 @@ public class Ride {
     @Getter @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "vehicle_type_id")
-    private VehicleCategoryPrice vehicleCategoryPrice;
+    private VehicleTypePrice vehicleTypePrice;
 
-    public Ride(LocalDateTime startTime, LocalDateTime endTime, double price, Driver driver, Set<Passenger> passengers, List<Path> paths, int estimatedTime, Set<RideReview> rideReviews, RideStatus status, Rejection rejection, Boolean isPanicPressed, Boolean includesBabies, Boolean includesPets, VehicleCategoryPrice vehicleCategoryPrice) {
+    public Ride(LocalDateTime startTime, LocalDateTime endTime, double price, Driver driver, Set<Passenger> passengers, List<Path> paths, int estimatedTime, Set<RideReview> rideReviews, RideStatus status, Rejection rejection, Boolean isPanicPressed, Boolean includesBabies, Boolean includesPets, VehicleTypePrice vehicleTypePrice) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.totalCost = price;
@@ -99,6 +96,6 @@ public class Ride {
         this.isPanicPressed = isPanicPressed;
         this.babyTransport = includesBabies;
         this.petTransport = includesPets;
-        this.vehicleCategoryPrice = vehicleCategoryPrice;
+        this.vehicleTypePrice = vehicleTypePrice;
     }
 }
