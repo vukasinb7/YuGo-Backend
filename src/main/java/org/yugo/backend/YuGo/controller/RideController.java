@@ -118,14 +118,14 @@ public class RideController {
             value = "/{id}/panic",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<PanicSimplifiedOut> addPanic(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
+    public ResponseEntity<PanicOut> addPanic(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
         Ride ride= rideService.get(id).get();
         Panic panic= new Panic(new Passenger(),ride, LocalDateTime.now(), reasonIn.getReason());
         ride.setIsPanicPressed(true);
         rideService.insert(ride);
         panicService.insert(panic);
 
-        return new ResponseEntity<>(new PanicSimplifiedOut(panic), HttpStatus.OK);
+        return new ResponseEntity<>(new PanicOut(panic), HttpStatus.OK);
     }
 
     @PutMapping(
