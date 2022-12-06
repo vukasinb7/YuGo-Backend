@@ -84,7 +84,12 @@ public class ReviewController {
         for (Passenger passenger:rideService.get(id).get().getPassengers()) {
             RideReview vehicleReviews = reviewService.getVehicleReviewsByRideByPassenger(id,passenger.getId());
             RideReview driverReviews = reviewService.getDriverReviewsByRideByPassenger(id,passenger.getId());
-            result.add(new AcumulatedReviewsOut(vehicleReviews,driverReviews));
+            AcumulatedReviewsOut acumulatedReviewsOut= new AcumulatedReviewsOut();
+            if (vehicleReviews!=null)
+                acumulatedReviewsOut.setVehicleReviews(new ReviewOut(vehicleReviews));
+            if (driverReviews!=null)
+                acumulatedReviewsOut.setDriverReviews(new ReviewOut(driverReviews));
+            result.add(acumulatedReviewsOut);
 
         }
 

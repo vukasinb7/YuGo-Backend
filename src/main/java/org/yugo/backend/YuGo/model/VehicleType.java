@@ -1,5 +1,5 @@
 package org.yugo.backend.YuGo.model;
 
-public enum VehicleCategory {
+public enum VehicleType {
     STANDARD, LUX, VAN
 }
