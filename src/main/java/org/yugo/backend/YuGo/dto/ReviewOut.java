@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.RideReview;
-import org.yugo.backend.YuGo.model.VehicleReview;
 
 @NoArgsConstructor
 public class ReviewOut {
@@ -15,14 +14,11 @@ public class ReviewOut {
     private int rating;
 
     @Getter @Setter
-    private String review;
+    private String comment;
 
     public ReviewOut(Integer id, int rating, String review) {
         this.id = id;
         this.rating = rating;
-        this.review = review;
-    }
-    public ReviewOut(VehicleReview vehicleReview){
-        this(vehicleReview.getId(),vehicleReview.getRating(),vehicleReview.getComment());
+        this.comment = review;
     }
 }

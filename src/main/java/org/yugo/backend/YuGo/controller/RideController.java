@@ -50,7 +50,7 @@ public class RideController {
             passengers.add(passengerService.get(user.getId()).get());
         }
         Driver driver= (Driver) driverService.getDriver(2).get();
-        Ride ride= new Ride(LocalDateTime.now(),LocalDateTime.now(),100,driver,passengers,rideIn.getLocations().stream().map(PathMapper::fromDTOtoPath).toList(),10,new HashSet<>(),new HashSet<>(),RideStatus.PENDING,null,false,rideIn.isBabyTransport(),rideIn.isPetTransport(),null);
+        Ride ride= new Ride(LocalDateTime.now(),LocalDateTime.now(),100,driver,passengers,rideIn.getLocations().stream().map(PathMapper::fromDTOtoPath).toList(),10,new HashSet<>(),RideStatus.PENDING,null,false,rideIn.isBabyTransport(),rideIn.isPetTransport(),null);
         rideService.insert(ride);
         return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
     }
@@ -80,7 +80,7 @@ public class RideController {
     }
 
     @PutMapping(
-            value = "/{id}",
+            value = "/{id}/withdraw",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<RideDetailedOut> cancelRide(@PathVariable Integer id){
@@ -89,7 +89,7 @@ public class RideController {
             ride.setStatus(RideStatus.CANCELED);
             rideService.insert(ride);
         }
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(new RideDetailedOut(ride), HttpStatus.OK);
     }
 
     @PutMapping(
