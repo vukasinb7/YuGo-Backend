@@ -120,7 +120,7 @@ public class RideController {
     )
     public ResponseEntity<PanicOut> addPanic(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
         Ride ride= rideService.get(id).get();
-        Panic panic= new Panic(new Passenger(),ride, LocalDateTime.now(), reasonIn.getReason());
+        Panic panic= new Panic(passengerService.get(1).get(),ride, LocalDateTime.now(), reasonIn.getReason());
         ride.setIsPanicPressed(true);
         rideService.insert(ride);
         panicService.insert(panic);

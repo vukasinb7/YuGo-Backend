@@ -22,8 +22,6 @@ public class PanicOut {
     @Getter @Setter
     LocalDateTime time;
     @Getter @Setter
-    private List<PathInOut> locations;
-    @Getter @Setter
     String reason;
 
     public PanicOut(Integer id, User user, Ride ride, LocalDateTime time, String reason) {
@@ -31,7 +29,6 @@ public class PanicOut {
         this.user = UserDetailedMapper.fromUsertoDTO(user);
         this.ride = RideMapper.fromRidetoDTO(ride);
         this.time = time;
-        this.locations = ride.getLocations().stream().map(PathMapper::fromPathtoDTO).toList();
         this.reason = reason;
     }
 
@@ -40,7 +37,6 @@ public class PanicOut {
         this.user = UserDetailedMapper.fromUsertoDTO(panic.getUser());
         this.ride = RideMapper.fromRidetoDTO(panic.getRide());
         this.time = panic.getTime();
-        this.locations = panic.getRide().getLocations().stream().map(PathMapper::fromPathtoDTO).toList();
         this.reason = panic.getReason();
     }
 }
