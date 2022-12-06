@@ -82,8 +82,8 @@ public class UserController {
             value = "/{id}/message",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestParam(name = "senderId") Integer senderId, @RequestBody MessageIn messageIn){
-        Optional<User> senderOpt = userService.getUser(senderId);
+    public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestBody MessageIn messageIn){
+        Optional<User> senderOpt = userService.getUser(2);
         Optional<User> receiverOpt = userService.getUser(id);
         if (senderOpt.isPresent() && receiverOpt.isPresent()) {
             Message msg = new Message(senderOpt.get(), receiverOpt.get(),

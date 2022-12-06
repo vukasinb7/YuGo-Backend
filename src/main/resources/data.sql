@@ -23,3 +23,9 @@ INSERT INTO PATHS (starting_point, destination, path_id) VALUES ('1', '2', '1');
 
 INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
 VALUES ('1','1');
+
+INSERT INTO PANICS (reason, time_pressed, ride_id, user_id) VALUES ('testtest', '2022-12-05 23:35:33.172279', '1', '1');
+
+INSERT INTO MESSAGES (message_content, message_type, sending_time, receiver_id, ride_id, sender_id) VALUES ('testtest', 'RIDE', '2022-12-05 23:35:33.172279', '1', '1', '2');
+
+INSERT INTO NOTES (date, message, user_id) VALUES ('2022-12-05 23:35:33.172279', 'testtest', 1);
