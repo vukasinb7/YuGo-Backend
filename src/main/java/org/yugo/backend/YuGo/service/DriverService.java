@@ -18,7 +18,7 @@ public interface DriverService {
     List<User> getAllDrivers();
     Page<User> getDriversPage(Pageable page);
 
-    Optional<User> getDriver(Integer id);
+    Optional<Driver> getDriver(Integer id);
 
     WorkTime insertWorkTime(Integer driverId, WorkTime workTime);
 

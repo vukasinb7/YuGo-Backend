@@ -54,7 +54,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<UserDetailedInOut> getDriver(@PathVariable Integer id){
-        Driver driver = (Driver) driverService.getDriver(id).orElse(null);
+        Driver driver = driverService.getDriver(id).orElse(null);
         if(driver == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -67,9 +67,9 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<VehicleOut> getVehicle(@PathVariable Integer id){
-        Optional<User> driverOpt = driverService.getDriver(id);
+        Optional<Driver> driverOpt = driverService.getDriver(id);
 
-        if(driverOpt.isEmpty() || driverOpt.get().getClass() != Driver.class){
+        if(driverOpt.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         Driver driver = (Driver) driverOpt.get();
@@ -82,8 +82,8 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<VehicleOut> createVehicle(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
-        Optional<User> driverOpt = driverService.getDriver(id);
-        if(driverOpt.isEmpty() || driverOpt.get().getClass() != Driver.class){
+        Optional<Driver> driverOpt = driverService.getDriver(id);
+        if(driverOpt.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         Driver driver = (Driver)driverOpt.get();
@@ -97,8 +97,8 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<DocumentOut> createDocument(@PathVariable Integer id, @RequestBody DocumentIn documentIn){
-        Optional<User> driverOpt = driverService.getDriver(id);
-        if(driverOpt.isEmpty() || driverOpt.get().getClass() != Driver.class){
+        Optional<Driver> driverOpt = driverService.getDriver(id);
+        if(driverOpt.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         Driver driver = (Driver)driverOpt.get();
@@ -113,8 +113,8 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<Iterable<DocumentOut>> getDocuments(@PathVariable Integer id){
-        Optional<User> driverOpt = driverService.getDriver(id);
-        if(driverOpt.isEmpty() || driverOpt.get().getClass() != Driver.class){
+        Optional<Driver> driverOpt = driverService.getDriver(id);
+        if(driverOpt.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         Driver driver = (Driver) driverOpt.get();
@@ -130,8 +130,8 @@ public class DriverController {
             value = "/{id}/documents"
     )
     ResponseEntity<Void> deleteDocuments(@PathVariable Integer id){
-        Optional<User> driverOpt = driverService.getDriver(id);
-        if(driverOpt.isEmpty() || driverOpt.get().getClass() != Driver.class){
+        Optional<Driver> driverOpt = driverService.getDriver(id);
+        if(driverOpt.isEmpty()){
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
         documentService.deleteAllForDriver(id);
@@ -153,7 +153,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<UserDetailedInOut> updateDriver(@PathVariable Integer id, @RequestBody UserDetailedIn driverDTO){
-        Driver driver = (Driver) UserDetailedMapper.fromDTOtoDriver(driverDTO);
+        Driver driver = UserDetailedMapper.fromDTOtoDriver(driverDTO);
         driver.setId(id);
         User userUpdated = driverService.updateDriver(driver);
         if(userUpdated == null){
@@ -168,8 +168,8 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<VehicleOut> updateVehicle(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
-        Optional<User> driverOpt = driverService.getDriver(id);
-        if(driverOpt.isEmpty() || driverOpt.get().getClass() != Driver.class){
+        Optional<Driver> driverOpt = driverService.getDriver(id);
+        if(driverOpt.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         Driver driver = (Driver) driverOpt.get();
@@ -188,8 +188,8 @@ public class DriverController {
                                                       @RequestParam(name = "size") int size,
                                                       @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
                                                       @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
-        Optional<User> driverOpt = driverService.getDriver(id);
-        if(driverOpt.isEmpty() || driverOpt.get().getClass() != Driver.class){
+        Optional<Driver> driverOpt = driverService.getDriver(id);
+        if(driverOpt.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 

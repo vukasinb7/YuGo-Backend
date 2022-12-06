@@ -42,8 +42,8 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Optional<User> getDriver(Integer id) {
-        return userRepository.findById(id);
+    public Optional<Driver> getDriver(Integer id) {
+        return userRepository.findDriverById(id);
     }
 
     @Override
