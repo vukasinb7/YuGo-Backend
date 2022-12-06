@@ -1,9 +1,11 @@
 package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.User;
 
+@NoArgsConstructor
 public class UserDetailedOut {
     @Getter
     @Setter
