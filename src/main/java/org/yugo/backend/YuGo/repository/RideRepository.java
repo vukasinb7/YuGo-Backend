@@ -32,6 +32,6 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
                                @Param("fromTime") LocalDateTime fromTime,
                                @Param("toTime") LocalDateTime toTime, Pageable page);
 
-    @Query(value = "SELECT ride FROM Ride ride WHERE ride.driver.id = ?1 and ride.startTime >= ?2 and ride.endTime < ?3 ORDER BY ride.id")
+    @Query(value = "SELECT ride FROM Ride ride WHERE ride.driver.id = ?1 and ride.startTime >= ?2 and ride.endTime < ?3")
     Page<Ride> findRidesByDriverAndStartTimeAndEndTimePageable(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
 }

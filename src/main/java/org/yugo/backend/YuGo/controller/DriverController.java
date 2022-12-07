@@ -3,6 +3,7 @@ package org.yugo.backend.YuGo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,11 +18,10 @@ import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.RideService;
 import org.yugo.backend.YuGo.service.VehicleService;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/driver")
@@ -234,9 +234,12 @@ public class DriverController {
     ResponseEntity<AllRidesOut> getRidesForDriver(@PathVariable(value = "id") Integer id,
                                                   @RequestParam(name = "page") int page,
                                                   @RequestParam(name = "size") int size,
+                                                  @RequestParam(name = "sort", required = false) String sort,
                                                   @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
                                                   @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
-        Page<Ride> rides = rideService.getRidesByDriverPage(id, PageRequest.of(page, size), from, to);
+        PageRequest pageRequest;
+        pageRequest = PageRequest.of(page, size, Sort.by(Objects.requireNonNullElse(sort, "id")));
+        Page<Ride> rides = rideService.getRidesByDriverPage(id, pageRequest, from, to);
         return new ResponseEntity<>(new AllRidesOut(rides), HttpStatus.OK);
     }
 
