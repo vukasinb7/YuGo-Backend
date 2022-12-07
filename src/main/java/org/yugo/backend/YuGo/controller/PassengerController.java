@@ -57,8 +57,8 @@ public class PassengerController {
         return new ResponseEntity<>(new AllPassengersOut(passengers), HttpStatus.OK);
     }
 
-    @PostMapping(
-            value = "/{activationId}",
+    @GetMapping(
+            value = "/activate/{activationId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity activatePassenger(@PathVariable Integer activationId){
