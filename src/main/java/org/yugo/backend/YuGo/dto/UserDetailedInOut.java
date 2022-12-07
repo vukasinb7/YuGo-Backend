@@ -14,7 +14,7 @@ public class UserDetailedInOut {
     private String name;
 
     @Getter @Setter
-    private String surName;
+    private String surname;
 
     @Getter @Setter
     private String profilePicture;
@@ -28,11 +28,11 @@ public class UserDetailedInOut {
     @Getter @Setter
     private String address;
 
-    public UserDetailedInOut(Integer id, String name, String surName, String profilePicture, String telephoneNumber, String email, String address) {
+    public UserDetailedInOut(Integer id, String name, String surname, String profilePicture, String telephoneNumber, String email, String address) {
         super();
         this.id = id;
         this.name = name;
-        this.surName = surName;
+        this.surname = surname;
         this.profilePicture = profilePicture;
         this.telephoneNumber = telephoneNumber;
         this.email = email;
@@ -40,6 +40,6 @@ public class UserDetailedInOut {
     }
 
     public UserDetailedInOut(User user) {
-        this(user.getId(), user.getName(), user.getSurName(), user.getProfilePicture(), user.getTelephoneNumber(), user.getEmail(), user.getAddress());
+        this(user.getId(), user.getName(), user.getSurname(), user.getProfilePicture(), user.getTelephoneNumber(), user.getEmail(), user.getAddress());
     }
 }

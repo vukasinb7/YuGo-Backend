@@ -50,7 +50,7 @@ public class VehicleOut {
         this(
                 vehicle.getId(),
                 vehicle.getDriver().getId(),
-                vehicle.getVehicleCategory().toString(),
+                vehicle.getVehicleType().toString(),
                 vehicle.getModel(),
                 vehicle.getLicencePlateNumber(),
                 new LocationInOut(vehicle.getCurrentLocation()),

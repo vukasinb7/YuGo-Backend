@@ -19,7 +19,7 @@ public class MessageMapper {
         return modelMapper.map(dto, Message.class);
     }
 
-    public static MessageOut fromMessagetoDTO(Message dto) {
-        return modelMapper.map(dto, MessageOut.class);
+    public static MessageOut fromMessagetoDTO(Message message) {
+        return modelMapper.map(message, MessageOut.class);
     }
 }

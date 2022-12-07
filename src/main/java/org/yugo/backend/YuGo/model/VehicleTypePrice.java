@@ -7,19 +7,16 @@ import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "VehicleCategoryPrices")
-public class VehicleCategoryPrice {
-
+@Table(name = "VehicleTypePrices")
+public class VehicleTypePrice {
     @Getter @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Getter @Setter
-    @Column(name = "category", nullable = false)
-    private VehicleCategory name;
-
+    @Column(name = "type", nullable = false)
+    private VehicleType vehicleType;
     @Getter @Setter
     @Column(name = "price_per_km", nullable = false)
     private double pricePerKM;

@@ -6,7 +6,7 @@ import lombok.Setter;
 import org.yugo.backend.YuGo.model.WorkTime;
 
 @NoArgsConstructor
-public class WorkingTimeOut {
+public class WorkTimeOut {
     @Getter @Setter
     private Integer id;
 
@@ -16,13 +16,13 @@ public class WorkingTimeOut {
     @Getter @Setter
     private String end;
 
-    public WorkingTimeOut(Integer id, String start, String end) {
+    public WorkTimeOut(Integer id, String start, String end) {
         this.id = id;
         this.start = start;
         this.end = end;
     }
 
-    public WorkingTimeOut(WorkTime workTime){
+    public WorkTimeOut(WorkTime workTime){
         this(workTime.getId(), workTime.getStartTime().toString(), workTime.getEndTime().toString());
     }
 }

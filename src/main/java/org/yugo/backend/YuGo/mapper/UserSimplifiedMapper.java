@@ -19,7 +19,7 @@ public class UserSimplifiedMapper {
         return modelMapper.map(dto, User.class);
     }
 
-    public static UserSimplifiedOut fromUsertoDTO(User dto) {
-        return modelMapper.map(dto, UserSimplifiedOut.class);
+    public static UserSimplifiedOut fromUsertoDTO(User user) {
+        return modelMapper.map(user, UserSimplifiedOut.class);
     }
 }

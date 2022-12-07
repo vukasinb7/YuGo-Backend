@@ -9,17 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RideService {
-    List<Ride> getAll();
-
+    Ride insert(Ride ride);
     Optional<Ride> get(Integer id);
 
-    public Ride getActiveRideByDriver(Integer id);
-
-    public Ride getActiveRideByPassenger(Integer id);
-
-    public Ride insert(Ride ride);
-
-    public Page<Ride> getPassengerRides(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page);
-
-    public Page<Ride> getUserRides(Integer userID, LocalDateTime from, LocalDateTime to, Pageable page);
+    public Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
+    List<Ride> getAll();
+    Ride getActiveRideByDriver(Integer id);
+    Ride getActiveRideByPassenger(Integer id);
+    Page<Ride> getPassengerRides(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page);
+    Page<Ride> getUserRides(Integer userID, LocalDateTime from, LocalDateTime to, Pageable page);
 }

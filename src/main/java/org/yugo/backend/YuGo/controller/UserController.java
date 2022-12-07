@@ -19,6 +19,7 @@ import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.service.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -29,35 +30,35 @@ public class UserController {
     private final NoteService noteService;
 
     @Autowired
-    public UserController(UserServiceImpl userServiceImpl, MessageServiceImpl messageServiceImpl,
-                          RideServiceImpl rideServiceImpl, NoteServiceImpl noteServiceImpl){
-        this.userService = userServiceImpl;
-        this.messageService = messageServiceImpl;
-        this.rideService = rideServiceImpl;
-        this.noteService = noteServiceImpl;
+    public UserController(UserService userService, MessageService messageService,
+                          RideService rideService, NoteService noteService){
+        this.userService = userService;
+        this.messageService = messageService;
+        this.rideService = rideService;
+        this.noteService = noteService;
     }
 
     @GetMapping(
             value = "/{id}/ride",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<AllRidesOut> getUserRides(@PathVariable Integer id, @RequestParam int page,
-                                             @RequestParam int size, @RequestParam String sort,
-                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
+    ResponseEntity<AllRidesOut> getUserRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
+                                             @RequestParam(name = "size") int size, @RequestParam(name = "sort") String sort,
+                                             @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+                                             @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
         Page<Ride> rides = rideService.getUserRides(id, from, to,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
-        return new ResponseEntity<>(new AllRidesOut(rides.stream()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllRidesOut(rides), HttpStatus.OK);
     }
 
     @GetMapping(
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam int page, @RequestParam int size){
+    public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size){
         Page<User> users = userService.getUsersPage(PageRequest.of(page, size));
-        return new ResponseEntity<>(new AllUsersOut(users.get()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllUsersOut(users), HttpStatus.OK);
     }
 
     @PostMapping(
@@ -74,19 +75,24 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<AllUserMessagesOut> getUserMessages(@PathVariable Integer id){
-        return new ResponseEntity<>(new AllUserMessagesOut(messageService.getUserMessages(id).stream()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllUserMessagesOut(messageService.getUserMessages(id)), HttpStatus.OK);
     }
 
     @PostMapping(
             value = "/{id}/message",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<MessageOut> sendUserMessages(@PathVariable Integer id, @RequestParam Integer receiverId, @RequestBody MessageIn messageIn){
-        Message msg = new Message(userService.getUser(id).get(), userService.getUser(receiverId).get(),
-                messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
-                null);
-        messageService.insert(msg);
-        return new ResponseEntity<>(MessageMapper.fromMessagetoDTO(msg), HttpStatus.OK);
+    public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestBody MessageIn messageIn){
+        Optional<User> senderOpt = userService.getUser(2);
+        Optional<User> receiverOpt = userService.getUser(id);
+        if (senderOpt.isPresent() && receiverOpt.isPresent()) {
+            Message msg = new Message(senderOpt.get(), receiverOpt.get(),
+                    messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
+                    null);
+            messageService.insert(msg);
+            return new ResponseEntity<>(MessageMapper.fromMessagetoDTO(msg), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(
@@ -94,8 +100,10 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity blockUser(@PathVariable Integer id){
-        userService.blockUser(id);
-        return new ResponseEntity<>(null , HttpStatus.NO_CONTENT);
+        if (userService.blockUser(id)) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(
@@ -103,8 +111,10 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity unblockUser(@PathVariable Integer id){
-        userService.unblockUser(id);
-        return new ResponseEntity<>(null , HttpStatus.NO_CONTENT);
+        if (userService.unblockUser(id)) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @PostMapping(
@@ -112,17 +122,22 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<NoteOut> createNote(@PathVariable Integer id, @RequestBody NoteIn noteIn){
-        Note note = new Note(userService.getUser(id).get(), noteIn.getMessage(), LocalDateTime.now());
-        noteService.insert(note);
-        return new ResponseEntity<>(NoteMapper.fromNotetoDTO(note), HttpStatus.OK);
+        Optional<User> userOpt = userService.getUser(id);
+        if (userOpt.isPresent()){
+            Note note = new Note(userOpt.get(), noteIn.getMessage(), LocalDateTime.now());
+            noteService.insert(note);
+            return new ResponseEntity<>(NoteMapper.fromNotetoDTO(note), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(
             value = "/{id}/note",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AllNotesOut> getUserNotes(@PathVariable Integer id, @RequestParam int page, @RequestParam int size){
+    public ResponseEntity<AllNotesOut> getUserNotes(@PathVariable Integer id, @RequestParam(name = "page") int page,
+                                                    @RequestParam(name = "size") int size){
         Page<Note> notes = noteService.getUserNotes(id, PageRequest.of(page, size));
-        return new ResponseEntity<>(new AllNotesOut(notes.get()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllNotesOut(notes), HttpStatus.OK);
     }
 }

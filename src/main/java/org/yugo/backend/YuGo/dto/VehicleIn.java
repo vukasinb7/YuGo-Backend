@@ -3,13 +3,13 @@ package org.yugo.backend.YuGo.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.yugo.backend.YuGo.model.VehicleCategory;
+import org.yugo.backend.YuGo.model.VehicleType;
 
 @NoArgsConstructor
 public class VehicleIn {
 
     @Getter @Setter
-    private VehicleCategory vehicleCategory;
+    private VehicleType vehicleType;
 
     @Getter @Setter
     private String model;
@@ -29,8 +29,8 @@ public class VehicleIn {
     @Getter @Setter
     private Boolean petTransport;
 
-    public VehicleIn(VehicleCategory vehicleCategory, String model, String licenseNumber, LocationInOut currentLocation, int passengerSeats, Boolean babyTransport, Boolean petTransport) {
-        this.vehicleCategory = vehicleCategory;
+    public VehicleIn(VehicleType vehicleType, String model, String licenseNumber, LocationInOut currentLocation, int passengerSeats, Boolean babyTransport, Boolean petTransport) {
+        this.vehicleType = vehicleType;
         this.model = model;
         this.licenseNumber = licenseNumber;
         this.currentLocation = currentLocation;

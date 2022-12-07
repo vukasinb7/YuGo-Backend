@@ -1,7 +1,7 @@
 package org.yugo.backend.YuGo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.yugo.backend.YuGo.model.VehicleCategoryPrice;
+import org.yugo.backend.YuGo.model.VehicleTypePrice;
 
-public interface VehicleTypeRepository extends JpaRepository<VehicleCategoryPrice,Integer> {
+public interface VehicleTypeRepository extends JpaRepository<VehicleTypePrice,Integer> {
 }

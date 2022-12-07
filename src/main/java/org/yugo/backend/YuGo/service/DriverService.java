@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.model.User;
+import org.yugo.backend.YuGo.model.Vehicle;
 import org.yugo.backend.YuGo.model.WorkTime;
 
 import java.time.LocalDateTime;
@@ -17,13 +18,15 @@ public interface DriverService {
     List<User> getAllDrivers();
     Page<User> getDriversPage(Pageable page);
 
-    Optional<User> getDriver(Integer id);
+    Optional<Driver> getDriver(Integer id);
 
-    WorkTime insertWorkTime(WorkTime workTime);
+    WorkTime insertWorkTime(Integer driverId, WorkTime workTime);
 
     List<WorkTime> getAllWorkTimes();
 
     Optional<WorkTime> getWorkTime(Integer id);
 
     Page<WorkTime> getDriverWorkingTimesPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
+    WorkTime updateWorkTime(WorkTime workTime);
+    Vehicle changeVehicle(Driver driver, Vehicle vehicle);
 }

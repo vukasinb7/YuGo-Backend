@@ -2,24 +2,24 @@ package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 import org.yugo.backend.YuGo.mapper.RideMapper;
 import org.yugo.backend.YuGo.model.Ride;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public class AllRidesOut {
     @Getter
     @Setter
-    private int totalCount;
+    private long totalCount;
 
     @Getter @Setter
-    private List<RideOut> results;
+    private List<RideDetailedOut> results;
 
-    public AllRidesOut(Stream<Ride> rideStream){
-        this.results = rideStream
+    public AllRidesOut(Page<Ride> rides){
+        this.results = rides.stream()
                 .map(RideMapper::fromRidetoDTO)
                 .toList();
-        this.totalCount = results.size();
+        this.totalCount = rides.getTotalElements();
     }
 }

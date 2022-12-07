@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.dto.VehicleIn;
 
-import java.util.HashSet;
-import java.util.Set;
-
 
 @Entity
 @NoArgsConstructor
@@ -27,8 +24,8 @@ public class Vehicle {
     private Driver driver;
 
     @Getter @Setter
-    @Column(name = "vehicle_category")
-    private VehicleCategory vehicleCategory;
+    @Column(name = "vehicle_type")
+    private VehicleType vehicleType;
 
     @Getter @Setter
     @Column(name = "model", nullable = false)
@@ -55,12 +52,8 @@ public class Vehicle {
     @Column(name = "are_pets_allowed", nullable = false)
     private Boolean arePetsAllowed;
 
-    @Getter @Setter
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<VehicleReview> reviews = new HashSet<VehicleReview>();
-
     public Vehicle(VehicleIn vehicleIn){
-        this.vehicleCategory = vehicleIn.getVehicleCategory();
+        this.vehicleType = vehicleIn.getVehicleType();
         this.model = vehicleIn.getModel();
         this.licencePlateNumber = vehicleIn.getLicenseNumber();
         Location location = new Location();

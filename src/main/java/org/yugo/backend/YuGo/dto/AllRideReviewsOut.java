@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 import org.yugo.backend.YuGo.mapper.RideReviewMapper;
 import org.yugo.backend.YuGo.model.RideReview;
 
@@ -17,11 +18,11 @@ public class AllRideReviewsOut {
     private List<ReviewOut> results;
 
 
-    public AllRideReviewsOut(Stream<RideReview> reviews){
-        this.results = reviews
+    public AllRideReviewsOut(List<RideReview> reviews){
+        this.results = reviews.stream()
                 .map(RideReviewMapper::fromRideReviewtoDTO)
                 .toList();
 
-        this.totalCount = results.size();
+        this.totalCount = reviews.size();
     }
 }

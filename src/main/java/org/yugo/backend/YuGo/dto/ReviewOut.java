@@ -3,8 +3,8 @@ package org.yugo.backend.YuGo.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.RideReview;
-import org.yugo.backend.YuGo.model.VehicleReview;
 
 @NoArgsConstructor
 public class ReviewOut {
@@ -15,17 +15,19 @@ public class ReviewOut {
     private int rating;
 
     @Getter @Setter
-    private String review;
+    private String comment;
 
-    public ReviewOut(Integer id, int rating, String review) {
+    @Getter @Setter
+    private UserSimplifiedOut passenger;
+
+    public ReviewOut(Integer id, int rating, String review, Passenger passenger) {
         this.id = id;
         this.rating = rating;
-        this.review = review;
+        this.comment = review;
+        this.passenger=new UserSimplifiedOut(passenger);
     }
-    public ReviewOut(VehicleReview vehicleReview){
-        this(vehicleReview.getId(),vehicleReview.getRating(),vehicleReview.getComment());
-    }
-    public ReviewOut(RideReview rideReview){
-        this(rideReview.getId(),rideReview.getRating(),rideReview.getComment());
+
+    public ReviewOut(RideReview vehicleReview) {
+        this(vehicleReview.getId(), vehicleReview.getRating(), vehicleReview.getComment(),vehicleReview.getPassenger());
     }
 }

@@ -10,6 +10,7 @@ import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Integer> {
     @Query(value = "SELECT * FROM USERS u WHERE u.user_type = 2",
@@ -19,15 +20,11 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Query(value = "SELECT * FROM USERS WHERE user_type = 2", nativeQuery = true)
     public Page<User> findAllDrivers(Pageable page);
 
-    @Query(value = "SELECT * FROM USERS u WHERE u.user_type = 1",
-            nativeQuery = true)
-    public List<User> findAllPassengers();
-
-    @Query(value = "SELECT * FROM USERS WHERE user_type = 1", nativeQuery = true)
-    public Page<User> findAllPassengers(Pageable page);
-
     @Query(value = "SELECT * FROM USERS", nativeQuery = true)
     public Page<User> findAllUsers(Pageable page);
+
+    @Query(value = "SELECT * FROM USERS WHERE user_type = 2 AND id=?1", nativeQuery = true)
+    public Optional<Driver> findDriverById(Integer id);
 
     @Query(value = "SELECT * FROM USERS WHERE email = :email AND password = :password AND is_blocked = false AND is_active = true", nativeQuery = true)
     public User authenticateUser(@Param("email") String email,@Param("password") String password);

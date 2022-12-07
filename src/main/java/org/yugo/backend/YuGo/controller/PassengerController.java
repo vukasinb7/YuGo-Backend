@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,10 +30,10 @@ public class PassengerController {
     private final RideService rideService;
 
     @Autowired
-    public PassengerController(PassengerServiceImpl passengerServiceImpl, UserServiceImpl userServiceImpl, RideServiceImpl rideServiceImpl){
-        this.passengerService = passengerServiceImpl;
-        this.userService = userServiceImpl;
-        this.rideService = rideServiceImpl;
+    public PassengerController(PassengerService passengerService, UserService userService, RideService rideService){
+        this.passengerService = passengerService;
+        this.userService = userService;
+        this.rideService = rideService;
     }
 
     @PostMapping(
@@ -51,22 +52,20 @@ public class PassengerController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AllUsersOut> getAllPassengers(@RequestParam int page, @RequestParam int size){
-        Page<User> passengers = passengerService.getPassengersPage(PageRequest.of(page, size));
-        return new ResponseEntity<>(new AllUsersOut(passengers.get()), HttpStatus.OK);
+    public ResponseEntity<AllPassengersOut> getAllPassengers(@RequestParam int page, @RequestParam(name = "size") int size){
+        Page<Passenger> passengers = passengerService.getPassengersPage(PageRequest.of(page, size));
+        return new ResponseEntity<>(new AllPassengersOut(passengers), HttpStatus.OK);
     }
 
-    @PostMapping(
-            value = "/{activationId}",
+    @GetMapping(
+            value = "/activate/{activationId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity activatePassenger(@PathVariable Integer activationId){
-        Optional<UserActivation> userActivation = userService.getUserActivation(activationId);
-        if (userActivation.isPresent()){
-            userActivation.get().getUser().setActive(true);
-            userService.insertUser(userActivation.get().getUser());
+        if (userService.activateUser(activationId)){
+            return new ResponseEntity<>(null, HttpStatus.OK);
         }
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(
@@ -74,37 +73,37 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<UserDetailedInOut> getPassenger(@PathVariable Integer id){
-        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passengerService.get(id).get()), HttpStatus.OK);
+        Optional<Passenger> passengerOpt = passengerService.get(id);
+        if (passengerOpt.isPresent()){
+            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passengerOpt.get()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody UserDetailedIn updatedUser, @PathVariable Integer id){
-        User user = passengerService.get(id).get();
-        user.setName(updatedUser.getName());
-        user.setSurName(updatedUser.getSurName());
-        user.setProfilePicture(updatedUser.getProfilePicture());
-        user.setTelephoneNumber(updatedUser.getTelephoneNumber());
-        user.setEmail(updatedUser.getEmail());
-        user.setAddress(updatedUser.getAddress());
-        user.setPassword(updatedUser.getPassword());
-        passengerService.insert(user);
-        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(user), HttpStatus.OK);
+    public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody UserDetailedIn updatedUserDTO, @PathVariable Integer id){
+        Passenger updateForPassenger = new Passenger(updatedUserDTO);
+        Passenger updatedPassenger = passengerService.update(id, updateForPassenger);
+        if (updatedPassenger != null){
+            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedPassenger), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(
             value = "/{id}/ride",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<AllRidesOut> getPassengerRides(@PathVariable Integer id, @RequestParam int page,
-                                                  @RequestParam int size, @RequestParam String sort,
-                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
+    ResponseEntity<AllRidesOut> getPassengerRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
+                                                  @RequestParam(name = "size") int size, @RequestParam(name = "sort") String sort,
+                                                  @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+                                                  @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
         Page<Ride> rides = rideService.getPassengerRides(id, from, to,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
-        return new ResponseEntity<>(new AllRidesOut(rides.stream()), HttpStatus.OK);
+        return new ResponseEntity<>(new AllRidesOut(rides), HttpStatus.OK);
     }
 }

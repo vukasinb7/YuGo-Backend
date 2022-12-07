@@ -25,7 +25,6 @@ public class MessageOut {
     private Integer rideId;
 
     public MessageOut(Integer id, LocalDateTime timeOfSending, Integer senderId, Integer receiverId, String message, String type, Integer rideId) {
-        super();
         this.id = id;
         this.timeOfSending = timeOfSending;
         this.senderId = senderId;
@@ -36,7 +35,7 @@ public class MessageOut {
     }
 
     public MessageOut(Message message) {
-        this(message.getId(), message.getSendingTime(), message.getSender().getId(), message.getReceiver().getId(),
+        this(message.getId(), message.getTimeOfSending(), message.getSender().getId(), message.getReceiver().getId(),
                 message.getMessageContent(), message.getMessageType().toString(), message.getRide().getId());
     }
 }

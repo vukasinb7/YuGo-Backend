@@ -64,10 +64,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean blockUser(Integer userId){
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()){
-            user.get().setBlocked(true);
-            userRepository.save( user.get());
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()){
+            User user = userOpt.get();
+            user.setBlocked(true);
+            userRepository.save(user);
             return true;
         }
         return false;
@@ -75,10 +76,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean unblockUser(Integer userId){
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()){
-            user.get().setBlocked(false);
-            userRepository.save( user.get());
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()){
+            User user = userOpt.get();
+            user.setBlocked(false);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean activateUser(Integer activationId){
+        Optional<UserActivation> userActivationOpt = userActivationRepository.findById(activationId);
+        if (userActivationOpt.isPresent()){
+            UserActivation userActivation = userActivationOpt.get();
+            userActivation.getUser().setActive(true);
+            userActivationRepository.save(userActivation);
             return true;
         }
         return false;

@@ -3,10 +3,12 @@ package org.yugo.backend.YuGo.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.yugo.backend.YuGo.model.User;
 
 @NoArgsConstructor
-public class UserDetailedIn {
-    @Getter @Setter
+public class UserDetailedOut {
+    @Getter
+    @Setter
     private String name;
 
     @Getter @Setter
@@ -24,16 +26,21 @@ public class UserDetailedIn {
     @Getter @Setter
     private String address;
 
-    @Getter @Setter
-    private String password;
 
-    public UserDetailedIn(String name, String surname, String profilePicture, String telephoneNumber, String email, String address, String password) {
+    public UserDetailedOut(String name, String surname, String profilePicture, String telephoneNumber, String email, String address) {
         this.name = name;
         this.surname = surname;
         this.profilePicture = profilePicture;
         this.telephoneNumber = telephoneNumber;
         this.email = email;
         this.address = address;
-        this.password = password;
+    }
+    public UserDetailedOut(User user){
+        this.name=user.getName();
+        this.surname=user.getSurname();
+        this.profilePicture=user.getProfilePicture();
+        this.telephoneNumber=user.getTelephoneNumber();
+        this.email=user.getEmail();
+        this.address=user.getAddress();
     }
 }

@@ -19,6 +19,6 @@ public class UserSimplifiedOut {
     }
 
     public UserSimplifiedOut(User user) {
-        this(user.getId(), user.getName());
+        this(user.getId(), user.getEmail());
     }
 }

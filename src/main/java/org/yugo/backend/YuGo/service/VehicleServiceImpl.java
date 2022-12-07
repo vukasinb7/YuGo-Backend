@@ -3,11 +3,12 @@ package org.yugo.backend.YuGo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.model.Vehicle;
-import org.yugo.backend.YuGo.model.VehicleCategoryPrice;
+import org.yugo.backend.YuGo.model.VehicleTypePrice;
 import org.yugo.backend.YuGo.repository.VehicleRepository;
 import org.yugo.backend.YuGo.repository.VehicleTypeRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
@@ -26,6 +27,13 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.save(vehicle);
     }
 
+    @Override public Vehicle updateVehicle(Vehicle vehicle){
+        Optional<Vehicle> vehicleOpt = vehicleRepository.findById(vehicle.getId());
+        if(vehicleOpt.isEmpty()){
+            return null;
+        }
+        return vehicleRepository.save(vehicle);
+    }
     @Override
     public List<Vehicle> getAllVehicles(){
         return vehicleRepository.findAll();
@@ -38,17 +46,17 @@ public class VehicleServiceImpl implements VehicleService {
 
     /* =========================== VehicleType =========================== */
     @Override
-    public VehicleCategoryPrice insertVehicleType(VehicleCategoryPrice vehicleCategoryPrice){
-        return vehicleTypeRepository.save(vehicleCategoryPrice);
+    public VehicleTypePrice insertVehicleType(VehicleTypePrice vehicleTypePrice){
+        return vehicleTypeRepository.save(vehicleTypePrice);
     }
 
     @Override
-    public List<VehicleCategoryPrice> getAllVehicleTypes(){
+    public List<VehicleTypePrice> getAllVehicleTypes(){
         return vehicleTypeRepository.findAll();
     }
 
     @Override
-    public VehicleCategoryPrice getVehicleType(Integer id){
+    public VehicleTypePrice getVehicleType(Integer id){
         return vehicleTypeRepository.findById(id).orElse(null);
     }
 }
