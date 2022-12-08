@@ -28,13 +28,11 @@ import java.util.*;
 public class DriverController {
 
     private final DriverService driverService;
-    private final VehicleService vehicleService;
     private final DocumentService documentService;
     private final RideService rideService;
     @Autowired
-    public DriverController(DriverService driverService, VehicleService vehicleService, DocumentService documentService, RideService rideService) {
+    public DriverController(DriverService driverService, DocumentService documentService, RideService rideService) {
         this.driverService = driverService;
-        this.vehicleService = vehicleService;
         this.documentService = documentService;
         this.rideService = rideService;
     }
