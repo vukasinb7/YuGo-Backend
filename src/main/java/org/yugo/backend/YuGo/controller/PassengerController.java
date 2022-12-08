@@ -61,7 +61,7 @@ public class PassengerController {
             value = "/activate/{activationId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity activatePassenger(@PathVariable Integer activationId){
+    public ResponseEntity<Void> activatePassenger(@PathVariable Integer activationId){
         if (userService.activateUser(activationId)){
             return new ResponseEntity<>(null, HttpStatus.OK);
         }

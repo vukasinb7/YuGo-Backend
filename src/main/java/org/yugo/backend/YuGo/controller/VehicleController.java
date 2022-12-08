@@ -24,7 +24,7 @@ public class VehicleController {
             value = "/{id}/location",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity changeLocation(@RequestBody LocationInOut locationInOut, @PathVariable Integer id){
+    public ResponseEntity<Void> changeLocation(@RequestBody LocationInOut locationInOut, @PathVariable Integer id){
         Vehicle vehicle=vehicleService.getVehicle(id);
         vehicle.setCurrentLocation(LocationMapper.fromDTOtoLocation(locationInOut));
         return new ResponseEntity<>(null, HttpStatus.OK);
