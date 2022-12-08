@@ -24,15 +24,13 @@ import java.util.List;
 @RequestMapping("/api/review")
 public class ReviewController {
     private final ReviewService reviewService;
-    private final VehicleService vehicleService;
     private final RideService rideService;
 
     private final PassengerService passengerService;
 
     @Autowired
-    public ReviewController(ReviewService reviewService, VehicleService vehicleService,RideService rideService, PassengerService passengerService){
+    public ReviewController(ReviewService reviewService,RideService rideService, PassengerService passengerService){
         this.reviewService=reviewService;
-        this.vehicleService=vehicleService;
         this.rideService=rideService;
         this.passengerService=passengerService;
     }
