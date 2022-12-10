@@ -17,6 +17,6 @@ public interface RideService {
     List<Ride> getAll();
     Ride getActiveRideByDriver(Integer id);
     Ride getActiveRideByPassenger(Integer id);
-    Page<Ride> getPassengerRides(Integer passengerID, LocalDate from, LocalDate to, Pageable page);
-    Page<Ride> getUserRides(Integer userID, LocalDate from, LocalDate to, Pageable page);
+    Page<Ride> getPassengerRides(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page);
+    Page<Ride> getUserRides(Integer userID, LocalDateTime from, LocalDateTime to, Pageable page);
 }

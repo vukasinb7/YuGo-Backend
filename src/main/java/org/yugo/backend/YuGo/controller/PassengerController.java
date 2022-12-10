@@ -23,6 +23,7 @@ import org.yugo.backend.YuGo.service.UserService;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -107,8 +108,8 @@ public class PassengerController {
                                                   @RequestParam(name = "from") String from,
                                                   @RequestParam(name = "to") String to) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate fromTime = LocalDate.parse(from, formatter);
-        LocalDate toTime = LocalDate.parse(to, formatter);
+        LocalDateTime fromTime = LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
+        LocalDateTime toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
         Page<Ride> rides = rideService.getPassengerRides(id, fromTime, toTime,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
