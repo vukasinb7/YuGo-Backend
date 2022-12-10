@@ -16,25 +16,24 @@ import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.DocumentService;
 import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.RideService;
-import org.yugo.backend.YuGo.service.VehicleService;
 
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/driver")
 public class DriverController {
 
     private final DriverService driverService;
-    private final VehicleService vehicleService;
     private final DocumentService documentService;
     private final RideService rideService;
     @Autowired
-    public DriverController(DriverService driverService, VehicleService vehicleService, DocumentService documentService, RideService rideService) {
+    public DriverController(DriverService driverService, DocumentService documentService, RideService rideService) {
         this.driverService = driverService;
-        this.vehicleService = vehicleService;
         this.documentService = documentService;
         this.rideService = rideService;
     }

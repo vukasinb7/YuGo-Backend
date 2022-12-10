@@ -99,7 +99,7 @@ public class UserController {
             value = "/{id}/block",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity blockUser(@PathVariable Integer id){
+    public ResponseEntity<Void> blockUser(@PathVariable Integer id){
         if (userService.blockUser(id)) {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
@@ -110,7 +110,7 @@ public class UserController {
             value = "/{id}/unblock",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity unblockUser(@PathVariable Integer id){
+    public ResponseEntity<Void> unblockUser(@PathVariable Integer id){
         if (userService.unblockUser(id)) {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
