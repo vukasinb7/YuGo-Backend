@@ -10,18 +10,14 @@ import java.util.Set;
 
 @Entity
 @NoArgsConstructor
+@Getter @Setter
 @DiscriminatorValue("2")
 public class Driver extends User{
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "driver_id")
-    @Getter @Setter
     private Set<Document> documents;
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH,mappedBy = "driver")
-    @Getter @Setter
     private Set<Ride> rides;
-
-    @Getter @Setter
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
