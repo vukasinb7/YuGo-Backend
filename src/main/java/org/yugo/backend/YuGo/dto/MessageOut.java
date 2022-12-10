@@ -6,22 +6,15 @@ import lombok.Setter;
 import org.yugo.backend.YuGo.model.Message;
 
 import java.time.LocalDateTime;
-
+@Getter @Setter
 @NoArgsConstructor
 public class MessageOut {
-    @Getter @Setter
     private Integer id;
-    @Getter @Setter
     private LocalDateTime timeOfSending;
-    @Getter @Setter
     private Integer senderId;
-    @Getter @Setter
     private Integer receiverId;
-    @Getter @Setter
     private String message;
-    @Getter @Setter
     private String type;
-    @Getter @Setter
     private Integer rideId;
 
     public MessageOut(Integer id, LocalDateTime timeOfSending, Integer senderId, Integer receiverId, String message, String type, Integer rideId) {

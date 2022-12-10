@@ -8,12 +8,9 @@ import org.yugo.backend.YuGo.model.Ride;
 
 import java.util.List;
 
+@Getter @Setter
 public class AllRidesOut {
-    @Getter
-    @Setter
     private long totalCount;
-
-    @Getter @Setter
     private List<RideDetailedOut> results;
 
     public AllRidesOut(Page<Ride> rides){

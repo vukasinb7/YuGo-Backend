@@ -4,12 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Getter @Setter
 @NoArgsConstructor
 public class DocumentIn {
-    @Getter @Setter
     private String name;
-
-    @Getter @Setter
     private String documentImage;
 
     public DocumentIn(String name, String documentImage) {

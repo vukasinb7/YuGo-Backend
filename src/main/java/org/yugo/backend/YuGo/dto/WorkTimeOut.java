@@ -4,16 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.WorkTime;
-
+@Getter @Setter
 @NoArgsConstructor
 public class WorkTimeOut {
-    @Getter @Setter
     private Integer id;
-
-    @Getter @Setter
     private String start;
-
-    @Getter @Setter
     private String end;
 
     public WorkTimeOut(Integer id, String start, String end) {

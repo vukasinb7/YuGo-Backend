@@ -9,12 +9,10 @@ import org.yugo.backend.YuGo.model.Passenger;
 
 import java.util.List;
 
+@Getter @Setter
 @NoArgsConstructor
 public class AllPassengersOut {
-    @Getter @Setter
     private long totalCount;
-
-    @Getter @Setter
     private List<UserDetailedInOut> results;
 
     public AllPassengersOut(Page<Passenger> passengers){

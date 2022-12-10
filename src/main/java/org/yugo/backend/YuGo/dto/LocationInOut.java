@@ -4,17 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.Location;
-
+@Getter @Setter
 @NoArgsConstructor
 public class LocationInOut {
-
-    @Getter @Setter
     private String address;
-
-    @Getter @Setter
     private double latitude;
-
-    @Getter @Setter
     private double longitude;
 
     public LocationInOut(String address, double latitude, double longitude) {

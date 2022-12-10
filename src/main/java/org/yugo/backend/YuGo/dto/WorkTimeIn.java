@@ -5,13 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.WorkTime;
 
+@Getter @Setter
 @NoArgsConstructor
 public class WorkTimeIn {
-
-    @Getter @Setter
     private String start;
-
-    @Getter @Setter
     private String end;
 
     public WorkTimeIn(String start, String end) {

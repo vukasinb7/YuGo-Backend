@@ -5,15 +5,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-
+@Getter @Setter
 @NoArgsConstructor
 public class NoteOut {
-    @Getter @Setter
     Integer id;
-    @Getter @Setter
     String message;
-
-    @Getter @Setter
     LocalDateTime date;
 
     public NoteOut(Integer id, String message, LocalDateTime date){

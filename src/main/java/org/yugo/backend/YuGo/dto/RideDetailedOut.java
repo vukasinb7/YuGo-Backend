@@ -9,34 +9,21 @@ import org.yugo.backend.YuGo.model.Ride;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+@Getter @Setter
 @NoArgsConstructor
 public class RideDetailedOut {
-    @Getter @Setter
     private Integer id;
-    @Getter @Setter
     private List<PathInOut> locations;
-    @Getter @Setter
     private LocalDateTime startTime;
-    @Getter @Setter
     private LocalDateTime endTime;
-    @Getter @Setter
     private Double totalCost;
-    @Getter @Setter
     private UserSimplifiedOut driver;
-    @Getter @Setter
     private List<UserSimplifiedOut> passengers;
-    @Getter @Setter
     private int estimatedTimeInMinutes;
-    @Getter @Setter
     private String vehicleType;
-    @Getter @Setter
     private boolean babyTransport;
-    @Getter @Setter
     private boolean petTransport;
-    @Getter @Setter
     private RejectionOut rejection;
-    @Getter @Setter
     private String status;
 
     public RideDetailedOut(Ride ride) {
