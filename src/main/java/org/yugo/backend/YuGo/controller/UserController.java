@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +15,14 @@ import org.yugo.backend.YuGo.model.Message;
 import org.yugo.backend.YuGo.model.Note;
 import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.model.User;
-import org.yugo.backend.YuGo.service.*;
+import org.yugo.backend.YuGo.service.MessageService;
+import org.yugo.backend.YuGo.service.NoteService;
+import org.yugo.backend.YuGo.service.RideService;
+import org.yugo.backend.YuGo.service.UserService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @RestController
@@ -44,9 +48,12 @@ public class UserController {
     )
     ResponseEntity<AllRidesOut> getUserRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
                                              @RequestParam(name = "size") int size, @RequestParam(name = "sort") String sort,
-                                             @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-                                             @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
-        Page<Ride> rides = rideService.getUserRides(id, from, to,
+                                             @RequestParam(name = "from") String from,
+                                             @RequestParam(name = "to") String to){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate fromTime = LocalDate.parse(from, formatter);
+        LocalDate toTime = LocalDate.parse(to, formatter);
+        Page<Ride> rides = rideService.getUserRides(id, fromTime, toTime,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
         return new ResponseEntity<>(new AllRidesOut(rides), HttpStatus.OK);

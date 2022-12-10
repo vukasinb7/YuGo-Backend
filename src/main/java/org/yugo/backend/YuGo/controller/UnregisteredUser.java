@@ -12,7 +12,7 @@ import org.yugo.backend.YuGo.dto.RideAssumptionIn;
 import org.yugo.backend.YuGo.dto.RideAssumptionOut;
 
 @RestController
-@RequestMapping("/api/unregisteredUser")
+@RequestMapping("/api/unregisteredUser/")
 public class UnregisteredUser {
     @Autowired
     public UnregisteredUser(){

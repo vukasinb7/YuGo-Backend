@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.model.WorkTime;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public interface RideRepository extends JpaRepository<Ride,Integer> {
@@ -20,17 +21,17 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
     Ride findActiveRideByPassenger(@Param("passenger_id") Integer passengerID);
 
     @Query(value = "SELECT * FROM RIDES r WHERE r.id in (SELECT ur.ride_id from PASSENGER_RIDES ur WHERE " +
-            "r.id=ur.ride_id AND passenger_id = :passengerID) AND (r.start_time>=:fromTime OR :toTime>=r.end_time)", nativeQuery = true)
+            "r.id=ur.ride_id AND passenger_id = :passengerID) AND (r.start_time>=:fromTime AND :toTime>=r.end_time)", nativeQuery = true)
     Page<Ride> findRidesByPassenger(@Param("passengerID") Integer passengerID,
-                                    @Param("fromTime") LocalDateTime fromTime,
-                                    @Param("toTime") LocalDateTime toTime, Pageable page);
+                                    @Param("fromTime") LocalDate fromTime,
+                                    @Param("toTime") LocalDate toTime, Pageable page);
 
     @Query(value = "SELECT * FROM RIDES r WHERE ((r.id in (SELECT ur.ride_id from PASSENGER_RIDES ur WHERE " +
-            "r.id=ur.ride_id AND passenger_id = :userID)) OR r.driver_id = :userID) AND (r.start_time>=:fromTime OR :toTime>=r.end_time)",
+            "r.id=ur.ride_id AND passenger_id = :userID)) OR r.driver_id = :userID) AND (r.start_time>=:fromTime AND :toTime>=r.end_time)",
             nativeQuery = true)
     Page<Ride> findRidesByUser(@Param("userID") Integer userID,
-                               @Param("fromTime") LocalDateTime fromTime,
-                               @Param("toTime") LocalDateTime toTime, Pageable page);
+                               @Param("fromTime") LocalDate fromTime,
+                               @Param("toTime") LocalDate toTime, Pageable page);
 
     @Query(value = "SELECT ride FROM Ride ride WHERE ride.driver.id = ?1 and ride.startTime >= ?2 and ride.endTime < ?3")
     Page<Ride> findRidesByDriverAndStartTimeAndEndTimePageable(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
