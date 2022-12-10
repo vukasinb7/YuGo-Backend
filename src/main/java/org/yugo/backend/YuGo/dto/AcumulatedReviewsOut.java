@@ -11,14 +11,14 @@ import java.util.List;
 @NoArgsConstructor
 public class AcumulatedReviewsOut {
     @Getter @Setter
-    ReviewOut vehicleReviews;
+    ReviewOut vehicleReview;
 
     @Getter @Setter
-    ReviewOut driverReviews;
+    ReviewOut driverReview;
 
     public AcumulatedReviewsOut(RideReview vehicleReviews,RideReview driverReviews){
-        this.vehicleReviews=RideReviewMapper.fromRideReviewtoDTO(vehicleReviews);
-        this.driverReviews=RideReviewMapper.fromRideReviewtoDTO(driverReviews);
+        this.vehicleReview=RideReviewMapper.fromRideReviewtoDTO(vehicleReviews);
+        this.driverReview=RideReviewMapper.fromRideReviewtoDTO(driverReviews);
     }
 
 }

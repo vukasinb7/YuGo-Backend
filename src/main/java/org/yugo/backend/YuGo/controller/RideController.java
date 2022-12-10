@@ -41,7 +41,7 @@ public class RideController {
     }
 
     @PostMapping(
-            value = "/",
+            value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<RideDetailedOut> addRide(@RequestBody RideIn rideIn){
