@@ -11,10 +11,10 @@ import java.util.stream.Stream;
 @Getter @Setter
 public class AllWorkTimeOut {
     private int totalCount;
-    private List<WorkTimeOut> workTimes;
+    private List<WorkTimeOut> results;
 
     public AllWorkTimeOut(Stream<WorkTime> workTimes){
-        this.workTimes = workTimes.map(WorkingTimeMapper::fromWorkTimeToDTO).toList();
-        this.totalCount = this.workTimes.size();
+        this.results = workTimes.map(WorkingTimeMapper::fromWorkTimeToDTO).toList();
+        this.totalCount = this.results.size();
     }
 }

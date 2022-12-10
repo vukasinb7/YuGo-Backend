@@ -16,6 +16,7 @@ INSERT INTO VEHICLE_TYPE_PRICES (type,price_per_km)
 VALUES ('VAN','20');
 
 INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Bulevar Oslobodjenja 213', '23.0', '42.31424');
+UPDATE vehicles SET location_id=1;
 
 INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Bulevar Oslobodjenja 123', '122.0', '34.31424');
 
@@ -32,3 +33,7 @@ INSERT INTO PANICS (reason, time_pressed, ride_id, user_id) VALUES ('testtest', 
 INSERT INTO MESSAGES (message_content, message_type, sending_time, receiver_id, ride_id, sender_id) VALUES ('testtest', 'RIDE', '2022-12-05 23:35:33.172279', '1', '1', '2');
 
 INSERT INTO NOTES (date, message, user_id) VALUES ('2022-12-05 23:35:33.172279', 'testtest', 1);
+
+INSERT INTO DOCUMENTS (image, name, driver_id) VALUES ('saobracajna_dozovola_img', 'saobracajna dozvola', 2);
+
+INSERT INTO work_times (end_time, start_time, driver_id) VALUES ('2022-12-05 23:35:33.172279', '2022-12-05 23:35:33.172279', '2');

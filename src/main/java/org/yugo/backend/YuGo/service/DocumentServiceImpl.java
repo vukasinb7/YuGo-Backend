@@ -34,6 +34,8 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    public void delete(Integer id){documentRepository.deleteById(id);}
+    @Override
     @Transactional
     public void deleteAllForDriver(Integer driverId) {
         documentRepository.deleteAllByDriverId(driverId);
