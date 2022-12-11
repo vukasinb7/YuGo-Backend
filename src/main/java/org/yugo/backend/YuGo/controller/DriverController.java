@@ -16,31 +16,32 @@ import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.DocumentService;
 import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.RideService;
-import org.yugo.backend.YuGo.service.VehicleService;
 
-import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/driver")
 public class DriverController {
 
     private final DriverService driverService;
-    private final VehicleService vehicleService;
     private final DocumentService documentService;
     private final RideService rideService;
     @Autowired
-    public DriverController(DriverService driverService, VehicleService vehicleService, DocumentService documentService, RideService rideService) {
+    public DriverController(DriverService driverService, DocumentService documentService, RideService rideService) {
         this.driverService = driverService;
-        this.vehicleService = vehicleService;
         this.documentService = documentService;
         this.rideService = rideService;
     }
 
     @PostMapping(
-            value = "/",
+            value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody UserDetailedIn driverIn){
@@ -74,6 +75,9 @@ public class DriverController {
         }
         Driver driver = (Driver) driverOpt.get();
         Vehicle vehicle = driver.getVehicle();
+        if(vehicle == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(new VehicleOut(vehicle), HttpStatus.OK);
     }
     @PostMapping(
@@ -112,7 +116,7 @@ public class DriverController {
             value = "/{id}/documents",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<Iterable<DocumentOut>> getDocuments(@PathVariable Integer id){
+    ResponseEntity<List<DocumentOut>> getDocuments(@PathVariable Integer id){
         Optional<Driver> driverOpt = driverService.getDriver(id);
         if(driverOpt.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -127,14 +131,10 @@ public class DriverController {
     }
 
     @DeleteMapping(
-            value = "/{id}/documents"
+            value = "/document/{document-id}"
     )
-    ResponseEntity<Void> deleteDocuments(@PathVariable Integer id){
-        Optional<Driver> driverOpt = driverService.getDriver(id);
-        if(driverOpt.isEmpty()){
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
-        }
-        documentService.deleteAllForDriver(id);
+    ResponseEntity<Void> deleteDocument(@PathVariable(name = "document-id") Integer documentId){
+        documentService.delete(documentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -180,29 +180,32 @@ public class DriverController {
     }
 
     @GetMapping(
-            value = "/{id}/working-hours",
+            value = "/{id}/working-hour",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<AllWorkTimeOut> getWorkingTimes(@PathVariable(value = "id") Integer id,
                                                       @RequestParam(name = "page") int page,
                                                       @RequestParam(name = "size") int size,
-                                                      @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-                                                      @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
+                                                      @RequestParam(name = "from") String from,
+                                                      @RequestParam(name = "to") String to){
         Optional<Driver> driverOpt = driverService.getDriver(id);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime fromTime = LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
+        LocalDateTime toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
         if(driverOpt.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        Page<WorkTime> workTimes = driverService.getDriverWorkingTimesPage(id, PageRequest.of(page, size), from, to);
+        Page<WorkTime> workTimes = driverService.getDriverWorkingTimesPage(id, PageRequest.of(page, size), fromTime, toTime);
         return new ResponseEntity<>(new AllWorkTimeOut(workTimes.stream()), HttpStatus.OK);
     }
 
     @PostMapping(
-            value = "/{id}/working-hours",
+            value = "/{id}/working-hour",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@PathVariable Integer id, @RequestBody WorkTimeIn workTimeIn){
+    ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@PathVariable Integer id, @RequestBody WorkTimeOut workTimeIn){
         WorkTime wt = new WorkTime();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         wt.setStartTime(LocalDateTime.parse(workTimeIn.getStart(), formatter));
@@ -235,11 +238,14 @@ public class DriverController {
                                                   @RequestParam(name = "page") int page,
                                                   @RequestParam(name = "size") int size,
                                                   @RequestParam(name = "sort", required = false) String sort,
-                                                  @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-                                                  @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
+                                                  @RequestParam(name = "from") String from,
+                                                  @RequestParam(name = "to") String to){
         PageRequest pageRequest;
         pageRequest = PageRequest.of(page, size, Sort.by(Objects.requireNonNullElse(sort, "id")));
-        Page<Ride> rides = rideService.getRidesByDriverPage(id, pageRequest, from, to);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime fromTime = LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
+        LocalDateTime toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
+        Page<Ride> rides = rideService.getRidesByDriverPage(id, pageRequest, fromTime, toTime);
         return new ResponseEntity<>(new AllRidesOut(rides), HttpStatus.OK);
     }
 
@@ -248,8 +254,13 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<WorkTimeOut> updateWorkTime(@PathVariable(value = "working-hour-id") Integer id, @RequestBody WorkTimeIn workTimeIn){
-        WorkTime workTime = WorkingTimeMapper.fromDTOtoWorkTime(workTimeIn);
+    ResponseEntity<WorkTimeOut> updateWorkTime(@PathVariable(value = "working-hour-id") Integer id, @RequestBody WorkTimeOut workTimeIn){
+        //WorkTime workTime = WorkingTimeMapper.fromDTOtoWorkTime(workTimeIn);
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        WorkTime workTime = new WorkTime();
+        workTime.setStartTime(LocalDateTime.parse(workTimeIn.getStart(), formatter));
+        workTime.setEndTime(LocalDateTime.parse(workTimeIn.getEnd(), formatter));
+        workTime.setId(id);
         WorkTime workTimeUpdated = driverService.updateWorkTime(workTime);
         if(workTimeUpdated == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

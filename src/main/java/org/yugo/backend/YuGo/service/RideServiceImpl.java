@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.repository.RideRepository;
+import org.yugo.backend.YuGo.model.Passenger;
+import org.yugo.backend.YuGo.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,12 +42,12 @@ public class RideServiceImpl implements RideService {
     @Override
     public Ride getActiveRideByPassenger(Integer id){ return rideRepository.findActiveRideByPassenger(id);}
 
-    public Page<Ride> getPassengerRides(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page){
-        return rideRepository.findRidesByPassenger(passengerID, from, to, page);
+    public Page<Ride> getPassengerRides(Integer passengerId, LocalDateTime from, LocalDateTime to, Pageable page){
+        return rideRepository.findRidesByPassenger(passengerId, from, to, page);
     }
 
-    public Page<Ride> getUserRides(Integer userID, LocalDateTime from, LocalDateTime to, Pageable page){
-        return rideRepository.findRidesByUser(userID, from, to, page);
+    public Page<Ride> getUserRides(Integer userId, LocalDateTime from, LocalDateTime to, Pageable page){
+        return rideRepository.findRidesByUser(userId, from, to, page);
     }
 
     public Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end){

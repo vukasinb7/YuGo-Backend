@@ -5,15 +5,11 @@ import lombok.Setter;
 import org.yugo.backend.YuGo.model.VehicleType;
 
 import java.util.List;
-
+@Getter @Setter
 public class RideAssumptionIn {
-    @Getter @Setter
     private List<PathInOut> locations;
-    @Getter @Setter
     private VehicleType vehicleType;
-    @Getter @Setter
     private boolean babyTransport;
-    @Getter @Setter
     private boolean petTransport;
 
     public RideAssumptionIn(List<PathInOut> locations, VehicleType vehicleType, boolean babyTransport, boolean petTransport) {

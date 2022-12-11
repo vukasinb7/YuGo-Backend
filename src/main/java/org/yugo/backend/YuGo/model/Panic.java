@@ -12,29 +12,21 @@ import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
+@Getter @Setter
 @Table(name = "Panics")
 public class Panic {
     @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "user_id")
-    @Getter @Setter
     private User user;
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "ride_id")
-    @Getter @Setter
     private Ride ride;
-
-    @Getter @Setter
     @Column(name = "time_pressed", nullable = false)
     private LocalDateTime time;
-
-    @Getter @Setter
     @Column(name = "reason", nullable = false)
     private String reason;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
     private Integer id;
 
     public Panic(User user, Ride ride, LocalDateTime time, String reason) {

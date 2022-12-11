@@ -2,23 +2,19 @@ package org.yugo.backend.YuGo.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.yugo.backend.YuGo.mapper.RideMapper;
 import org.yugo.backend.YuGo.mapper.WorkingTimeMapper;
 import org.yugo.backend.YuGo.model.WorkTime;
 
 import java.util.List;
 import java.util.stream.Stream;
 
+@Getter @Setter
 public class AllWorkTimeOut {
-
-    @Getter @Setter
     private int totalCount;
-
-    @Getter @Setter
-    private List<WorkTimeOut> workTimes;
+    private List<WorkTimeOut> results;
 
     public AllWorkTimeOut(Stream<WorkTime> workTimes){
-        this.workTimes = workTimes.map(WorkingTimeMapper::fromWorkTimeToDTO).toList();
-        this.totalCount = this.workTimes.size();
+        this.results = workTimes.map(WorkingTimeMapper::fromWorkTimeToDTO).toList();
+        this.totalCount = this.results.size();
     }
 }

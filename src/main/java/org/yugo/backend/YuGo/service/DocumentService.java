@@ -12,5 +12,7 @@ public interface DocumentService {
 
     Optional<Document> get(Integer id);
 
+    void delete(Integer id);
+
     void deleteAllForDriver(Integer driverId);
 }

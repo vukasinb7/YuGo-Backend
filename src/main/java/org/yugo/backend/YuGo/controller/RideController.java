@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.mapper.PathMapper;
 import org.yugo.backend.YuGo.mapper.RideMapper;
-import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
-import org.yugo.backend.YuGo.mapper.UserSimplifiedMapper;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.PanicService;
@@ -17,11 +15,8 @@ import org.yugo.backend.YuGo.service.PassengerService;
 import org.yugo.backend.YuGo.service.RideService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/ride")
@@ -41,7 +36,7 @@ public class RideController {
     }
 
     @PostMapping(
-            value = "/",
+            value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<RideDetailedOut> addRide(@RequestBody RideIn rideIn){

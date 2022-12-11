@@ -20,12 +20,12 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Query(value = "SELECT * FROM USERS WHERE user_type = 2", nativeQuery = true)
     public Page<User> findAllDrivers(Pageable page);
 
-    @Query(value = "SELECT * FROM USERS", nativeQuery = true)
-    public Page<User> findAllUsers(Pageable page);
-
     @Query(value = "SELECT * FROM USERS WHERE user_type = 2 AND id=?1", nativeQuery = true)
     public Optional<Driver> findDriverById(Integer id);
 
-    @Query(value = "SELECT * FROM USERS WHERE email = :email AND password = :password AND is_blocked = false AND is_active = true", nativeQuery = true)
+    @Query(value = "SELECT u FROM User u")
+    public Page<User> findAllUsers(Pageable page);
+
+    @Query(value = "SELECT u FROM User u WHERE u.email = :email AND u.password = :password AND u.isBlocked = false AND u.isActive = true")
     public User authenticateUser(@Param("email") String email,@Param("password") String password);
 }

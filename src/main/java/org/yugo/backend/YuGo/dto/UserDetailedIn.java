@@ -3,28 +3,15 @@ package org.yugo.backend.YuGo.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+@Getter @Setter
 @NoArgsConstructor
 public class UserDetailedIn {
-    @Getter @Setter
     private String name;
-
-    @Getter @Setter
     private String surname;
-
-    @Getter @Setter
     private String profilePicture;
-
-    @Getter @Setter
     private String telephoneNumber;
-
-    @Getter @Setter
     private String email;
-
-    @Getter @Setter
     private String address;
-
-    @Getter @Setter
     private String password;
 
     public UserDetailedIn(String name, String surname, String profilePicture, String telephoneNumber, String email, String address, String password) {

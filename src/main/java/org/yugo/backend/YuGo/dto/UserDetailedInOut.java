@@ -4,28 +4,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.User;
+
+@Getter @Setter
 @NoArgsConstructor
 public class UserDetailedInOut {
-
-    @Getter @Setter
     private Integer id;
-
-    @Getter @Setter
     private String name;
-
-    @Getter @Setter
     private String surname;
-
-    @Getter @Setter
     private String profilePicture;
-
-    @Getter @Setter
     private String telephoneNumber;
-
-    @Getter @Setter
     private String email;
-
-    @Getter @Setter
     private String address;
 
     public UserDetailedInOut(Integer id, String name, String surname, String profilePicture, String telephoneNumber, String email, String address) {

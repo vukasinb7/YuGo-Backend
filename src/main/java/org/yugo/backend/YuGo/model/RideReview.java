@@ -6,35 +6,25 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Getter @Setter
 @NoArgsConstructor
 @Table(name = "RideReviews")
 public class RideReview {
-    @Getter @Setter
     @Column(name = "comment")
     private String comment;
-
-    @Getter @Setter
     @Column(name = "rating", nullable = false)
     private int rating;
-
     @ManyToOne
-    @Getter @Setter
     @JoinColumn(name = "ride")
     private Ride ride;
-
     @OneToOne
-    @Getter @Setter
     @JoinColumn(name = "passenger")
     private Passenger passenger;
-
     @Enumerated(EnumType.STRING)
-    @Getter @Setter
     @Column(name = "type")
     private ReviewType type;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
     private Integer id;
 
     public RideReview(String comment, int rating, Ride ride, Passenger passenger, ReviewType type) {

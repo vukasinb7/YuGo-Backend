@@ -2,24 +2,29 @@ package org.yugo.backend.YuGo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yugo.backend.YuGo.dto.*;
+import org.yugo.backend.YuGo.dto.AllPassengersOut;
+import org.yugo.backend.YuGo.dto.AllRidesOut;
+import org.yugo.backend.YuGo.dto.UserDetailedIn;
+import org.yugo.backend.YuGo.dto.UserDetailedInOut;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.Ride;
-import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.model.UserActivation;
-import org.yugo.backend.YuGo.service.*;
+import org.yugo.backend.YuGo.service.PassengerService;
+import org.yugo.backend.YuGo.service.RideService;
+import org.yugo.backend.YuGo.service.UserService;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @RestController
@@ -61,7 +66,7 @@ public class PassengerController {
             value = "/activate/{activationId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity activatePassenger(@PathVariable Integer activationId){
+    public ResponseEntity<Void> activatePassenger(@PathVariable Integer activationId){
         if (userService.activateUser(activationId)){
             return new ResponseEntity<>(null, HttpStatus.OK);
         }
@@ -98,10 +103,14 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<AllRidesOut> getPassengerRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
-                                                  @RequestParam(name = "size") int size, @RequestParam(name = "sort") String sort,
-                                                  @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-                                                  @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
-        Page<Ride> rides = rideService.getPassengerRides(id, from, to,
+                                                  @RequestParam(name = "size") int size,
+                                                  @RequestParam(name = "sort") String sort,
+                                                  @RequestParam(name = "from") String from,
+                                                  @RequestParam(name = "to") String to) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime fromTime = LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
+        LocalDateTime toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
+        Page<Ride> rides = rideService.getPassengerRides(id, fromTime, toTime,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
         return new ResponseEntity<>(new AllRidesOut(rides), HttpStatus.OK);

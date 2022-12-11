@@ -10,18 +10,13 @@ import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.model.User;
 
 import java.time.LocalDateTime;
-
+@Getter @Setter
 @NoArgsConstructor
 public class PanicOut {
-    @Getter @Setter
     Integer id;
-    @Getter @Setter
     UserDetailedOut user;
-    @Getter @Setter
     RideDetailedOut ride;
-    @Getter @Setter
     LocalDateTime time;
-    @Getter @Setter
     String reason;
 
     public PanicOut(Integer id, UserDetailedOut user, Ride ride, LocalDateTime time, String reason) {

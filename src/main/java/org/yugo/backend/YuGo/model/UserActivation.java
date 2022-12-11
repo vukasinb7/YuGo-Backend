@@ -10,25 +10,19 @@ import java.time.LocalDateTime;
 
 
 @Entity
+@Getter @Setter
 @NoArgsConstructor
 @Table(name = "UserActivations")
 public class UserActivation {
-    @Getter @Setter
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
     @JoinColumn(name = "user_id")
     private User user;
-
-    @Getter @Setter
     @Column(name = "date_created", nullable = false)
     private LocalDateTime dateCreated;
-
-    @Getter @Setter
     @Column(name = "life_span", nullable = false)
     private Duration lifeSpan;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
     private Integer id;
 
     public UserActivation(User user, LocalDateTime dateCreated, Duration lifeSpan) {

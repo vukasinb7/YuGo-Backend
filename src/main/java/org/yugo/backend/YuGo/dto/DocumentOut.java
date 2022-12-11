@@ -4,20 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.Document;
-
+@Getter @Setter
 @NoArgsConstructor
 public class DocumentOut {
-
-    @Getter @Setter
     private Integer id;
-
-    @Getter @Setter
     private String name;
-
-    @Getter @Setter
     private String documentImage;
-
-    @Getter @Setter
     private Integer driverId;
 
     public DocumentOut(Integer id, String name, String documentImage, Integer driverId) {

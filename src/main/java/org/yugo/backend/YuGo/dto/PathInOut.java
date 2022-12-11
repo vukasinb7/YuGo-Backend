@@ -6,14 +6,10 @@ import lombok.Setter;
 import org.yugo.backend.YuGo.mapper.LocationMapper;
 import org.yugo.backend.YuGo.model.Location;
 import org.yugo.backend.YuGo.model.Path;
-
+@Getter @Setter
 @NoArgsConstructor
 public class PathInOut {
-
-    @Getter @Setter
     private LocationInOut departure;
-
-    @Getter @Setter
     private LocationInOut destination;
 
     public PathInOut(LocationInOut departure, LocationInOut destination) {

@@ -9,46 +9,29 @@ import org.yugo.backend.YuGo.dto.VehicleIn;
 
 
 @Entity
+@Getter @Setter
 @NoArgsConstructor
 @Table(name = "Vehicles")
 public class Vehicle {
-
-    @Getter @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Getter @Setter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id")
     private Driver driver;
-
-    @Getter @Setter
     @Column(name = "vehicle_type")
     private VehicleType vehicleType;
-
-    @Getter @Setter
     @Column(name = "model", nullable = false)
     private String model;
-
-    @Getter @Setter
     @Column(name = "licence_plate_number", nullable = false)
     private String licencePlateNumber;
-
-    @Getter @Setter
     @Column(name = "number_of_seats", nullable = false)
     private int numberOfSeats;
-
-    @Getter @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
     private Location currentLocation;
-
-    @Getter @Setter
     @Column(name = "are_babies_allowed", nullable = false)
     private Boolean areBabiesAllowed;
-
-    @Getter @Setter
     @Column(name = "are_pets_allowed", nullable = false)
     private Boolean arePetsAllowed;
 

@@ -24,15 +24,13 @@ import java.util.List;
 @RequestMapping("/api/review")
 public class ReviewController {
     private final ReviewService reviewService;
-    private final VehicleService vehicleService;
     private final RideService rideService;
 
     private final PassengerService passengerService;
 
     @Autowired
-    public ReviewController(ReviewService reviewService, VehicleService vehicleService,RideService rideService, PassengerService passengerService){
+    public ReviewController(ReviewService reviewService,RideService rideService, PassengerService passengerService){
         this.reviewService=reviewService;
-        this.vehicleService=vehicleService;
         this.rideService=rideService;
         this.passengerService=passengerService;
     }
@@ -76,7 +74,7 @@ public class ReviewController {
     }
 
     @GetMapping(
-            value = "ride/{id}",
+            value = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<AcumulatedReviewsOut>> getAllRideReviews(@PathVariable int id){
@@ -86,9 +84,9 @@ public class ReviewController {
             RideReview driverReviews = reviewService.getDriverReviewsByRideByPassenger(id,passenger.getId());
             AcumulatedReviewsOut acumulatedReviewsOut= new AcumulatedReviewsOut();
             if (vehicleReviews!=null)
-                acumulatedReviewsOut.setVehicleReviews(new ReviewOut(vehicleReviews));
+                acumulatedReviewsOut.setVehicleReview(new ReviewOut(vehicleReviews));
             if (driverReviews!=null)
-                acumulatedReviewsOut.setDriverReviews(new ReviewOut(driverReviews));
+                acumulatedReviewsOut.setDriverReview(new ReviewOut(driverReviews));
             result.add(acumulatedReviewsOut);
 
         }

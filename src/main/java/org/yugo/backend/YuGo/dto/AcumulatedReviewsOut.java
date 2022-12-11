@@ -6,19 +6,15 @@ import lombok.Setter;
 import org.yugo.backend.YuGo.mapper.RideReviewMapper;
 import org.yugo.backend.YuGo.model.RideReview;
 
-import java.util.List;
-
+@Getter @Setter
 @NoArgsConstructor
 public class AcumulatedReviewsOut {
-    @Getter @Setter
-    ReviewOut vehicleReviews;
-
-    @Getter @Setter
-    ReviewOut driverReviews;
+    ReviewOut vehicleReview;
+    ReviewOut driverReview;
 
     public AcumulatedReviewsOut(RideReview vehicleReviews,RideReview driverReviews){
-        this.vehicleReviews=RideReviewMapper.fromRideReviewtoDTO(vehicleReviews);
-        this.driverReviews=RideReviewMapper.fromRideReviewtoDTO(driverReviews);
+        this.vehicleReview=RideReviewMapper.fromRideReviewtoDTO(vehicleReviews);
+        this.driverReview=RideReviewMapper.fromRideReviewtoDTO(driverReviews);
     }
 
 }

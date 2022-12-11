@@ -5,19 +5,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.RideReview;
-
+@Getter @Setter
 @NoArgsConstructor
 public class ReviewOut {
-    @Getter @Setter
     private Integer id;
-
-    @Getter @Setter
     private int rating;
-
-    @Getter @Setter
     private String comment;
-
-    @Getter @Setter
     private UserSimplifiedOut passenger;
 
     public ReviewOut(Integer id, int rating, String review, Passenger passenger) {
