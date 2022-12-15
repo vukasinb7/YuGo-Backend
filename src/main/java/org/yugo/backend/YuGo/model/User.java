@@ -13,7 +13,7 @@ import org.yugo.backend.YuGo.dto.UserDetailedIn;
 @Table(name="Users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="user_type",
-        discriminatorType = DiscriminatorType.INTEGER)
+        discriminatorType = DiscriminatorType.STRING)
 public abstract class User {
     @Column(name = "name", nullable = false)
     private String name;

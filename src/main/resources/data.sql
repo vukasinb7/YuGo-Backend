@@ -1,11 +1,11 @@
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
-VALUES ('Pera', 'Perić', 'U3dhZ2dlciByb2Nrcw==', '+381123123', 'pera.peric@email.com', 'Bulevar Oslobodjenja 74', 'Pasword123', false, true, '1');
+VALUES ('Pera', 'Perić', 'U3dhZ2dlciByb2Nrcw==', '+381123123', 'pera.peric@email.com', 'Bulevar Oslobodjenja 74', 'Pasword123', false, true, 'PASSENGER');
 
 INSERT INTO USER_ACTIVATIONS (date_created, life_span, user_id)
 VALUES ('2022-12-05 23:35:33.172279', TIMESTAMP '2022-09-03 12:47:00.000000' - TIMESTAMP '2022-09-03 13:13:00.000000', '1');
 
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
-VALUES ('Pera', 'Perić', 'U3dhZ2dlciByb2Nrcw==', '+381123123', 'perislav.peric@email.com', 'Bulevar Oslobodjenja 74', 'Pasword123', false, true, '2');
+VALUES ('Pera', 'Perić', 'U3dhZ2dlciByb2Nrcw==', '+381123123', 'perislav.peric@email.com', 'Bulevar Oslobodjenja 74', 'Pasword123', false, true, 'DRIVER');
 
 INSERT INTO Vehicles(are_babies_allowed,are_pets_allowed,licence_plate_number,model,number_of_seats,vehicle_type,driver_id)
 VALUES ('0','0','SM074HZ','Skoda Octavia','5','1','2');
