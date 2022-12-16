@@ -15,6 +15,8 @@ import org.yugo.backend.YuGo.dto.UserDetailedIn;
 @DiscriminatorColumn(name="user_type",
         discriminatorType = DiscriminatorType.STRING)
 public abstract class User {
+    @Column(name = "user_type", insertable = false, updatable = false, nullable = false)
+    private String role;
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "surname", nullable = false)

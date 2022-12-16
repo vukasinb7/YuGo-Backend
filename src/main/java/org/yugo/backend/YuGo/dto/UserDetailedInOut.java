@@ -15,8 +15,9 @@ public class UserDetailedInOut {
     private String telephoneNumber;
     private String email;
     private String address;
+    private String role;
 
-    public UserDetailedInOut(Integer id, String name, String surname, String profilePicture, String telephoneNumber, String email, String address) {
+    public UserDetailedInOut(Integer id, String name, String surname, String profilePicture, String telephoneNumber, String email, String address, String role) {
         super();
         this.id = id;
         this.name = name;
@@ -25,9 +26,10 @@ public class UserDetailedInOut {
         this.telephoneNumber = telephoneNumber;
         this.email = email;
         this.address = address;
+        this.role = role;
     }
 
     public UserDetailedInOut(User user) {
-        this(user.getId(), user.getName(), user.getSurname(), user.getProfilePicture(), user.getTelephoneNumber(), user.getEmail(), user.getAddress());
+        this(user.getId(), user.getName(), user.getSurname(), user.getProfilePicture(), user.getTelephoneNumber(), user.getEmail(), user.getAddress(), user.getRole());
     }
 }
