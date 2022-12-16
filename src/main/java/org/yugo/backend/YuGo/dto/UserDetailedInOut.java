@@ -16,8 +16,9 @@ public class UserDetailedInOut {
     private String email;
     private String address;
     private String role;
+    private boolean isBlocked;
 
-    public UserDetailedInOut(Integer id, String name, String surname, String profilePicture, String telephoneNumber, String email, String address, String role) {
+    public UserDetailedInOut(Integer id, String name, String surname, String profilePicture, String telephoneNumber, String email, String address, String role, boolean isBlocked) {
         super();
         this.id = id;
         this.name = name;
@@ -27,9 +28,10 @@ public class UserDetailedInOut {
         this.email = email;
         this.address = address;
         this.role = role;
+        this.isBlocked = isBlocked;
     }
 
     public UserDetailedInOut(User user) {
-        this(user.getId(), user.getName(), user.getSurname(), user.getProfilePicture(), user.getTelephoneNumber(), user.getEmail(), user.getAddress(), user.getRole());
+        this(user.getId(), user.getName(), user.getSurname(), user.getProfilePicture(), user.getTelephoneNumber(), user.getEmail(), user.getAddress(), user.getRole(), user.isBlocked());
     }
 }
