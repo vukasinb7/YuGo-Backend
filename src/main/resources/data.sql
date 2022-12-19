@@ -12,8 +12,12 @@ VALUES ('0','0','SM074HZ','Skoda Octavia','5','1','2');
 
 UPDATE USERS SET vehicle_id=1 WHERE ID=2;
 
-INSERT INTO VEHICLE_TYPE_PRICES (type,price_per_km)
-VALUES ('VAN','20');
+INSERT INTO VEHICLE_TYPE_PRICES (type,price_per_km, image_path)
+VALUES ('VAN','4.49', 'vehicle_type/car_model.png');
+INSERT INTO VEHICLE_TYPE_PRICES (type,price_per_km, image_path)
+VALUES ('LUX','6.99', 'vehicle_type/car_model.png');
+INSERT INTO VEHICLE_TYPE_PRICES (type,price_per_km, image_path)
+VALUES ('STANDARD','2.49', 'vehicle_type/car_model.png');
 
 INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Bulevar Oslobodjenja 213', '23.0', '42.31424');
 UPDATE vehicles SET location_id=1;

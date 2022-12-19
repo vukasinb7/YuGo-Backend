@@ -18,4 +18,6 @@ public class VehicleTypePrice {
     private VehicleType vehicleType;
     @Column(name = "price_per_km", nullable = false)
     private double pricePerKM;
+    @Column(name = "image_path")
+    private String imagePath;
 }
