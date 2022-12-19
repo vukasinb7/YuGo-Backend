@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Integer> {
-    @Query(value = "SELECT * FROM USERS u WHERE u.user_type = 2",
+    @Query(value = "SELECT * FROM USERS u WHERE u.user_type = 'DRIVER'",
             nativeQuery = true)
     public List<User> findAllDrivers();
 
-    @Query(value = "SELECT * FROM USERS WHERE user_type = 2", nativeQuery = true)
+    @Query(value = "SELECT * FROM USERS WHERE user_type = 'DRIVER'", nativeQuery = true)
     public Page<User> findAllDrivers(Pageable page);
 
-    @Query(value = "SELECT * FROM USERS WHERE user_type = 2 AND id=?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM USERS WHERE user_type = 'DRIVER' AND id=?1", nativeQuery = true)
     public Optional<Driver> findDriverById(Integer id);
 
     @Query(value = "SELECT u FROM User u")

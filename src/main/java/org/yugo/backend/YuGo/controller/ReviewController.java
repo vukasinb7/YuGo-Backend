@@ -2,7 +2,6 @@ package org.yugo.backend.YuGo.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +14,11 @@ import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.PassengerService;
 import org.yugo.backend.YuGo.service.ReviewService;
 import org.yugo.backend.YuGo.service.RideService;
-import org.yugo.backend.YuGo.service.VehicleService;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/review")
 public class ReviewController {

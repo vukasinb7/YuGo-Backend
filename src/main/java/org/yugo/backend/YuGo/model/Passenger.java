@@ -11,7 +11,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @Getter @Setter
-@DiscriminatorValue("1")
+@DiscriminatorValue("PASSENGER")
 public class Passenger extends User{
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "passenger_ride")
