@@ -1,6 +1,18 @@
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
 VALUES ('Pera', 'Perić', 'U3dhZ2dlciByb2Nrcw==', '+381123123', 'pera.peric@email.com', 'Bulevar Oslobodjenja 74', 'Pasword123', false, true, 'PASSENGER');
 
+INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
+VALUES ('Marko', 'Markovic', 'U3dhZ2dlciByb2Nrcw==', '+381123123', 'marko.markovic@email.com', 'Bulevar Oslobodjenja 75', 'Pasword123', false, true, 'PASSENGER');
+
+INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
+VALUES ('Darko', 'Darkovic', 'U3dhZ2dlciByb2Nrcw==', '+381123123', 'darko.darkovic@email.com', 'Bulevar Oslobodjenja 76', 'Pasword123', false, true, 'PASSENGER');
+
+INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
+VALUES ('Petar', 'Petrovic', 'U3dhZ2dlciByb2Nrcw==', '+381123123', 'petar.petrovic@email.com', 'Bulevar Oslobodjenja 77', 'Pasword123', false, true, 'PASSENGER');
+
+INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
+VALUES ('Perica', 'Petkovic', 'U3dhZ2dlciByb2Nrcw==', '+381123123', 'parica.petkovic@email.com', 'Bulevar Oslobodjenja 78', 'Pasword123', false, true, 'PASSENGER');
+
 INSERT INTO USER_ACTIVATIONS (date_created, life_span, user_id)
 VALUES ('2022-12-05 23:35:33.172279', TIMESTAMP '2022-09-03 12:47:00.000000' - TIMESTAMP '2022-09-03 13:13:00.000000', '1');
 
