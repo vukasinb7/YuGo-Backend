@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.RideAssumptionIn;
 import org.yugo.backend.YuGo.dto.RideAssumptionOut;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/unregisteredUser/")
 public class UnregisteredUser {

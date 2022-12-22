@@ -1,10 +1,18 @@
 package org.yugo.backend.YuGo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.yugo.backend.YuGo.dto.UserDetailedIn;
+
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -14,7 +22,7 @@ import org.yugo.backend.YuGo.dto.UserDetailedIn;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="user_type",
         discriminatorType = DiscriminatorType.STRING)
-public abstract class User {
+public abstract class User implements UserDetails {
     @Column(name = "user_type", insertable = false, updatable = false, nullable = false)
     private String role;
     @Column(name = "name", nullable = false)
@@ -38,6 +46,61 @@ public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @ManyToMany(
+            fetch = FetchType.EAGER
+    )
+    @JoinTable(
+            name = "user_role",
+            joinColumns = {@JoinColumn(
+                    name = "user_id",
+                    referencedColumnName = "id"
+            )},
+            inverseJoinColumns = {@JoinColumn(
+                    name = "role_id",
+                    referencedColumnName = "id"
+            )}
+    )
+    private List<Role> roles;
+    @Column(
+            name = "last_password_reset_date"
+    )
+    private Timestamp lastPasswordResetDate;
+
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles;
+    }
+
+    public void setPassword(String password) {
+        Timestamp now = new Timestamp((new Date()).getTime());
+        this.setLastPasswordResetDate(now);
+        this.password = password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    public boolean isEnabled() {
+        return this.isActive;
+    }
+
+    @JsonIgnore
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JsonIgnore
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
 
     public User(UserDetailedIn userDetailedIn) {
         this.name = userDetailedIn.getName();

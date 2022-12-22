@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yugo.backend.YuGo.dto.AllPanicsOut;
 import org.yugo.backend.YuGo.service.*;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/panic")
 public class PanicController {

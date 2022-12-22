@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.yugo.backend.YuGo.model.Driver;
-import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.User;
 
 import java.util.List;
@@ -28,4 +27,6 @@ public interface UserRepository extends JpaRepository<User,Integer> {
 
     @Query(value = "SELECT u FROM User u WHERE u.email = :email AND u.password = :password AND u.isBlocked = false AND u.isActive = true")
     public User authenticateUser(@Param("email") String email,@Param("password") String password);
+
+    public User findByEmail(String email);
 }

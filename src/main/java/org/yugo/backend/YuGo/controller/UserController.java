@@ -1,5 +1,6 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -7,6 +8,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.mapper.MessageMapper;
@@ -19,6 +25,7 @@ import org.yugo.backend.YuGo.service.MessageService;
 import org.yugo.backend.YuGo.service.NoteService;
 import org.yugo.backend.YuGo.service.RideService;
 import org.yugo.backend.YuGo.service.UserService;
+import org.yugo.backend.YuGo.security.auth.TokenUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,7 +33,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -34,14 +40,18 @@ public class UserController {
     private final MessageService messageService;
     private final RideService rideService;
     private final NoteService noteService;
+    private final TokenUtils tokenUtils;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
     public UserController(UserService userService, MessageService messageService,
-                          RideService rideService, NoteService noteService){
+                          RideService rideService, NoteService noteService, TokenUtils tokenUtils, AuthenticationManager authenticationManager){
         this.userService = userService;
         this.messageService = messageService;
         this.rideService = rideService;
         this.noteService = noteService;
+        this.tokenUtils = tokenUtils;
+        this.authenticationManager = authenticationManager;
     }
 
     @GetMapping(
@@ -65,11 +75,13 @@ public class UserController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size){
         Page<User> users = userService.getUsersPage(PageRequest.of(page, size));
         return new ResponseEntity<>(new AllUsersOut(users), HttpStatus.OK);
     }
 
+    /*
     @PostMapping(
             value = "/login",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -77,6 +89,19 @@ public class UserController {
     public ResponseEntity<LoginOut> loginUser(@RequestBody LoginIn loginIn){
         userService.authenticateUser(loginIn.getEmail(), loginIn.getPassword());
         return new ResponseEntity<>(new LoginOut(), HttpStatus.OK);
+    }*/
+
+    @PostMapping(
+            value = "/login",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest, HttpServletResponse response) {
+        Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        User user = (User)authentication.getPrincipal();
+        String jwt = this.tokenUtils.generateToken(user.getUsername());
+        int expiresIn = this.tokenUtils.getExpiredIn();
+        return ResponseEntity.ok(new UserTokenState(jwt, (long)expiresIn));
     }
 
     @GetMapping(

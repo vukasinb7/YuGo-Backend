@@ -27,7 +27,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/passenger")
 public class PassengerController {

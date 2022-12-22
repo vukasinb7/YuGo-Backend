@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/ride")
 public class RideController {
