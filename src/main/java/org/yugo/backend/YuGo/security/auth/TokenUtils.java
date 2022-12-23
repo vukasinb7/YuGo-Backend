@@ -13,16 +13,16 @@ import org.yugo.backend.YuGo.model.User;
 
 @Component
 public class TokenUtils {
-    @Value("YuGo")
+    @Value("YuGo-Backend")
     private String APP_NAME;
-    @Value("some-secret")
+    @Value("somesecret")
     public String SECRET;
     @Value("1800000")
     private int EXPIRES_IN;
     @Value("Authorization")
     private String AUTH_HEADER;
     private static final String AUDIENCE_WEB = "web";
-    private SignatureAlgorithm SIGNATURE_ALGORITHM;
+    private final SignatureAlgorithm SIGNATURE_ALGORITHM;
 
     public TokenUtils() {
         this.SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
@@ -118,8 +118,7 @@ public class TokenUtils {
         User user = (User)userDetails;
         String username = this.getUsernameFromToken(token);
         Date created = this.getIssuedAtDateFromToken(token);
-        return username != null && username.equals(userDetails.getUsername()) ;
-        //&& !this.isCreatedBeforeLastPasswordReset(created, user.getLastPasswordResetDate())
+        return username != null && username.equals(userDetails.getUsername()) && !this.isCreatedBeforeLastPasswordReset(created, user.getLastPasswordResetDate());
     }
 
     private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {

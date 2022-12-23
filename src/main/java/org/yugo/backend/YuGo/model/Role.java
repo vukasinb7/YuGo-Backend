@@ -8,15 +8,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.io.Serial;
+
 @Entity
 @NoArgsConstructor
 @Setter
+@Getter
 @Table(name = "ROLES")
 public class Role implements GrantedAuthority {
+    @Serial
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id")

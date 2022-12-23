@@ -46,9 +46,7 @@ public abstract class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @ManyToMany(
-            fetch = FetchType.EAGER
-    )
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = {@JoinColumn(
@@ -61,15 +59,8 @@ public abstract class User implements UserDetails {
             )}
     )
     private List<Role> roles;
-    @Column(
-            name = "last_password_reset_date"
-    )
+    @Column(name = "last_password_reset_date")
     private Timestamp lastPasswordResetDate;
-
-    @JsonIgnore
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles;
-    }
 
     public void setPassword(String password) {
         Timestamp now = new Timestamp((new Date()).getTime());
@@ -77,26 +68,37 @@ public abstract class User implements UserDetails {
         this.password = password;
     }
 
+    @JsonIgnore
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles;
+    }
+
+
     @Override
     public String getUsername() {
         return this.email;
     }
 
+    @Override
     public boolean isEnabled() {
         return this.isActive;
     }
 
     @JsonIgnore
+    @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @JsonIgnore
+    @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @JsonIgnore
+    @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }

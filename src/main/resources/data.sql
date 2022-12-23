@@ -1,8 +1,8 @@
-INSERT INTO ROLES (name) VALUES('ADMIN');
+INSERT INTO ROLES (name) VALUES('ROLE_ADMIN');
 
-INSERT INTO ROLES (name) VALUES('PASSENGER');
+INSERT INTO ROLES (name) VALUES('ROLE_PASSENGER');
 
-INSERT INTO ROLES (name) VALUES('DRIVER');
+INSERT INTO ROLES (name) VALUES('ROLE_DRIVER');
 
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
 VALUES ('Pera', 'Perić', 'U3dhZ2dlciByb2Nrcw==', '+381123123', 'pera.peric@email.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
