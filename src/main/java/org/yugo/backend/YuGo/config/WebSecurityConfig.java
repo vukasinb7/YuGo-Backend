@@ -14,10 +14,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.yugo.backend.YuGo.security.auth.RestAuthenticationEntryPoint;
-import org.yugo.backend.YuGo.security.auth.TokenAuthenticationFilter;
+import org.yugo.backend.YuGo.security.RestAuthenticationEntryPoint;
+import org.yugo.backend.YuGo.security.TokenAuthenticationFilter;
 import org.yugo.backend.YuGo.service.SecurityUserDetailsService;
-import org.yugo.backend.YuGo.security.auth.TokenUtils;
+import org.yugo.backend.YuGo.security.TokenUtils;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 

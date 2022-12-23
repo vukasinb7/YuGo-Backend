@@ -58,11 +58,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void authenticateUser(String email, String password){
-        userRepository.authenticateUser(email, password);
-    }
-
-    @Override
     public boolean blockUser(Integer userId){
         Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isPresent()){

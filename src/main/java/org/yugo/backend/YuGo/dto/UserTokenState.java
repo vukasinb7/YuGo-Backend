@@ -1,34 +1,16 @@
 package org.yugo.backend.YuGo.dto;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+@Getter @Setter
+@NoArgsConstructor
 public class UserTokenState {
-
     private String accessToken;
-    private Long expiresIn;
+    private String refreshToken;
 
-    public UserTokenState() {
-        this.accessToken = null;
-        this.expiresIn = null;
-    }
-
-    public UserTokenState(String accessToken, long expiresIn) {
+    public UserTokenState(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
-        this.expiresIn = expiresIn;
+        this.refreshToken = refreshToken;
     }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public Long getExpiresIn() {
-        return expiresIn;
-    }
-
-    public void setExpiresIn(Long expiresIn) {
-        this.expiresIn = expiresIn;
-    }
-
 }

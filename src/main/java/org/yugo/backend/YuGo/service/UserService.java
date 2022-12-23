@@ -16,7 +16,6 @@ public interface UserService {
     Optional<UserActivation> getUserActivation(Integer id);
     List<UserActivation> getAllUserActivations();
     Page<User> getUsersPage(Pageable page);
-    void authenticateUser(String email, String password);
     boolean blockUser(Integer userId);
     boolean unblockUser(Integer userId);
     boolean activateUser(Integer activationId);

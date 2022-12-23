@@ -25,13 +25,12 @@ import org.yugo.backend.YuGo.service.MessageService;
 import org.yugo.backend.YuGo.service.NoteService;
 import org.yugo.backend.YuGo.service.RideService;
 import org.yugo.backend.YuGo.service.UserService;
-import org.yugo.backend.YuGo.security.auth.TokenUtils;
+import org.yugo.backend.YuGo.security.TokenUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -82,15 +81,6 @@ public class UserController {
         return new ResponseEntity<>(new AllUsersOut(users), HttpStatus.OK);
     }
 
-    /*
-    @PostMapping(
-            value = "/login",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<LoginOut> loginUser(@RequestBody LoginIn loginIn){
-        userService.authenticateUser(loginIn.getEmail(), loginIn.getPassword());
-        return new ResponseEntity<>(new LoginOut(), HttpStatus.OK);
-    }*/
 
     @PostMapping(
             value = "/login",
@@ -100,9 +90,9 @@ public class UserController {
         Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User)authentication.getPrincipal();
-        String jwt = this.tokenUtils.generateToken(user.getUsername());
+        String jwt = this.tokenUtils.generateToken(user);
         int expiresIn = this.tokenUtils.getExpiredIn();
-        return ResponseEntity.ok(new UserTokenState(jwt, (long)expiresIn));
+        return ResponseEntity.ok(new UserTokenState(jwt, ""));
     }
 
     @GetMapping(

@@ -1,4 +1,4 @@
-package org.yugo.backend.YuGo.security.auth;
+package org.yugo.backend.YuGo.security;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

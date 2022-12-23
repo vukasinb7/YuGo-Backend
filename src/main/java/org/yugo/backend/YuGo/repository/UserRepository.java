@@ -22,11 +22,8 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Query(value = "SELECT * FROM USERS WHERE user_type = 'DRIVER' AND id=?1", nativeQuery = true)
     public Optional<Driver> findDriverById(Integer id);
 
-    @Query(value = "SELECT u FROM User u")
+    @Query(value = "SELECT u FROM User u WHERE u.role != 'ADMIN'")
     public Page<User> findAllUsers(Pageable page);
-
-    @Query(value = "SELECT u FROM User u WHERE u.email = :email AND u.password = :password AND u.isBlocked = false AND u.isActive = true")
-    public User authenticateUser(@Param("email") String email,@Param("password") String password);
 
     public User findByEmail(String email);
 }

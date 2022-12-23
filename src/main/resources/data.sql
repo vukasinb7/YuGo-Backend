@@ -40,7 +40,7 @@ VALUES ('2022-12-05 23:35:33.172279', TIMESTAMP '2022-09-03 12:47:00.000000' - T
 INSERT INTO Vehicles(are_babies_allowed,are_pets_allowed,licence_plate_number,model,number_of_seats,vehicle_type,driver_id)
 VALUES ('0','0','SM074HZ','Skoda Octavia','5','1','6');
 
-UPDATE USERS SET vehicle_id=1 WHERE ID=2;
+UPDATE USERS SET vehicle_id=1 WHERE ID=6;
 
 INSERT INTO VEHICLE_TYPE_PRICES (type,price_per_km, image_path)
 VALUES ('VAN','4.49', 'vehicle_type/car_model.png');
