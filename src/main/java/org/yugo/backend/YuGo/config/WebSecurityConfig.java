@@ -28,8 +28,8 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
         jsr250Enabled = true
 )
 public class WebSecurityConfig {
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-    private TokenUtils tokenUtils;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final TokenUtils tokenUtils;
 
     public WebSecurityConfig(TokenUtils tokenUtils, RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
         this.tokenUtils = tokenUtils;
@@ -66,7 +66,7 @@ public class WebSecurityConfig {
         http.csrf().disable();
         http.cors();
         http.headers().frameOptions().disable();
-        http.authorizeHttpRequests().requestMatchers("/api/user/login").permitAll().
+        http.authorizeHttpRequests().requestMatchers("/api/user/login","api/user/logout").permitAll().
                 requestMatchers(toH2Console()).permitAll().anyRequest().authenticated()
                 .and().addFilterBefore(new TokenAuthenticationFilter(this.tokenUtils, this.userDetailsService()),
                         BasicAuthenticationFilter.class);
