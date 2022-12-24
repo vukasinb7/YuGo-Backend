@@ -39,6 +39,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin
 public class UserController {
     private final UserService userService;
     private final MessageService messageService;
@@ -58,10 +59,39 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
+    @PostMapping(
+            value = "/login",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) {
+        Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        User user = (User)authentication.getPrincipal();
+        String jwt = this.tokenUtils.generateToken(user);
+        return ResponseEntity.ok(new UserTokenState(jwt, ""));
+    }
+
+    @GetMapping(
+            value = "/logout",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    public ResponseEntity logoutUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)){
+            SecurityContextHolder.clearContext();
+            return new ResponseEntity<>("You successfully logged out!", HttpStatus.OK);
+        }
+        else {
+            throw new BadRequestException("User is not authenticated!");
+        }
+
+    }
+
     @GetMapping(
             value = "/{id}/ride",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<AllRidesOut> getUserRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
                                              @RequestParam(name = "size") int size, @RequestParam(name = "sort") String sort,
                                              @RequestParam(name = "from") String from,
@@ -83,37 +113,6 @@ public class UserController {
     public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size){
         Page<User> users = userService.getUsersPage(PageRequest.of(page, size));
         return new ResponseEntity<>(new AllUsersOut(users), HttpStatus.OK);
-    }
-
-
-    @PostMapping(
-            value = "/login",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) {
-        Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        User user = (User)authentication.getPrincipal();
-        String jwt = this.tokenUtils.generateToken(user);
-        int expiresIn = this.tokenUtils.getExpiredIn();
-        return ResponseEntity.ok(new UserTokenState(jwt, ""));
-    }
-
-
-    @GetMapping(
-            value = "/logout",
-            produces = MediaType.TEXT_PLAIN_VALUE
-    )
-    public ResponseEntity logoutUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!(auth instanceof AnonymousAuthenticationToken)){
-            SecurityContextHolder.clearContext();
-            return new ResponseEntity<>("You successfully logged out!", HttpStatus.OK);
-        }
-        else {
-            throw new BadRequestException("User is not authenticated!");
-        }
-
     }
 
     @GetMapping(
@@ -145,6 +144,7 @@ public class UserController {
             value = "/{id}/block",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> blockUser(@PathVariable Integer id){
         if (userService.blockUser(id)) {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
@@ -156,6 +156,7 @@ public class UserController {
             value = "/{id}/unblock",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> unblockUser(@PathVariable Integer id){
         if (userService.unblockUser(id)) {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
@@ -167,6 +168,7 @@ public class UserController {
             value = "/{id}/note",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<NoteOut> createNote(@PathVariable Integer id, @RequestBody NoteIn noteIn){
         Optional<User> userOpt = userService.getUser(id);
         if (userOpt.isPresent()){
@@ -181,6 +183,7 @@ public class UserController {
             value = "/{id}/note",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AllNotesOut> getUserNotes(@PathVariable Integer id, @RequestParam(name = "page") int page,
                                                     @RequestParam(name = "size") int size){
         Page<Note> notes = noteService.getUserNotes(id, PageRequest.of(page, size));

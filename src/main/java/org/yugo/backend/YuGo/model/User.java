@@ -91,7 +91,7 @@ public abstract class User implements UserDetails {
     @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isBlocked;
     }
 
     @JsonIgnore
