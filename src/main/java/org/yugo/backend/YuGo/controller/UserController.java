@@ -104,12 +104,10 @@ public class UserController {
             value = "/logout",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity logoutUser(HttpServletRequest request) {
+    public ResponseEntity logoutUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
         if (!(auth instanceof AnonymousAuthenticationToken)){
             SecurityContextHolder.clearContext();
-            new SecurityContextLogoutHandler().logout(request, null, auth);
             return new ResponseEntity<>("You successfully logged out!", HttpStatus.OK);
         }
         else {
