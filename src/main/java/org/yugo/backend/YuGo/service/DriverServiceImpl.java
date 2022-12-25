@@ -68,11 +68,18 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Driver updateDriver(Driver driver){
-        Optional<User> driverOpt = userRepository.findById(driver.getId());
+    public Driver updateDriver(Driver driverUpdate){
+        Optional<User> driverOpt = userRepository.findById(driverUpdate.getId());
         if(driverOpt.isEmpty()){
             return null;
         }
+        Driver driver = (Driver) driverOpt.get();
+        driver.setName(driverUpdate.getName());
+        driver.setSurname(driverUpdate.getSurname());
+        driver.setProfilePicture(driverUpdate.getProfilePicture());
+        driver.setTelephoneNumber(driverUpdate.getTelephoneNumber());
+        driver.setEmail(driverUpdate.getEmail());
+        driver.setAddress(driverUpdate.getAddress());
         return userRepository.save(driver);
     }
 

@@ -153,13 +153,13 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<UserDetailedInOut> updateDriver(@PathVariable Integer id, @RequestBody UserDetailedIn driverDTO){
-        Driver driver = UserDetailedMapper.fromDTOtoDriver(driverDTO);
-        driver.setId(id);
-        User userUpdated = driverService.updateDriver(driver);
+        Driver driverUpdate = UserDetailedMapper.fromDTOtoDriver(driverDTO);
+        driverUpdate.setId(id);
+        User userUpdated = driverService.updateDriver(driverUpdate);
         if(userUpdated == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(driver), HttpStatus.OK);
+        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(userUpdated), HttpStatus.OK);
     }
 
     @PutMapping(

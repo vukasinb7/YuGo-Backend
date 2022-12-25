@@ -94,8 +94,9 @@ public class PassengerController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
     public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody UserDetailedIn updatedUserDTO, @PathVariable Integer id){
-        Passenger updateForPassenger = new Passenger(updatedUserDTO);
-        Passenger updatedPassenger = passengerService.update(id, updateForPassenger);
+        Passenger passengerUpdate = new Passenger(updatedUserDTO);
+        passengerUpdate.setId(id);
+        Passenger updatedPassenger = passengerService.update(passengerUpdate);
         if (updatedPassenger != null){
             return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedPassenger), HttpStatus.OK);
         }
