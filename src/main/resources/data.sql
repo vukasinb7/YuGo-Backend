@@ -52,15 +52,58 @@ VALUES ('STANDARD','2.49', 'vehicle_type/car_model.png');
 INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Bulevar Oslobodjenja 213', '23.0', '42.31424');
 UPDATE vehicles SET location_id=1;
 
-INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Bulevar Oslobodjenja 123', '122.0', '34.31424');
+INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Majke Jevrosime 123', '122.0', '34.31424');
+
+INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Djure Danicica 12', '122.0', '34.31424');
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
 VALUES ('0','2022-12-05 23:35:33.172279','10','0','1','2022-12-05 23:35:33.172279','ACTIVE','100.0','6',null,null);
 
+INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
+VALUES ('0','2022-12-06 23:35:33.172279','15','0','1','2022-12-06 23:35:33.172279','ACTIVE','13.0','6',null,null);
+
+INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
+VALUES ('0','2022-12-07 23:35:33.172279','15','0','1','2022-12-07 23:35:33.172279','ACTIVE','90.0','6',null,null);
+
+INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
+VALUES ('0','2022-12-08 23:35:33.172279','15','0','1','2022-12-08 23:35:33.172279','ACTIVE','50.0','6',null,null);
+
+INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
+VALUES ('0','2022-12-09 23:35:33.172279','15','0','1','2022-12-09 23:35:33.172279','ACTIVE','10.0','6',null,null);
+
+INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
+VALUES ('0','2022-12-10 23:35:33.172279','15','0','1','2022-12-10 23:35:33.172279','ACTIVE','150.0','6',null,null);
+
 INSERT INTO PATHS (starting_point, destination, path_id) VALUES ('1', '2', '1');
+
+INSERT INTO PATHS (starting_point, destination, path_id) VALUES ('1', '3', '2');
+
+INSERT INTO PATHS (starting_point, destination, path_id) VALUES ('2', '3', '3');
+
+INSERT INTO PATHS (starting_point, destination, path_id) VALUES ('3', '1', '4');
+
+INSERT INTO PATHS (starting_point, destination, path_id) VALUES ('1', '3', '5');
+
+INSERT INTO PATHS (starting_point, destination, path_id) VALUES ('2', '1', '6');
 
 INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
 VALUES ('1','1');
+
+INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
+VALUES ('1','2');
+
+INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
+VALUES ('1','3');
+
+INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
+VALUES ('1','4');
+
+INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
+VALUES ('1','5');
+
+INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
+VALUES ('1','6');
+
 
 INSERT INTO PANICS (reason, time_pressed, ride_id, user_id) VALUES ('testtest', '2022-12-05 23:35:33.172279', '1', '1');
 
