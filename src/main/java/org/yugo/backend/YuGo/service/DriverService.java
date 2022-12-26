@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface DriverService {
     Driver insertDriver(Driver driver);
-    Driver updateDriver(Driver driver);
+    Driver updateDriver(Driver driverUpdate);
 
     List<User> getAllDrivers();
     Page<User> getDriversPage(Pageable page);

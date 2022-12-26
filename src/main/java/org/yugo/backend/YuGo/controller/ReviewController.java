@@ -18,7 +18,6 @@ import org.yugo.backend.YuGo.service.RideService;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/review")
 public class ReviewController {

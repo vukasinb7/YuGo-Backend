@@ -33,17 +33,16 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public Passenger update(Integer passengerId, Passenger updatedPassenger){
-        Optional<Passenger> passengerOpt = get(passengerId);
+    public Passenger update(Passenger passengerUpdate){
+        Optional<Passenger> passengerOpt = get(passengerUpdate.getId());
         if (passengerOpt.isPresent()){
             Passenger passenger = passengerOpt.get();
-            passenger.setName(updatedPassenger.getName());
-            passenger.setSurname(updatedPassenger.getSurname());
-            passenger.setProfilePicture(updatedPassenger.getProfilePicture());
-            passenger.setTelephoneNumber(updatedPassenger.getTelephoneNumber());
-            passenger.setEmail(updatedPassenger.getEmail());
-            passenger.setAddress(updatedPassenger.getAddress());
-            passenger.setPassword(updatedPassenger.getPassword());
+            passenger.setName(passengerUpdate.getName());
+            passenger.setSurname(passengerUpdate.getSurname());
+            passenger.setProfilePicture(passengerUpdate.getProfilePicture());
+            passenger.setTelephoneNumber(passengerUpdate.getTelephoneNumber());
+            passenger.setEmail(passengerUpdate.getEmail());
+            passenger.setAddress(passengerUpdate.getAddress());
             return passengerRepository.save(passenger);
         }
         return null;

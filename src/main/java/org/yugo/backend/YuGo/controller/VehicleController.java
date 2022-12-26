@@ -10,7 +10,6 @@ import org.yugo.backend.YuGo.mapper.LocationMapper;
 import org.yugo.backend.YuGo.model.Vehicle;
 import org.yugo.backend.YuGo.service.VehicleService;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/vehicle")
 public class VehicleController {

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.AllPassengersOut;
 import org.yugo.backend.YuGo.dto.AllRidesOut;
@@ -27,7 +28,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/passenger")
 public class PassengerController {
@@ -58,6 +58,7 @@ public class PassengerController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AllPassengersOut> getAllPassengers(@RequestParam int page, @RequestParam(name = "size") int size){
         Page<Passenger> passengers = passengerService.getPassengersPage(PageRequest.of(page, size));
         return new ResponseEntity<>(new AllPassengersOut(passengers), HttpStatus.OK);
@@ -78,6 +79,7 @@ public class PassengerController {
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
     public ResponseEntity<UserDetailedInOut> getPassenger(@PathVariable Integer id){
         Optional<Passenger> passengerOpt = passengerService.get(id);
         if (passengerOpt.isPresent()){
@@ -90,9 +92,11 @@ public class PassengerController {
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
     public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody UserDetailedIn updatedUserDTO, @PathVariable Integer id){
-        Passenger updateForPassenger = new Passenger(updatedUserDTO);
-        Passenger updatedPassenger = passengerService.update(id, updateForPassenger);
+        Passenger passengerUpdate = new Passenger(updatedUserDTO);
+        passengerUpdate.setId(id);
+        Passenger updatedPassenger = passengerService.update(passengerUpdate);
         if (updatedPassenger != null){
             return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedPassenger), HttpStatus.OK);
         }
@@ -103,6 +107,7 @@ public class PassengerController {
             value = "/{id}/ride",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
     ResponseEntity<AllRidesOut> getPassengerRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
                                                   @RequestParam(name = "size") int size,
                                                   @RequestParam(name = "sort") String sort,

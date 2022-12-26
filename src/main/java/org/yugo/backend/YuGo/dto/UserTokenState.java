@@ -5,11 +5,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
-public class LoginOut {
+public class UserTokenState {
     private String accessToken;
     private String refreshToken;
 
-    public LoginOut(String accessToken, String refreshToken) {
+    public UserTokenState(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }

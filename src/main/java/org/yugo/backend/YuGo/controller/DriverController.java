@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/driver")
 public class DriverController {
@@ -55,6 +55,7 @@ public class DriverController {
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
     public ResponseEntity<UserDetailedInOut> getDriver(@PathVariable Integer id){
         Driver driver = driverService.getDriver(id).orElse(null);
         if(driver == null){
@@ -154,13 +155,13 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     ResponseEntity<UserDetailedInOut> updateDriver(@PathVariable Integer id, @RequestBody UserDetailedIn driverDTO){
-        Driver driver = UserDetailedMapper.fromDTOtoDriver(driverDTO);
-        driver.setId(id);
-        User userUpdated = driverService.updateDriver(driver);
+        Driver driverUpdate = UserDetailedMapper.fromDTOtoDriver(driverDTO);
+        driverUpdate.setId(id);
+        User userUpdated = driverService.updateDriver(driverUpdate);
         if(userUpdated == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(driver), HttpStatus.OK);
+        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(userUpdated), HttpStatus.OK);
     }
 
     @PutMapping(
