@@ -49,12 +49,12 @@ VALUES ('LUX','6.99', 'vehicle_type/car_model.png');
 INSERT INTO VEHICLE_TYPE_PRICES (type,price_per_km, image_path)
 VALUES ('STANDARD','2.49', 'vehicle_type/car_model.png');
 
-INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Bulevar Oslobodjenja 213', '23.0', '42.31424');
+INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Djure Danicica 82', '44.975980', '19.583750');
 UPDATE vehicles SET location_id=1;
 
-INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Majke Jevrosime 123', '122.0', '34.31424');
+INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Matije Hudji 50', '44.997770', '19.573220');
 
-INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Djure Danicica 12', '122.0', '34.31424');
+INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Radnicka 54', '44.979348', '19.582567');
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
 VALUES ('0','2022-12-05 23:35:33.172279','10','0','1','2022-12-05 23:35:33.172279','ACTIVE','100.0','6',null,null);
@@ -90,6 +90,9 @@ INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
 VALUES ('1','1');
 
 INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
+VALUES ('3','1');
+
+INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
 VALUES ('1','2');
 
 INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
@@ -114,3 +117,8 @@ INSERT INTO NOTES (date, message, user_id) VALUES ('2022-12-05 23:35:33.172279',
 INSERT INTO DOCUMENTS (image, name, driver_id) VALUES ('saobracajna_dozovola_img', 'saobracajna dozvola', 2);
 
 INSERT INTO work_times (end_time, start_time, driver_id) VALUES ('2022-12-05 23:35:33.172279', '2022-12-05 23:35:33.172279', '2');
+
+INSERT INTO RIDE_REVIEWS(comment,rating,type,passenger,ride) VALUES ('Vozilo je u losem stanju, popravite ga.', 3, 'DRIVER',1,1);
+INSERT INTO RIDE_REVIEWS(comment,rating,type,passenger,ride) VALUES ('Sve super, svaka cast za cistocu vozila.', 5, 'VEHICLE',1,1);
+INSERT INTO RIDE_REVIEWS(comment,rating,type,passenger,ride) VALUES ('Vozac je veoma korektan.', 4, 'DRIVER',3,1);
+INSERT INTO RIDE_REVIEWS(comment,rating,type,passenger,ride) VALUES ('Vozilo se cuje kao traktor, neprijatni zvukovi. Nije mi dobro.', 4, 'VEHICLE',3,1);

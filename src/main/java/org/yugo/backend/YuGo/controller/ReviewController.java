@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.AcumulatedReviewsOut;
 import org.yugo.backend.YuGo.dto.AllRideReviewsOut;
@@ -34,22 +37,28 @@ public class ReviewController {
     }
 
     @PostMapping(
-            value = "/{rideId}/vehicle/{id}",
+            value = "/{rideId}/vehicle",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<ReviewOut> addVehicleReview(@RequestBody ReviewIn reviewIn,@PathVariable Integer rideId, @PathVariable Integer id){
-        RideReview vehicleReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId).get(),passengerService.get(1).get(),ReviewType.VEHICLE);
+    @PreAuthorize("hasRole('PASSENGER')")
+    public ResponseEntity<ReviewOut> addVehicleReview(@RequestBody ReviewIn reviewIn,@PathVariable Integer rideId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        RideReview vehicleReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId).get(),passengerService.get(user.getId()).get(),ReviewType.VEHICLE);
         reviewService.insertRideReview(vehicleReview);
         return new ResponseEntity<>(new ReviewOut(vehicleReview), HttpStatus.OK);
     }
 
 
     @PostMapping(
-            value = "/{rideId}/driver/{id}",
+            value = "/{rideId}/driver",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<ReviewOut> addRideReview(@RequestBody ReviewIn reviewIn, @PathVariable Integer rideId, @PathVariable Integer id){
-        RideReview rideReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId).get(),passengerService.get(1).get(),ReviewType.DRIVER);
+    @PreAuthorize("hasRole('PASSENGER')")
+    public ResponseEntity<ReviewOut> addRideReview(@RequestBody ReviewIn reviewIn, @PathVariable Integer rideId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        RideReview rideReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId).get(),passengerService.get(user.getId()).get(),ReviewType.DRIVER);
         reviewService.insertRideReview(rideReview);
         return new ResponseEntity<>(new ReviewOut(rideReview), HttpStatus.OK);
     }
@@ -75,6 +84,7 @@ public class ReviewController {
             value = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER','DRIVER')")
     public ResponseEntity<List<AcumulatedReviewsOut>> getAllRideReviews(@PathVariable int id){
         List<AcumulatedReviewsOut> result= new ArrayList<>();
         for (Passenger passenger:rideService.get(id).get().getPassengers()) {
