@@ -69,7 +69,7 @@ INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,incl
 VALUES ('0','2022-12-08 23:35:33.172279','15','0','1','2022-12-08 23:35:33.172279','ACTIVE','50.0','6',null,null);
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
-VALUES ('0','2022-12-09 23:35:33.172279','15','0','1','2022-12-09 23:35:33.172279','ACTIVE','10.0','6',null,null);
+VALUES ('0','2022-12-26 23:35:33.172279','15','0','1','2022-12-26 23:35:33.172279','ACTIVE','10.0','6',null,null);
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
 VALUES ('0','2022-12-10 23:35:33.172279','15','0','1','2022-12-10 23:35:33.172279','ACTIVE','150.0','6',null,null);
