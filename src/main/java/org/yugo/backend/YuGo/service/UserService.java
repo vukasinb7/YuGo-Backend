@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface UserService {
     User insertUser(User user);
     Optional<User> getUser(Integer id);
+    User updateUser(User userUpdate);
     List<User> getAllUsers();
     UserActivation insertUserActivation(UserActivation userActivation);
     Optional<UserActivation> getUserActivation(Integer id);

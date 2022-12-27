@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.model.UserActivation;
 import org.yugo.backend.YuGo.repository.UserActivationRepository;
@@ -35,6 +36,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> getUser(Integer id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public User updateUser(User userUpdate){
+        Optional<User> userOpt = getUser(userUpdate.getId());
+        if (userOpt.isPresent()){
+            User user = userOpt.get();
+            user.setName(userUpdate.getName());
+            user.setSurname(userUpdate.getSurname());
+            user.setProfilePicture(userUpdate.getProfilePicture());
+            user.setTelephoneNumber(userUpdate.getTelephoneNumber());
+            user.setEmail(userUpdate.getEmail());
+            user.setAddress(userUpdate.getAddress());
+            return userRepository.save(user);
+        }
+        return null;
     }
 
     @Override
