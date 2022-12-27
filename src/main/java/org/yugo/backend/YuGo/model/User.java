@@ -28,11 +28,11 @@ public abstract class User implements UserDetails {
     private String name;
     @Column(name = "surname", nullable = false)
     private String surname;
-    @Column(name = "profile_picture", nullable = false)
+    @Column(name = "profile_picture", nullable = true)
     private String profilePicture;
     @Column(name = "telephone_number", nullable = false)
     private String telephoneNumber;
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
     @Column(name = "address", nullable = false)
     private String address;

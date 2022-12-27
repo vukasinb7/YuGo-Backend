@@ -66,7 +66,7 @@ public class WebSecurityConfig {
         http.csrf().disable();
         http.cors();
         http.headers().frameOptions().disable();
-        http.authorizeHttpRequests().requestMatchers("/api/user/login","api/user/logout").permitAll().
+        http.authorizeHttpRequests().requestMatchers("/api/user/login","api/user/logout","/api/passenger").permitAll().
                 requestMatchers(toH2Console()).permitAll().anyRequest().authenticated()
                 .and().addFilterBefore(new TokenAuthenticationFilter(this.tokenUtils, this.userDetailsService()),
                         BasicAuthenticationFilter.class);

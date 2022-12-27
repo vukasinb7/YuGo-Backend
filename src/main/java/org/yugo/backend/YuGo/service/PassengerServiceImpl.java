@@ -1,9 +1,14 @@
 package org.yugo.backend.YuGo.service;
 
+import jakarta.persistence.PersistenceException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.exceptions.BadRequestException;
+import org.yugo.backend.YuGo.exceptions.EmailDuplicateException;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.repository.PassengerRepository;
@@ -11,6 +16,7 @@ import org.yugo.backend.YuGo.repository.RideRepository;
 import org.yugo.backend.YuGo.repository.UserRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -23,8 +29,12 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public Passenger insert(Passenger passenger){
-        return passengerRepository.save(passenger);
+    public Passenger insert(Passenger passenger) throws EmailDuplicateException {
+        try{
+            return passengerRepository.save(passenger);
+        }catch (DataIntegrityViolationException e){
+            throw new EmailDuplicateException("Email is already being used by another user");
+        }
     }
 
     @Override

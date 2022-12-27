@@ -2,6 +2,8 @@ package org.yugo.backend.YuGo.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.yugo.backend.YuGo.exceptions.BadRequestException;
+import org.yugo.backend.YuGo.exceptions.EmailDuplicateException;
 import org.yugo.backend.YuGo.model.Passenger;
 
 import java.time.LocalDateTime;

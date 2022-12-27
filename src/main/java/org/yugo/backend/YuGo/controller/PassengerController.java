@@ -4,15 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.AllPassengersOut;
 import org.yugo.backend.YuGo.dto.AllRidesOut;
 import org.yugo.backend.YuGo.dto.UserDetailedIn;
 import org.yugo.backend.YuGo.dto.UserDetailedInOut;
+import org.yugo.backend.YuGo.exceptions.BadRequestException;
+import org.yugo.backend.YuGo.exceptions.EmailDuplicateException;
+import org.yugo.backend.YuGo.exceptions.ExceptionResolver;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.Ride;
@@ -40,6 +45,13 @@ public class PassengerController {
         this.passengerService = passengerService;
         this.userService = userService;
         this.rideService = rideService;
+    }
+
+    @ExceptionHandler(value = EmailDuplicateException.class)
+    public ResponseEntity<String> handleDuplicateEmailException(EmailDuplicateException e){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<String>(e.getMessage(), headers, HttpStatus.CONFLICT);
     }
 
     @PostMapping(
