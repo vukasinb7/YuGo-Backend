@@ -21,7 +21,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="user_type",
         discriminatorType = DiscriminatorType.STRING)
-public abstract class User implements UserDetails {
+public class User implements UserDetails {
     @Column(name = "user_type", insertable = false, updatable = false, nullable = false)
     private String role;
     @Column(name = "name", nullable = false)

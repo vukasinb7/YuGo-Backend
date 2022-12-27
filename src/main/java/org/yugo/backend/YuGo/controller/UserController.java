@@ -21,10 +21,8 @@ import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.mapper.MessageMapper;
 import org.yugo.backend.YuGo.mapper.NoteMapper;
-import org.yugo.backend.YuGo.model.Message;
-import org.yugo.backend.YuGo.model.Note;
-import org.yugo.backend.YuGo.model.Ride;
-import org.yugo.backend.YuGo.model.User;
+import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
+import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.MessageService;
 import org.yugo.backend.YuGo.service.NoteService;
 import org.yugo.backend.YuGo.service.RideService;
@@ -85,6 +83,34 @@ public class UserController {
             throw new BadRequestException("User is not authenticated!");
         }
 
+    }
+
+    @GetMapping(
+            value = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER', 'DRIVER')")
+    public ResponseEntity<UserDetailedInOut> getUser(@PathVariable Integer id){
+        Optional<User> userOpt = userService.getUser(id);
+        if (userOpt.isPresent()){
+            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(userOpt.get()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping(
+            value = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER','DRIVER')")
+    public ResponseEntity<UserDetailedInOut> updateUser(@RequestBody UserDetailedIn updatedUserDTO, @PathVariable Integer id){
+        User userUpdate = new User(updatedUserDTO);
+        userUpdate.setId(id);
+        User updatedUser = userService.updateUser(userUpdate);
+        if (updatedUser != null){
+            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedUser), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(
