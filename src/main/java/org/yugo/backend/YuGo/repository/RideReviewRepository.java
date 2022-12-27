@@ -21,9 +21,9 @@ public interface RideReviewRepository extends JpaRepository<RideReview,Integer> 
     @Query(value = "SELECT * FROM RIDE_REVIEWS rr WHERE rr.type='VEHICLE' AND rr.ride=:ride_id", nativeQuery = true)
     List<RideReview> findVehicleReviewsByRide(@Param("ride_id") Integer rideId);
 
-    @Query(value = "SELECT * FROM RIDE_REVIEWS rr WHERE rr.type='DRIVER' AND rr.ride=:ride_id AND :ride_id in(SELECT  pr.ride_id FROM PASSENGER_RIDES pr WHERE pr.ride_id=:ride_id AND pr.passenger_id=:passenger_id )", nativeQuery = true)
+    @Query(value = "SELECT * FROM RIDE_REVIEWS rr WHERE rr.type='DRIVER' AND rr.ride=:ride_id AND rr.passenger=:passenger_id", nativeQuery = true)
     RideReview findDriverReviewsByRideByPassenger(@Param("ride_id") Integer rideId,@Param("passenger_id") Integer passengerId);
 
-    @Query(value = "SELECT * FROM RIDE_REVIEWS rr WHERE rr.type='VEHICLE' AND rr.ride=:ride_id AND :ride_id in (SELECT pr.ride_id FROM PASSENGER_RIDES pr WHERE pr.ride_id=:ride_id AND pr.passenger_id=:passenger_id )", nativeQuery = true)
+    @Query(value = "SELECT * FROM RIDE_REVIEWS rr WHERE rr.type='VEHICLE' AND rr.ride=:ride_id AND rr.passenger=:passenger_id ", nativeQuery = true)
     RideReview findVehicleReviewsByRideByPassenger(@Param("ride_id") Integer rideId,@Param("passenger_id") Integer passengerId);
 }

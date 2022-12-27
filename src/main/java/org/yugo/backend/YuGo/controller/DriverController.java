@@ -55,7 +55,7 @@ public class DriverController {
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER', 'DRIVER')")
     public ResponseEntity<UserDetailedInOut> getDriver(@PathVariable Integer id){
         Driver driver = driverService.getDriver(id).orElse(null);
         if(driver == null){

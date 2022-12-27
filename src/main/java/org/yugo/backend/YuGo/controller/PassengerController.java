@@ -79,7 +79,7 @@ public class PassengerController {
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER','DRIVER')")
     public ResponseEntity<UserDetailedInOut> getPassenger(@PathVariable Integer id){
         Optional<Passenger> passengerOpt = passengerService.get(id);
         if (passengerOpt.isPresent()){
