@@ -69,6 +69,7 @@ public class DriverController {
             value = "/{id}/vehicle",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<VehicleOut> getVehicle(@PathVariable Integer id){
         Optional<Driver> driverOpt = driverService.getDriver(id);
 
@@ -82,6 +83,7 @@ public class DriverController {
         }
         return new ResponseEntity<>(new VehicleOut(vehicle), HttpStatus.OK);
     }
+
     @PostMapping(
             value = "/{id}/vehicle",
             produces = MediaType.APPLICATION_JSON_VALUE,
