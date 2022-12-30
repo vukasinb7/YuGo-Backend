@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.yugo.backend.YuGo.dto.UserDetailedIn;
 
 import java.sql.Timestamp;
@@ -108,7 +109,7 @@ public class User implements UserDetails {
         this.telephoneNumber = userDetailedIn.getTelephoneNumber();
         this.email = userDetailedIn.getEmail();
         this.address = userDetailedIn.getAddress();
-        this.password = userDetailedIn.getPassword();
+        this.password = new BCryptPasswordEncoder().encode(userDetailedIn.getPassword());
         this.isBlocked = false;
         this.isActive = false;
     }
