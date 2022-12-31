@@ -1,7 +1,5 @@
 package org.yugo.backend.YuGo.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
@@ -37,7 +35,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin
 public class UserController {
     private final UserService userService;
     private final MessageService messageService;
@@ -45,16 +42,18 @@ public class UserController {
     private final NoteService noteService;
     private final TokenUtils tokenUtils;
     private final AuthenticationManager authenticationManager;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public UserController(UserService userService, MessageService messageService,
-                          RideService rideService, NoteService noteService, TokenUtils tokenUtils, AuthenticationManager authenticationManager){
+                          RideService rideService, NoteService noteService, TokenUtils tokenUtils, AuthenticationManager authenticationManager, BCryptPasswordEncoder passwordEncoder){
         this.userService = userService;
         this.messageService = messageService;
         this.rideService = rideService;
         this.noteService = noteService;
         this.tokenUtils = tokenUtils;
         this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping(
@@ -83,34 +82,6 @@ public class UserController {
             throw new BadRequestException("User is not authenticated!");
         }
 
-    }
-
-    @GetMapping(
-            value = "/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER', 'DRIVER')")
-    public ResponseEntity<UserDetailedInOut> getUser(@PathVariable Integer id){
-        Optional<User> userOpt = userService.getUser(id);
-        if (userOpt.isPresent()){
-            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(userOpt.get()), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-    }
-
-    @PutMapping(
-            value = "/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER','DRIVER')")
-    public ResponseEntity<UserDetailedInOut> updateUser(@RequestBody UserDetailedIn updatedUserDTO, @PathVariable Integer id){
-        User userUpdate = new User(updatedUserDTO);
-        userUpdate.setId(id);
-        User updatedUser = userService.updateUser(userUpdate);
-        if (updatedUser != null){
-            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedUser), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(

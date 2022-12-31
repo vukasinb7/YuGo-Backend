@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.yugo.backend.YuGo.dto.UserDetailedIn;
 
 import java.sql.Timestamp;
@@ -22,7 +21,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="user_type",
         discriminatorType = DiscriminatorType.STRING)
-public class User implements UserDetails {
+public abstract class User implements UserDetails {
     @Column(name = "user_type", insertable = false, updatable = false, nullable = false)
     private String role;
     @Column(name = "name", nullable = false)
@@ -101,7 +100,6 @@ public class User implements UserDetails {
         return true;
     }
 
-
     public User(UserDetailedIn userDetailedIn) {
         this.name = userDetailedIn.getName();
         this.surname = userDetailedIn.getSurname();
@@ -109,7 +107,7 @@ public class User implements UserDetails {
         this.telephoneNumber = userDetailedIn.getTelephoneNumber();
         this.email = userDetailedIn.getEmail();
         this.address = userDetailedIn.getAddress();
-        this.password = new BCryptPasswordEncoder().encode(userDetailedIn.getPassword());
+        this.password = userDetailedIn.getPassword();
         this.isBlocked = false;
         this.isActive = false;
     }

@@ -7,8 +7,7 @@ import java.util.Optional;
 
 public interface AdminService {
     Admin insert(Admin admin);
-
+    Admin update(Admin adminUpdate);
     List<Admin> getAll();
-
     Optional<Admin> get(Integer id);
 }

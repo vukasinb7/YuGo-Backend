@@ -9,21 +9,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.ErrorResponse;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.AllPassengersOut;
 import org.yugo.backend.YuGo.dto.AllRidesOut;
 import org.yugo.backend.YuGo.dto.UserDetailedIn;
 import org.yugo.backend.YuGo.dto.UserDetailedInOut;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.exceptions.EmailDuplicateException;
-import org.yugo.backend.YuGo.exceptions.ExceptionResolver;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.Ride;
+import org.yugo.backend.YuGo.model.Role;
 import org.yugo.backend.YuGo.model.UserActivation;
 import org.yugo.backend.YuGo.service.PassengerService;
 import org.yugo.backend.YuGo.service.RideService;
+import org.yugo.backend.YuGo.service.RoleService;
 import org.yugo.backend.YuGo.service.UserService;
 
 import java.time.Duration;
@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -39,12 +40,17 @@ public class PassengerController {
     private final PassengerService passengerService;
     private final UserService userService;
     private final RideService rideService;
+    private final RoleService roleService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public PassengerController(PassengerService passengerService, UserService userService, RideService rideService){
+    public PassengerController(PassengerService passengerService, UserService userService, RideService rideService,
+                               RoleService roleService, BCryptPasswordEncoder passwordEncoder){
         this.passengerService = passengerService;
         this.userService = userService;
         this.rideService = rideService;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @ExceptionHandler(value = EmailDuplicateException.class)
@@ -60,6 +66,10 @@ public class PassengerController {
     )
     public ResponseEntity<UserDetailedInOut> addPassenger(@RequestBody UserDetailedIn user){
         Passenger newPass = new Passenger(user);
+        ArrayList<Role> roles = new ArrayList<>();
+        roles.add(roleService.findRoleByName("ROLE_PASSENGER"));
+        newPass.setRoles(roles);
+        newPass.setPassword(passwordEncoder.encode(user.getPassword()));
         passengerService.insert(newPass);
         UserActivation newAct = new UserActivation(newPass, LocalDateTime.now(), Duration.ZERO);
         userService.insertUserActivation(newAct);

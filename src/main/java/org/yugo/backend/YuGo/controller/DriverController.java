@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
@@ -17,6 +17,7 @@ import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.DocumentService;
 import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.RideService;
+import org.yugo.backend.YuGo.service.RoleService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,11 +35,16 @@ public class DriverController {
     private final DriverService driverService;
     private final DocumentService documentService;
     private final RideService rideService;
+    private final RoleService roleService;
+    private final BCryptPasswordEncoder passwordEncoder;
     @Autowired
-    public DriverController(DriverService driverService, DocumentService documentService, RideService rideService) {
+    public DriverController(DriverService driverService, DocumentService documentService, RideService rideService,
+                            RoleService roleService, BCryptPasswordEncoder passwordEncoder) {
         this.driverService = driverService;
         this.documentService = documentService;
         this.rideService = rideService;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping(
@@ -46,7 +52,13 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody UserDetailedIn driverIn){
-        Driver driver = UserDetailedMapper.fromDTOtoDriver(driverIn);
+        Driver driver = new Driver(driverIn);
+        ArrayList<Role> roles = new ArrayList<>();
+        roles.add(roleService.findRoleByName("ROLE_DRIVER"));
+        driver.setRoles(roles);
+        Vehicle vehicle = new Vehicle();
+        driver.setVehicle(vehicle);
+        driver.setPassword(passwordEncoder.encode(driver.getPassword()));
         Driver driverNew = driverService.insertDriver(driver);
         return new ResponseEntity<>(new UserDetailedInOut(driverNew), HttpStatus.OK);
     }
@@ -156,6 +168,7 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<UserDetailedInOut> updateDriver(@PathVariable Integer id, @RequestBody UserDetailedIn driverDTO){
         Driver driverUpdate = UserDetailedMapper.fromDTOtoDriver(driverDTO);
         driverUpdate.setId(id);
