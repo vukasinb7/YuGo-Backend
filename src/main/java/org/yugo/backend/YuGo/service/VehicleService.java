@@ -22,4 +22,5 @@ public interface VehicleService {
     VehicleTypePrice getVehicleType(Integer id);
 
     double calculatePrice(Integer vehicleTypePriceId, Location from, Location to);
+    public VehicleTypePrice getVehicleTypeByName(String name);
 }

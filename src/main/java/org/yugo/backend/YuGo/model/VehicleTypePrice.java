@@ -14,10 +14,15 @@ public class VehicleTypePrice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
+    @Column(name = "vehicle_type", nullable = false)
     private VehicleType vehicleType;
     @Column(name = "price_per_km", nullable = false)
     private double pricePerKM;
     @Column(name = "image_path")
     private String imagePath;
+
+    @Override
+    public String toString() {
+        return this.vehicleType.toString();
+    }
 }

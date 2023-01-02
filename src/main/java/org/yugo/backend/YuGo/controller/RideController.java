@@ -4,19 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
+import org.yugo.backend.YuGo.mapper.FavoritePathMapper;
 import org.yugo.backend.YuGo.mapper.PathMapper;
 import org.yugo.backend.YuGo.mapper.RideMapper;
+import org.yugo.backend.YuGo.mapper.RideReviewMapper;
 import org.yugo.backend.YuGo.model.*;
-import org.yugo.backend.YuGo.service.DriverService;
-import org.yugo.backend.YuGo.service.PanicService;
-import org.yugo.backend.YuGo.service.PassengerService;
-import org.yugo.backend.YuGo.service.RideService;
+import org.yugo.backend.YuGo.service.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/ride")
@@ -24,15 +26,18 @@ public class RideController {
     private final RideService rideService;
     private final PanicService panicService;
     private final PassengerService passengerService;
-
     private final DriverService driverService;
+    private final VehicleService vehicleService;
+    private final FavoritePathService favoritePathService;
 
     @Autowired
-    public RideController(RideService rideService, PanicService panicService, PassengerService passengerService,DriverService driverService){
+    public RideController(RideService rideService, PanicService panicService, PassengerService passengerService,DriverService driverService, VehicleService vehicleService, FavoritePathService favoritePathService){
         this.rideService=rideService;
         this.panicService=panicService;
         this.passengerService=passengerService;
         this.driverService=driverService;
+        this.vehicleService=vehicleService;
+        this.favoritePathService=favoritePathService;
     }
 
     @PostMapping(
@@ -136,6 +141,32 @@ public class RideController {
         rideService.insert(ride);
         return new ResponseEntity<>(new RideDetailedOut(ride), HttpStatus.OK);
 
+    }
+
+    @PostMapping(
+            value = "/favorites",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
+    public ResponseEntity<FavoritePathOut> addFavoritePath(@RequestBody FavoritePathIn favoritePathIn){
+        Set<Passenger> passengers=new HashSet<>();
+        for (UserSimplifiedOut user:favoritePathIn.getPassengers()) {
+            passengers.add(passengerService.get(user.getId()).get());
+        }
+        FavoritePath favoritePath= new FavoritePath(favoritePathIn.getFavoriteName(),favoritePathIn.getLocations().stream().map(PathMapper::fromDTOtoPath).collect(Collectors.toList()), passengers,vehicleService.getVehicleTypeByName(favoritePathIn.getVehicleType()),favoritePathIn.getBabyTransport(),favoritePathIn.getPetTransport());
+        favoritePathService.insert(favoritePath);
+        return new ResponseEntity<>(FavoritePathMapper.fromFavoritePathtoDTO(favoritePath), HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "/favorites/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
+    public ResponseEntity<List<FavoritePathOut>> getFavoritePathByPassengerId(@PathVariable Integer id){
+        return new ResponseEntity<>(favoritePathService.getByPassengerId(id).get().stream()
+                .map(FavoritePathMapper::fromFavoritePathtoDTO)
+                .toList(), HttpStatus.OK);
     }
 
 }
