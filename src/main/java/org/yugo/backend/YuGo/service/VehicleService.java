@@ -20,4 +20,5 @@ public interface VehicleService {
     List<VehicleTypePrice> getAllVehicleTypes();
 
     VehicleTypePrice getVehicleType(Integer id);
+    public VehicleTypePrice getVehicleTypeByName(String name);
 }

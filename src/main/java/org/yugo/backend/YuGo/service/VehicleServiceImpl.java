@@ -60,4 +60,6 @@ public class VehicleServiceImpl implements VehicleService {
     public VehicleTypePrice getVehicleType(Integer id){
         return vehicleTypeRepository.findById(id).orElse(null);
     }
+    @Override
+    public VehicleTypePrice getVehicleTypeByName(String name){ return vehicleTypeRepository.findByType(name);}
 }
