@@ -15,10 +15,12 @@ import java.util.Optional;
 @Service
 public class RideServiceImpl implements RideService {
     private final RideRepository rideRepository;
+    private final UserService userService;
 
     @Autowired
-    public RideServiceImpl(RideRepository rideRepository){
+    public RideServiceImpl(RideRepository rideRepository, UserService userService){
         this.rideRepository = rideRepository;
+        this.userService = userService;
     }
 
     @Override

@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.AllPassengersOut;
 import org.yugo.backend.YuGo.dto.AllRidesOut;
@@ -18,11 +16,9 @@ import org.yugo.backend.YuGo.dto.UserDetailedInOut;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.Ride;
-import org.yugo.backend.YuGo.model.Role;
 import org.yugo.backend.YuGo.model.UserActivation;
 import org.yugo.backend.YuGo.service.PassengerService;
 import org.yugo.backend.YuGo.service.RideService;
-import org.yugo.backend.YuGo.service.RoleService;
 import org.yugo.backend.YuGo.service.UserService;
 
 import java.time.Duration;
@@ -30,9 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/passenger")

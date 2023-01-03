@@ -13,13 +13,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.mapper.MessageMapper;
 import org.yugo.backend.YuGo.mapper.NoteMapper;
-import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.MessageService;
 import org.yugo.backend.YuGo.service.NoteService;
@@ -42,18 +40,16 @@ public class UserController {
     private final NoteService noteService;
     private final TokenUtils tokenUtils;
     private final AuthenticationManager authenticationManager;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public UserController(UserService userService, MessageService messageService,
-                          RideService rideService, NoteService noteService, TokenUtils tokenUtils, AuthenticationManager authenticationManager, BCryptPasswordEncoder passwordEncoder){
+                          RideService rideService, NoteService noteService, TokenUtils tokenUtils, AuthenticationManager authenticationManager){
         this.userService = userService;
         this.messageService = messageService;
         this.rideService = rideService;
         this.noteService = noteService;
         this.tokenUtils = tokenUtils;
         this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping(
