@@ -61,15 +61,5 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleTypeRepository.findById(id).orElse(null);
     }
     @Override
-    public double calculatePrice(Integer vehicleTypePriceId, Location from, Location to){
-        VehicleTypePrice vehicleTypePrice = this.getVehicleType(vehicleTypePriceId);
-        if(vehicleTypePrice == null){
-            return 0; // TODO throw exception
-        }
-        double pricePerUnit = vehicleTypePrice.getPricePerKM();
-        return pricePerUnit * 10; // TODO calculate distance between 2 locations and multiply by pricePerUnit
-    }
-
-    @Override
     public VehicleTypePrice getVehicleTypeByName(String name){ return vehicleTypeRepository.findByType(name);}
 }
