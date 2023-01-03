@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.exceptions.BadRequestException;
+import org.yugo.backend.YuGo.exceptions.NotFoundException;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.model.UserActivation;
 import org.yugo.backend.YuGo.repository.UserActivationRepository;
 import org.yugo.backend.YuGo.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -34,24 +37,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUser(Integer id) {
-        return userRepository.findById(id);
+    public User getUser(Integer id) {
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isPresent()){
+            return userOpt.get();
+        }
+        else{
+            throw new NotFoundException("User does not exist!");
+        }
     }
 
     @Override
     public User updateUser(User userUpdate){
-        Optional<User> userOpt = getUser(userUpdate.getId());
-        if (userOpt.isPresent()){
-            User user = userOpt.get();
-            user.setName(userUpdate.getName());
-            user.setSurname(userUpdate.getSurname());
-            user.setProfilePicture(userUpdate.getProfilePicture());
-            user.setTelephoneNumber(userUpdate.getTelephoneNumber());
-            user.setEmail(userUpdate.getEmail());
-            user.setAddress(userUpdate.getAddress());
-            return userRepository.save(user);
-        }
-        return null;
+        User user = getUser(userUpdate.getId());
+        user.setName(userUpdate.getName());
+        user.setSurname(userUpdate.getSurname());
+        user.setProfilePicture(userUpdate.getProfilePicture());
+        user.setTelephoneNumber(userUpdate.getTelephoneNumber());
+        user.setEmail(userUpdate.getEmail());
+        user.setAddress(userUpdate.getAddress());
+        return userRepository.save(user);
     }
 
     @Override
@@ -99,14 +104,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean activateUser(Integer activationId){
+    public void activateUser(Integer activationId){
         Optional<UserActivation> userActivationOpt = userActivationRepository.findById(activationId);
         if (userActivationOpt.isPresent()){
             UserActivation userActivation = userActivationOpt.get();
+
+            if (userActivation.getDateCreated().plus(userActivation.getLifeSpan()).isBefore(LocalDateTime.now())){
+                throw new BadRequestException("Activation expired. Register again!");
+            }
             userActivation.getUser().setActive(true);
             userActivationRepository.save(userActivation);
-            return true;
         }
-        return false;
+        else{
+            throw new NotFoundException("Activation with entered id does not exist!");
+        }
     }
 }

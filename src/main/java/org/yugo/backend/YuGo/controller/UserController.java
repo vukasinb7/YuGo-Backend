@@ -125,16 +125,13 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestBody MessageIn messageIn){
-        Optional<User> senderOpt = userService.getUser(2);
-        Optional<User> receiverOpt = userService.getUser(id);
-        if (senderOpt.isPresent() && receiverOpt.isPresent()) {
-            Message msg = new Message(senderOpt.get(), receiverOpt.get(),
-                    messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
-                    null);
-            messageService.insert(msg);
-            return new ResponseEntity<>(MessageMapper.fromMessagetoDTO(msg), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        User sender = userService.getUser(2);
+        User receiver = userService.getUser(id);
+        Message msg = new Message(sender, receiver,
+                messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
+                null);
+        messageService.insert(msg);
+        return new ResponseEntity<>(MessageMapper.fromMessagetoDTO(msg), HttpStatus.OK);
     }
 
     @PutMapping(
@@ -167,13 +164,10 @@ public class UserController {
     )
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<NoteOut> createNote(@PathVariable Integer id, @RequestBody NoteIn noteIn){
-        Optional<User> userOpt = userService.getUser(id);
-        if (userOpt.isPresent()){
-            Note note = new Note(userOpt.get(), noteIn.getMessage(), LocalDateTime.now());
-            noteService.insert(note);
-            return new ResponseEntity<>(NoteMapper.fromNotetoDTO(note), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        User user = userService.getUser(id);
+        Note note = new Note(user, noteIn.getMessage(), LocalDateTime.now());
+        noteService.insert(note);
+        return new ResponseEntity<>(NoteMapper.fromNotetoDTO(note), HttpStatus.OK);
     }
 
     @GetMapping(

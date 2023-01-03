@@ -35,16 +35,11 @@ public class DriverController {
     private final DriverService driverService;
     private final DocumentService documentService;
     private final RideService rideService;
-    private final RoleService roleService;
-    private final BCryptPasswordEncoder passwordEncoder;
     @Autowired
-    public DriverController(DriverService driverService, DocumentService documentService, RideService rideService,
-                            RoleService roleService, BCryptPasswordEncoder passwordEncoder) {
+    public DriverController(DriverService driverService, DocumentService documentService, RideService rideService) {
         this.driverService = driverService;
         this.documentService = documentService;
         this.rideService = rideService;
-        this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping(
@@ -53,12 +48,6 @@ public class DriverController {
     )
     public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody UserDetailedIn driverIn){
         Driver driver = new Driver(driverIn);
-        ArrayList<Role> roles = new ArrayList<>();
-        roles.add(roleService.findRoleByName("ROLE_DRIVER"));
-        driver.setRoles(roles);
-        Vehicle vehicle = new Vehicle();
-        driver.setVehicle(vehicle);
-        driver.setPassword(passwordEncoder.encode(driver.getPassword()));
         Driver driverNew = driverService.insertDriver(driver);
         return new ResponseEntity<>(new UserDetailedInOut(driverNew), HttpStatus.OK);
     }

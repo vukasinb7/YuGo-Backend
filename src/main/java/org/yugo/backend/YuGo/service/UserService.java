@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface UserService {
     User insertUser(User user);
-    Optional<User> getUser(Integer id);
+    User getUser(Integer id);
     User updateUser(User userUpdate);
     List<User> getAllUsers();
     UserActivation insertUserActivation(UserActivation userActivation);
@@ -19,5 +19,5 @@ public interface UserService {
     Page<User> getUsersPage(Pageable page);
     boolean blockUser(Integer userId);
     boolean unblockUser(Integer userId);
-    boolean activateUser(Integer activationId);
+    void activateUser(Integer activationId);
 }

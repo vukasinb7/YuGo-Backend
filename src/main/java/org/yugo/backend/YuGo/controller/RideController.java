@@ -153,12 +153,12 @@ public class RideController {
     public ResponseEntity<FavoritePathOut> addFavoritePath(@RequestBody FavoritePathIn favoritePathIn){
         Set<Passenger> passengers=new HashSet<>();
         for (UserSimplifiedOut user:favoritePathIn.getPassengers()) {
-            passengers.add(passengerService.get(user.getId()).get());
+            passengers.add(passengerService.get(user.getId()));
         }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         FavoritePath favoritePath= new FavoritePath(favoritePathIn.getFavoriteName(),favoritePathIn.getLocations().stream().map(PathMapper::fromDTOtoPath).collect(Collectors.toList()), passengers,vehicleService.getVehicleTypeByName(favoritePathIn.getVehicleType()),favoritePathIn.getBabyTransport(),favoritePathIn.getPetTransport());
-        favoritePath.setOwner(passengerService.get(user.getId()).get());
+        favoritePath.setOwner(passengerService.get(user.getId()));
         favoritePathService.insert(favoritePath);
         return new ResponseEntity<>(FavoritePathMapper.fromFavoritePathtoDTO(favoritePath), HttpStatus.OK);
     }

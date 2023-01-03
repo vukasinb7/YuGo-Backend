@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
+import org.yugo.backend.YuGo.exceptions.NotFoundException;
 import org.yugo.backend.YuGo.model.Admin;
+import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.repository.AdminRepository;
 import java.util.List;
 import java.util.Optional;
@@ -29,18 +31,14 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Admin update(Admin adminUpdate){
-        Optional<Admin> adminOpt = get(adminUpdate.getId());
-        if (adminOpt.isPresent()){
-            Admin admin = adminOpt.get();
-            admin.setName(adminUpdate.getName());
-            admin.setSurname(adminUpdate.getSurname());
-            admin.setProfilePicture(adminUpdate.getProfilePicture());
-            admin.setTelephoneNumber(adminUpdate.getTelephoneNumber());
-            admin.setEmail(adminUpdate.getEmail());
-            admin.setAddress(adminUpdate.getAddress());
-            return adminRepository.save(admin);
-        }
-        return null;
+        Admin admin = get(adminUpdate.getId());
+        admin.setName(adminUpdate.getName());
+        admin.setSurname(adminUpdate.getSurname());
+        admin.setProfilePicture(adminUpdate.getProfilePicture());
+        admin.setTelephoneNumber(adminUpdate.getTelephoneNumber());
+        admin.setEmail(adminUpdate.getEmail());
+        admin.setAddress(adminUpdate.getAddress());
+        return adminRepository.save(admin);
     }
 
     @Override
@@ -49,7 +47,13 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Optional<Admin> get(Integer id) {
-        return adminRepository.findById(id);
+    public Admin get(Integer id) {
+        Optional<Admin> adminOpt = adminRepository.findById(id);
+        if (adminOpt.isPresent()){
+            return adminOpt.get();
+        }
+        else{
+            throw new NotFoundException("Admin does not exist!");
+        }
     }
 }
