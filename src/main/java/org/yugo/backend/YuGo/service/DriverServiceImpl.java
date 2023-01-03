@@ -1,11 +1,11 @@
 package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.model.Vehicle;
@@ -33,7 +33,11 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Driver insertDriver(Driver driver){
-        return userRepository.save(driver);
+        try{
+            return userRepository.save(driver);
+        }catch (DataIntegrityViolationException e){
+            throw new BadRequestException("Email is already being used by another user");
+        }
     }
 
     @Override

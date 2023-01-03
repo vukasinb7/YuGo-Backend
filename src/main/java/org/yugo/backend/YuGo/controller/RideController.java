@@ -42,7 +42,7 @@ public class RideController {
     public ResponseEntity<RideDetailedOut> addRide(@RequestBody RideIn rideIn){
         Set<Passenger> passengers=new HashSet<>();
         for (UserSimplifiedOut user:rideIn.getPassengers()) {
-            passengers.add(passengerService.get(user.getId()).get());
+            passengers.add(passengerService.get(user.getId()));
         }
         Driver driver= (Driver) driverService.getDriver(2).get();
         Ride ride= new Ride(LocalDateTime.now(),LocalDateTime.now(),100,driver,passengers,rideIn.getLocations().stream().map(PathMapper::fromDTOtoPath).toList(),10,new HashSet<>(),RideStatus.PENDING,null,false,rideIn.isBabyTransport(),rideIn.isPetTransport(),null);
@@ -115,7 +115,7 @@ public class RideController {
     )
     public ResponseEntity<PanicOut> addPanic(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
         Ride ride= rideService.get(id).get();
-        Panic panic= new Panic(passengerService.get(1).get(),ride, LocalDateTime.now(), reasonIn.getReason());
+        Panic panic= new Panic(passengerService.get(1),ride, LocalDateTime.now(), reasonIn.getReason());
         ride.setIsPanicPressed(true);
         rideService.insert(ride);
         panicService.insert(panic);
@@ -131,7 +131,7 @@ public class RideController {
         Ride ride =rideService.get(id).get();
 
         ride.setStatus(RideStatus.REJECTED);
-        Rejection rejection =new Rejection(ride,passengerService.get(1).get(),reasonIn.getReason(),LocalDateTime.now());
+        Rejection rejection =new Rejection(ride,passengerService.get(1),reasonIn.getReason(),LocalDateTime.now());
         ride.setRejection(rejection);
         rideService.insert(ride);
         return new ResponseEntity<>(new RideDetailedOut(ride), HttpStatus.OK);

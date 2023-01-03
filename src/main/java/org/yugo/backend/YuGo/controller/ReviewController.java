@@ -44,7 +44,7 @@ public class ReviewController {
     public ResponseEntity<ReviewOut> addVehicleReview(@RequestBody ReviewIn reviewIn,@PathVariable Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
-        RideReview vehicleReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId).get(),passengerService.get(user.getId()).get(),ReviewType.VEHICLE);
+        RideReview vehicleReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId).get(),passengerService.get(user.getId()),ReviewType.VEHICLE);
         reviewService.insertRideReview(vehicleReview);
         return new ResponseEntity<>(new ReviewOut(vehicleReview), HttpStatus.OK);
     }
@@ -58,7 +58,7 @@ public class ReviewController {
     public ResponseEntity<ReviewOut> addRideReview(@RequestBody ReviewIn reviewIn, @PathVariable Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
-        RideReview rideReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId).get(),passengerService.get(user.getId()).get(),ReviewType.DRIVER);
+        RideReview rideReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId).get(),passengerService.get(user.getId()),ReviewType.DRIVER);
         reviewService.insertRideReview(rideReview);
         return new ResponseEntity<>(new ReviewOut(rideReview), HttpStatus.OK);
     }

@@ -1,9 +1,10 @@
 package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.model.Admin;
-import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.repository.AdminRepository;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +20,11 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Admin insert(Admin admin){
-        return adminRepository.save(admin);
+        try{
+            return adminRepository.save(admin);
+        }catch (DataIntegrityViolationException e){
+            throw new BadRequestException("Email is already being used by another user");
+        }
     }
 
     @Override

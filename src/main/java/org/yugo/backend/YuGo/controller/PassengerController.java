@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,6 @@ import org.yugo.backend.YuGo.dto.AllPassengersOut;
 import org.yugo.backend.YuGo.dto.AllRidesOut;
 import org.yugo.backend.YuGo.dto.UserDetailedIn;
 import org.yugo.backend.YuGo.dto.UserDetailedInOut;
-import org.yugo.backend.YuGo.exceptions.EmailDuplicateException;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.Ride;
@@ -51,13 +49,6 @@ public class PassengerController {
         this.rideService = rideService;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    @ExceptionHandler(value = EmailDuplicateException.class)
-    public ResponseEntity<String> handleDuplicateEmailException(EmailDuplicateException e){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<String>(e.getMessage(), headers, HttpStatus.CONFLICT);
     }
 
     @PostMapping(
@@ -103,11 +94,7 @@ public class PassengerController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER','DRIVER')")
     public ResponseEntity<UserDetailedInOut> getPassenger(@PathVariable Integer id){
-        Optional<Passenger> passengerOpt = passengerService.get(id);
-        if (passengerOpt.isPresent()){
-            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passengerOpt.get()), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passengerService.get(id)), HttpStatus.OK);
     }
 
     @PutMapping(
@@ -119,10 +106,7 @@ public class PassengerController {
         Passenger passengerUpdate = new Passenger(updatedUserDTO);
         passengerUpdate.setId(id);
         Passenger updatedPassenger = passengerService.update(passengerUpdate);
-        if (updatedPassenger != null){
-            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedPassenger), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedPassenger), HttpStatus.OK);
     }
 
     @GetMapping(
