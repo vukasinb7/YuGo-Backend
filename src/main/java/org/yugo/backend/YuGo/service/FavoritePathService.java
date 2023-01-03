@@ -12,4 +12,5 @@ public interface FavoritePathService {
     public List<FavoritePath> getAll();
     public Optional<FavoritePath> get(Integer id);
     public Optional<List<FavoritePath>> getByPassengerId(Integer id);
+    void delete(Integer id);
 }

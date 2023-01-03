@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.mapper.FavoritePathMapper;
@@ -153,20 +155,34 @@ public class RideController {
         for (UserSimplifiedOut user:favoritePathIn.getPassengers()) {
             passengers.add(passengerService.get(user.getId()).get());
         }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
         FavoritePath favoritePath= new FavoritePath(favoritePathIn.getFavoriteName(),favoritePathIn.getLocations().stream().map(PathMapper::fromDTOtoPath).collect(Collectors.toList()), passengers,vehicleService.getVehicleTypeByName(favoritePathIn.getVehicleType()),favoritePathIn.getBabyTransport(),favoritePathIn.getPetTransport());
+        favoritePath.setOwner(passengerService.get(user.getId()).get());
         favoritePathService.insert(favoritePath);
         return new ResponseEntity<>(FavoritePathMapper.fromFavoritePathtoDTO(favoritePath), HttpStatus.OK);
     }
 
     @GetMapping(
-            value = "/favorites/{id}",
+            value = "/favorites",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    public ResponseEntity<List<FavoritePathOut>> getFavoritePathByPassengerId(@PathVariable Integer id){
-        return new ResponseEntity<>(favoritePathService.getByPassengerId(id).get().stream()
+    public ResponseEntity<List<FavoritePathOut>> getFavoritePathByPassengerId(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        return new ResponseEntity<>(favoritePathService.getByPassengerId(user.getId()).get().stream()
                 .map(FavoritePathMapper::fromFavoritePathtoDTO)
                 .toList(), HttpStatus.OK);
+    }
+
+    @DeleteMapping(
+            value = "/favorites/{id}"
+    )
+    @PreAuthorize("hasRole('PASSENGER')")
+    ResponseEntity<Void> deleteDocument(@PathVariable(name = "id") Integer documentId){
+        favoritePathService.delete(documentId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

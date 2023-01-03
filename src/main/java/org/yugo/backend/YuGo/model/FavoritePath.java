@@ -17,17 +17,22 @@ public class FavoritePath {
     @Column(name = "favorite_name")
     private String favoriteName;
 
-    @JoinColumn(name = "path_id")
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "fav_path_id")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST})
     private List<Path> locations;
 
-    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(name = "passenger_favorite_paths", joinColumns = @JoinColumn(name = "path_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "favorite_path_id", referencedColumnName = "id"))
+    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST})
+    @JoinTable(name = "passenger_favorite_paths", joinColumns = @JoinColumn(name = "passenger_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "favorite_path_id", referencedColumnName = "id"))
     private Set<Passenger> passengers;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST})
+    @JoinColumn(name = "owner")
+    private Passenger owner;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST})
     @JoinColumn(name = "vehicle_type_id")
     private VehicleTypePrice vehicleTypePrice;
+
 
     @Column(name = "includes_babies")
     private Boolean babyTransport;

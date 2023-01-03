@@ -37,4 +37,7 @@ public class FavoritePathServiceImpl implements FavoritePathService {
 
     @Override
     public Optional<List<FavoritePath>> getByPassengerId(Integer id){return Optional.ofNullable(favoritePathRepository.findByPassengerId(id));}
+
+    @Override
+    public void delete(Integer id){ favoritePathRepository.deleteById(id);}
 }
