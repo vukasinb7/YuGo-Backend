@@ -17,8 +17,8 @@ public class Passenger extends User{
     @JoinColumn(name = "passenger_ride")
     private Set<Ride> rides;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "favourite_paths")
-    private Set<Path> favouritePaths;
+    @JoinColumn(name = "passenger_id")
+    private Set<FavoritePath> favouritePaths;
 
     public Passenger(UserDetailedIn userDetailedIn) {
         super(userDetailedIn);
