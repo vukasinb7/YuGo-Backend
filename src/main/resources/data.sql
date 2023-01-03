@@ -42,11 +42,11 @@ VALUES ('1','0','SM074HZ','Skoda Octavia','5','1','6');
 
 UPDATE USERS SET vehicle_id=1 WHERE ID=6;
 
-INSERT INTO VEHICLE_TYPE_PRICES (type,price_per_km, image_path)
+INSERT INTO VEHICLE_TYPE_PRICES (vehicle_type,price_per_km, image_path)
 VALUES ('VAN','4.49', 'vehicle_type/car_model.png');
-INSERT INTO VEHICLE_TYPE_PRICES (type,price_per_km, image_path)
+INSERT INTO VEHICLE_TYPE_PRICES (vehicle_type,price_per_km, image_path)
 VALUES ('LUX','6.99', 'vehicle_type/car_model.png');
-INSERT INTO VEHICLE_TYPE_PRICES (type,price_per_km, image_path)
+INSERT INTO VEHICLE_TYPE_PRICES (vehicle_type,price_per_km, image_path)
 VALUES ('STANDARD','2.49', 'vehicle_type/car_model.png');
 
 INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Djure Danicica 82', '44.975980', '19.583750');
@@ -75,6 +75,7 @@ INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,incl
 VALUES ('0','2022-12-10 23:35:33.172279','15','0','1','2022-12-10 23:35:33.172279','ACTIVE','150.0','6',null,null);
 
 INSERT INTO PATHS (starting_point, destination, path_id) VALUES ('1', '2', '1');
+INSERT INTO PATHS (starting_point, destination, path_id) VALUES ('2', '3', '1');
 
 INSERT INTO PATHS (starting_point, destination, path_id) VALUES ('1', '3', '2');
 
@@ -124,3 +125,17 @@ INSERT INTO RIDE_REVIEWS(comment,rating,type,passenger,ride) VALUES ('Vozilo je 
 INSERT INTO RIDE_REVIEWS(comment,rating,type,passenger,ride) VALUES ('Sve super, svaka cast za cistocu vozila.', 5, 'VEHICLE',1,1);
 INSERT INTO RIDE_REVIEWS(comment,rating,type,passenger,ride) VALUES ('Vozac je veoma korektan.', 4, 'DRIVER',3,1);
 INSERT INTO RIDE_REVIEWS(comment,rating,type,passenger,ride) VALUES ('Vozilo se cuje kao traktor, neprijatni zvukovi. Nije mi dobro.', 4, 'VEHICLE',3,1);
+
+INSERT INTO FAVORITE_PATHS(favorite_name,includes_babies,includes_pets,vehicle_type_id,owner) VALUES ('Home To Work',false,false,1,1);
+INSERT INTO FAVORITE_PATHS(favorite_name,includes_babies,includes_pets,vehicle_type_id,owner) VALUES ('School',true,false,3,1);
+INSERT INTO FAVORITE_PATHS(favorite_name,includes_babies,includes_pets,vehicle_type_id,owner) VALUES ('Focus Shisha Bar',true,true,1,1);
+INSERT INTO PASSENGER_FAVORITE_PATHS(favorite_path_id,passenger_id) VALUES ('1','1');
+INSERT INTO PASSENGER_FAVORITE_PATHS(favorite_path_id,passenger_id) VALUES ('2','2');
+INSERT INTO PASSENGER_FAVORITE_PATHS(favorite_path_id,passenger_id) VALUES ('1','3');
+
+INSERT INTO PATHS (starting_point, destination, fav_path_id) VALUES ('1', '3', '1');
+
+INSERT INTO PATHS (starting_point, destination, fav_path_id) VALUES ('2', '3', '2');
+
+INSERT INTO PATHS (starting_point, destination, fav_path_id) VALUES ('3', '1', '3');
+

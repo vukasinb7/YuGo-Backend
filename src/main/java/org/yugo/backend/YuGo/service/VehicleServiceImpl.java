@@ -69,4 +69,7 @@ public class VehicleServiceImpl implements VehicleService {
         double pricePerUnit = vehicleTypePrice.getPricePerKM();
         return pricePerUnit * 10; // TODO calculate distance between 2 locations and multiply by pricePerUnit
     }
+
+    @Override
+    public VehicleTypePrice getVehicleTypeByName(String name){ return vehicleTypeRepository.findByType(name);}
 }
