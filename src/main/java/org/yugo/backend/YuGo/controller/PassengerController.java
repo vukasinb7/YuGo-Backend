@@ -57,7 +57,7 @@ public class PassengerController {
     public ResponseEntity<String> handleDuplicateEmailException(EmailDuplicateException e){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<String>(e.getMessage(), headers, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(e.getMessage(), headers, HttpStatus.CONFLICT);
     }
 
     @PostMapping(

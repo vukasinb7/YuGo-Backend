@@ -20,6 +20,4 @@ public interface VehicleService {
     List<VehicleTypePrice> getAllVehicleTypes();
 
     VehicleTypePrice getVehicleType(Integer id);
-
-    double calculatePrice(Integer vehicleTypePriceId, Location from, Location to);
 }
