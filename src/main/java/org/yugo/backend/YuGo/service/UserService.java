@@ -17,7 +17,7 @@ public interface UserService {
     Optional<UserActivation> getUserActivation(Integer id);
     List<UserActivation> getAllUserActivations();
     Page<User> getUsersPage(Pageable page);
-    boolean blockUser(Integer userId);
-    boolean unblockUser(Integer userId);
+    void blockUser(Integer userId);
+    void unblockUser(Integer userId);
     void activateUser(Integer activationId);
 }

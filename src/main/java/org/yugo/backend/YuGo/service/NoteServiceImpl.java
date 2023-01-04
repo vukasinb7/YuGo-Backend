@@ -12,10 +12,12 @@ import java.util.Optional;
 @Service
 public class NoteServiceImpl implements NoteService {
     private final NoteRepository noteRepository;
+    private final UserService userService;
 
     @Autowired
-    public NoteServiceImpl(NoteRepository noteRepository){
+    public NoteServiceImpl(NoteRepository noteRepository, UserService userService){
         this.noteRepository = noteRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -35,6 +37,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public Page<Note> getUserNotes(Integer userId, Pageable page){
+        userService.getUser(userId);
         return noteRepository.findNotesByUser(userId, page);
     }
 }

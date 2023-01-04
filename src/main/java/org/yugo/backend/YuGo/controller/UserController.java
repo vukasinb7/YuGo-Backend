@@ -29,6 +29,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
@@ -121,8 +122,9 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestBody MessageIn messageIn){
-        User sender = userService.getUser(2);
-        User receiver = userService.getUser(id);
+        User sender = userService.getUser(id);
+        User receiver = userService.getUser(messageIn.getReceiverId());
+        //Ride ride = rideService.get(messageIn.getRideId());
         Message msg = new Message(sender, receiver,
                 messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
                 null);
@@ -135,11 +137,11 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> blockUser(@PathVariable Integer id){
-        if (userService.blockUser(id)) {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity blockUser(@PathVariable Integer id){
+        userService.blockUser(id);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message","User is successfully blocked!");
+        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(
@@ -147,11 +149,11 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> unblockUser(@PathVariable Integer id){
-        if (userService.unblockUser(id)) {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity unblockUser(@PathVariable Integer id){
+        userService.unblockUser(id);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message","User is successfully unblocked!");
+        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(

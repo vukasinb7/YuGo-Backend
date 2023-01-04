@@ -80,27 +80,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean blockUser(Integer userId){
-        Optional<User> userOpt = userRepository.findById(userId);
-        if (userOpt.isPresent()){
-            User user = userOpt.get();
-            user.setBlocked(true);
-            userRepository.save(user);
-            return true;
+    public void blockUser(Integer userId){
+        User user = getUser(userId);
+        if (user.isBlocked()){
+            throw new BadRequestException("User already blocked!");
         }
-        return false;
+        user.setBlocked(true);
+        userRepository.save(user);
     }
 
     @Override
-    public boolean unblockUser(Integer userId){
-        Optional<User> userOpt = userRepository.findById(userId);
-        if (userOpt.isPresent()){
-            User user = userOpt.get();
-            user.setBlocked(false);
-            userRepository.save(user);
-            return true;
+    public void unblockUser(Integer userId){
+        User user = getUser(userId);
+        if (!user.isBlocked()){
+            throw new BadRequestException("User is not blocked!");
         }
-        return false;
+        user.setBlocked(false);
+        userRepository.save(user);
     }
 
     @Override
