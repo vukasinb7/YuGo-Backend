@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.exceptions.NotFoundException;
 import org.yugo.backend.YuGo.model.Passenger;
+import org.yugo.backend.YuGo.model.PasswordResetCode;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.model.UserActivation;
 import org.yugo.backend.YuGo.repository.UserActivationRepository;
@@ -21,13 +22,18 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserActivationRepository userActivationRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final SendGridMailService sendGridMailService;
+    private final PasswordResetCodeService passwordResetCodeService;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, UserActivationRepository userActivationRepository,
-                           BCryptPasswordEncoder passwordEncoder){
+                           BCryptPasswordEncoder passwordEncoder, SendGridMailService sendGridMailService,
+                           PasswordResetCodeService passwordResetCodeService){
         this.userRepository = userRepository;
         this.userActivationRepository = userActivationRepository;
         this.passwordEncoder = passwordEncoder;
+        this.sendGridMailService = sendGridMailService;
+        this.passwordResetCodeService = passwordResetCodeService;
     }
 
     @Override
@@ -115,17 +121,23 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     @Override
     public void sendPasswordResetCode(Integer userId){
         User user = getUser(userId);
-        //TODO send email with code to user
+        sendGridMailService.sendMail(user);
     }
 
     @Override
     public void resetPassword(Integer userId, String newPassword, String code){
-        User user = getUser(userId);
-        //TODO check if code exists and change password
+        getUser(userId);
+        PasswordResetCode passwordResetCode = passwordResetCodeService.get(code);
+        if (passwordResetCode.getDateCreated().plus(passwordResetCode.getLifeSpan()).isBefore(LocalDateTime.now())){
+            throw new BadRequestException("Code is expired or not correct!");
+        }
+        User user = passwordResetCode.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        passwordResetCodeService.delete(passwordResetCode.getCode());
     }
 
     @Override

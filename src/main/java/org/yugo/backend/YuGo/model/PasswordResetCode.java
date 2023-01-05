@@ -4,16 +4,16 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.modelmapper.internal.bytebuddy.utility.RandomString;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-@Table(name = "UserActivations")
-public class UserActivation {
+@Table(name = "PasswordResetCodes")
+public class PasswordResetCode {
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
     @JoinColumn(name = "user_id")
     private User user;
@@ -22,10 +22,11 @@ public class UserActivation {
     @Column(name = "life_span", nullable = false)
     private Duration lifeSpan;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "code", nullable = false)
+    private String code;
 
-    public UserActivation(User user, Duration lifeSpan) {
+    public PasswordResetCode(User user, Duration lifeSpan) {
+        this.code = String.valueOf(user.getEmail().hashCode());
         this.user = user;
         this.dateCreated = LocalDateTime.now();
         this.lifeSpan = lifeSpan;

@@ -140,3 +140,5 @@ INSERT INTO PATHS (starting_point, destination, fav_path_id) VALUES ('2', '3', '
 
 INSERT INTO PATHS (starting_point, destination, fav_path_id) VALUES ('3', '1', '3');
 
+INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
+VALUES ('Vukasin', 'Bodanovic', 'https://upload.wikimedia.org/wikipedia/commons/a/a3/June_odd-eyed-cat.jpg', '+381123123', 'vukasin.bogdanovic610@gmail.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');

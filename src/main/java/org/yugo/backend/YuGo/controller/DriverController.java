@@ -46,6 +46,7 @@ public class DriverController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody UserDetailedIn driverIn){
         Driver driver = new Driver(driverIn);
         Driver driverNew = driverService.insertDriver(driver);
@@ -90,6 +91,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<VehicleOut> createVehicle(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
         Optional<Driver> driverOpt = driverService.getDriver(id);
         if(driverOpt.isEmpty()){
@@ -105,6 +107,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<DocumentOut> createDocument(@PathVariable Integer id, @RequestBody DocumentIn documentIn){
         Optional<Driver> driverOpt = driverService.getDriver(id);
         if(driverOpt.isEmpty()){
@@ -121,6 +124,7 @@ public class DriverController {
             value = "/{id}/documents",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<List<DocumentOut>> getDocuments(@PathVariable Integer id){
         Optional<Driver> driverOpt = driverService.getDriver(id);
         if(driverOpt.isEmpty()){
@@ -138,6 +142,7 @@ public class DriverController {
     @DeleteMapping(
             value = "/document/{document-id}"
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<Void> deleteDocument(@PathVariable(name = "document-id") Integer documentId){
         documentService.delete(documentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -147,6 +152,7 @@ public class DriverController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<AllUsersOut> getDrivers(@RequestParam int page, @RequestParam int size){
         Page<User> drivers = driverService.getDriversPage(PageRequest.of(page, size));
         return new ResponseEntity<>(new AllUsersOut(drivers), HttpStatus.OK);
@@ -173,6 +179,7 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<VehicleOut> updateVehicle(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
         Optional<Driver> driverOpt = driverService.getDriver(id);
         if(driverOpt.isEmpty()){
@@ -189,6 +196,7 @@ public class DriverController {
             value = "/{id}/working-hour",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<AllWorkTimeOut> getWorkingTimes(@PathVariable(value = "id") Integer id,
                                                       @RequestParam(name = "page") int page,
                                                       @RequestParam(name = "size") int size,
@@ -211,6 +219,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@PathVariable Integer id, @RequestBody WorkTimeOut workTimeIn){
         WorkTime wt = new WorkTime();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
@@ -228,6 +237,7 @@ public class DriverController {
             value = "/working-hour/{working-hour-id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<WorkTimeOut> getWorkTimeById(@PathVariable(value = "working-hour-id") Integer id){
         Optional<WorkTime> workTimeOpt = driverService.getWorkTime(id);
         if(workTimeOpt.isEmpty()){
@@ -240,6 +250,7 @@ public class DriverController {
             value = "/{id}/ride",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<AllRidesOut> getRidesForDriver(@PathVariable(value = "id") Integer id,
                                                   @RequestParam(name = "page") int page,
                                                   @RequestParam(name = "size") int size,

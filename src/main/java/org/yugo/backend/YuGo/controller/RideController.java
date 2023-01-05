@@ -144,6 +144,8 @@ public class RideController {
             value = "/{id}/cancel",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+
+    @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<RideDetailedOut> rejectRide(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
 
         return new ResponseEntity<>(new RideDetailedOut(rideService.rejectRide(id,reasonIn.getReason())), HttpStatus.OK);
@@ -188,7 +190,7 @@ public class RideController {
     @DeleteMapping(
             value = "/favorites/{id}"
     )
-    @PreAuthorize("hasRole('PASSENGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
     ResponseEntity<Void> deleteFavoritePath(@PathVariable(name = "id") Integer favoritePathId){
         favoritePathService.delete(favoritePathId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

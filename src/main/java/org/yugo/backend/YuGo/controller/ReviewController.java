@@ -67,6 +67,8 @@ public class ReviewController {
             value = "/vehicle/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity<AllRideReviewsOut> getAllVehicleReviewsByVehicle(@PathVariable int id) {
         List<RideReview> vehicleReviews = reviewService.getRideReviewsByVehicle(id);
         return new ResponseEntity<>(new AllRideReviewsOut(vehicleReviews), HttpStatus.OK);
@@ -75,6 +77,7 @@ public class ReviewController {
             value = "driver/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity<AllRideReviewsOut> getAllRideReviewsByDriver(@PathVariable int id){
         List<RideReview> driverReviews = reviewService.getRideReviewsByDriver(id);
         return new ResponseEntity<>(new AllRideReviewsOut(driverReviews), HttpStatus.OK);

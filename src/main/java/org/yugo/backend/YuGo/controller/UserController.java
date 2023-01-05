@@ -74,6 +74,7 @@ public class UserController {
             value = "/logout",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity logoutUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!(auth instanceof AnonymousAuthenticationToken)){
@@ -99,7 +100,6 @@ public class UserController {
             value = "/{id}/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity sendResetPasswordCode(@PathVariable Integer id) {
         userService.sendPasswordResetCode(id);
         return new ResponseEntity<>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
@@ -109,7 +109,6 @@ public class UserController {
             value = "/{id}/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity resetPasswordWithCode(@PathVariable Integer id, @RequestBody PasswordResetIn passwordResetIn) {
         userService.resetPassword(id, passwordResetIn.getNewPassword(), passwordResetIn.getCode());
         return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
@@ -148,6 +147,7 @@ public class UserController {
             value = "/{id}/message",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity<AllUserMessagesOut> getUserMessages(@PathVariable Integer id){
         return new ResponseEntity<>(new AllUserMessagesOut(messageService.getUserMessages(id)), HttpStatus.OK);
     }
@@ -156,6 +156,7 @@ public class UserController {
             value = "/{id}/message",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestBody MessageIn messageIn){
         User sender = userService.getUser(id);
         User receiver = userService.getUser(messageIn.getReceiverId());
