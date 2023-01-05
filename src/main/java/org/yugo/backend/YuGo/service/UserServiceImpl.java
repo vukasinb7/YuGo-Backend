@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUserPassword(Integer userId, String oldPassword, String newPassword){
+    public void changePassword(Integer userId, String oldPassword, String newPassword){
         User user = getUser(userId);
         if (passwordEncoder.matches(oldPassword, user.getPassword())){
             user.setPassword(passwordEncoder.encode(newPassword));
@@ -113,6 +113,19 @@ public class UserServiceImpl implements UserService {
         else{
             throw new BadRequestException("Current password is not matching!");
         }
+    }
+
+
+    @Override
+    public void sendPasswordResetCode(Integer userId){
+        User user = getUser(userId);
+        //TODO send email with code to user
+    }
+
+    @Override
+    public void resetPassword(Integer userId, String newPassword, String code){
+        User user = getUser(userId);
+        //TODO check if code exists and change password
     }
 
     @Override

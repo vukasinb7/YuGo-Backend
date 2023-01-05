@@ -91,9 +91,30 @@ public class UserController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity changePassword(@PathVariable Integer id, @RequestBody PasswordChangeIn passwordChangeIn) {
-        userService.changeUserPassword(id, passwordChangeIn.getOldPassword(), passwordChangeIn.getNewPassword());
+        userService.changePassword(id, passwordChangeIn.getOldPassword(), passwordChangeIn.getNewPassword());
         return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping(
+            value = "/{id}/resetPassword",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
+    public ResponseEntity sendResetPasswordCode(@PathVariable Integer id) {
+        userService.sendPasswordResetCode(id);
+        return new ResponseEntity<>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping(
+            value = "/{id}/resetPassword",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
+    public ResponseEntity resetPasswordWithCode(@PathVariable Integer id, @RequestBody PasswordResetIn passwordResetIn) {
+        userService.resetPassword(id, passwordResetIn.getNewPassword(), passwordResetIn.getCode());
+        return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
+    }
+
 
     @GetMapping(
             value = "/{id}/ride",
@@ -138,10 +159,10 @@ public class UserController {
     public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestBody MessageIn messageIn){
         User sender = userService.getUser(id);
         User receiver = userService.getUser(messageIn.getReceiverId());
-        //Ride ride = rideService.get(messageIn.getRideId());
+        Ride ride = rideService.get(messageIn.getRideId());
         Message msg = new Message(sender, receiver,
                 messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
-                null);
+                ride);
         messageService.insert(msg);
         return new ResponseEntity<>(MessageMapper.fromMessagetoDTO(msg), HttpStatus.OK);
     }

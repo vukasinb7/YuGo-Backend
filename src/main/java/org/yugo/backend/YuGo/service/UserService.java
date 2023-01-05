@@ -16,7 +16,9 @@ public interface UserService {
     Page<User> getUsersPage(Pageable page);
     void blockUser(Integer userId);
     void unblockUser(Integer userId);
-    void changeUserPassword(Integer userId, String oldPassword, String newPassword);
+    void changePassword(Integer userId, String oldPassword, String newPassword);
+    void sendPasswordResetCode(Integer userId);
+    void resetPassword(Integer userId, String newPassword, String code);
     void activateUser(Integer activationId);
     UserActivation insertUserActivation(UserActivation userActivation);
     Optional<UserActivation> getUserActivation(Integer id);
