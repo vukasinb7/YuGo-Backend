@@ -71,6 +71,7 @@ public class RideServiceImpl implements RideService {
     }
 
     public Page<Ride> getPassengerRides(Integer passengerId, LocalDateTime from, LocalDateTime to, Pageable page){
+        passengerService.get(passengerId);
         return rideRepository.findRidesByPassenger(passengerId, from, to, page);
     }
 

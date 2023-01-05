@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
@@ -30,7 +31,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -57,12 +57,17 @@ public class UserController {
             value = "/login",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) {
-        Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        User user = (User)authentication.getPrincipal();
-        String jwt = this.tokenUtils.generateToken(user);
-        return ResponseEntity.ok(new UserTokenState(jwt, ""));
+    public ResponseEntity<UserTokenStateOut> createAuthenticationToken(@RequestBody JwtAuthenticationIn authenticationRequest) {
+        try{
+            Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            User user = (User)authentication.getPrincipal();
+            String jwt = this.tokenUtils.generateToken(user);
+            return ResponseEntity.ok(new UserTokenStateOut(jwt, ""));
+        }
+        catch (AuthenticationException exception){
+            throw new BadRequestException("Wrong username or password!");
+        }
     }
 
     @GetMapping(
@@ -78,7 +83,16 @@ public class UserController {
         else {
             throw new BadRequestException("User is not authenticated!");
         }
+    }
 
+    @PutMapping(
+            value = "/{id}/changePassword",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
+    public ResponseEntity changePassword(@PathVariable Integer id, @RequestBody PasswordChangeIn passwordChangeIn) {
+        userService.changeUserPassword(id, passwordChangeIn.getOldPassword(), passwordChangeIn.getNewPassword());
+        return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(

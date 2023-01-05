@@ -13,11 +13,12 @@ public interface UserService {
     User getUser(Integer id);
     User updateUser(User userUpdate);
     List<User> getAllUsers();
-    UserActivation insertUserActivation(UserActivation userActivation);
-    Optional<UserActivation> getUserActivation(Integer id);
-    List<UserActivation> getAllUserActivations();
     Page<User> getUsersPage(Pageable page);
     void blockUser(Integer userId);
     void unblockUser(Integer userId);
+    void changeUserPassword(Integer userId, String oldPassword, String newPassword);
     void activateUser(Integer activationId);
+    UserActivation insertUserActivation(UserActivation userActivation);
+    Optional<UserActivation> getUserActivation(Integer id);
+    List<UserActivation> getAllUserActivations();
 }

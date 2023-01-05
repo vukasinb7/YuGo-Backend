@@ -5,16 +5,16 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class JwtAuthenticationRequest {
+public class JwtAuthenticationIn {
 
     private String email;
     private String password;
 
-    public JwtAuthenticationRequest() {
+    public JwtAuthenticationIn() {
         super();
     }
 
-    public JwtAuthenticationRequest(String email, String password) {
+    public JwtAuthenticationIn(String email, String password) {
         this.setEmail(email);
         this.setPassword(password);
     }
