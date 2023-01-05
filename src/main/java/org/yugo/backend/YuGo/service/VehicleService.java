@@ -13,6 +13,7 @@ public interface VehicleService {
     List<Vehicle> getAllVehicles();
 
     Vehicle getVehicle(Integer id);
+    Integer getVehiclesDriver(Integer id);
     Vehicle updateVehicle(Vehicle vehicle);
     /* =========================== VehicleType =========================== */
     VehicleTypePrice insertVehicleType(VehicleTypePrice vehicleTypePrice);
