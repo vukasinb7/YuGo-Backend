@@ -3,6 +3,7 @@ package org.yugo.backend.YuGo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.exceptions.NotFoundException;
@@ -19,11 +20,14 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserActivationRepository userActivationRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserActivationRepository userActivationRepository){
+    public UserServiceImpl(UserRepository userRepository, UserActivationRepository userActivationRepository,
+                           BCryptPasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.userActivationRepository = userActivationRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -97,6 +101,18 @@ public class UserServiceImpl implements UserService {
         }
         user.setBlocked(false);
         userRepository.save(user);
+    }
+
+    @Override
+    public void changeUserPassword(Integer userId, String oldPassword, String newPassword){
+        User user = getUser(userId);
+        if (passwordEncoder.matches(oldPassword, user.getPassword())){
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+        }
+        else{
+            throw new BadRequestException("Current password is not matching!");
+        }
     }
 
     @Override

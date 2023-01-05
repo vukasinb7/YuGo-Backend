@@ -16,11 +16,13 @@ import java.util.Optional;
 public class RideServiceImpl implements RideService {
     private final RideRepository rideRepository;
     private final UserService userService;
+    private final PassengerService passengerService;
 
     @Autowired
-    public RideServiceImpl(RideRepository rideRepository, UserService userService){
+    public RideServiceImpl(RideRepository rideRepository, UserService userService, PassengerService passengerService){
         this.rideRepository = rideRepository;
         this.userService = userService;
+        this.passengerService = passengerService;
     }
 
     @Override
@@ -45,6 +47,7 @@ public class RideServiceImpl implements RideService {
     public Ride getActiveRideByPassenger(Integer id){ return rideRepository.findActiveRideByPassenger(id);}
 
     public Page<Ride> getPassengerRides(Integer passengerId, LocalDateTime from, LocalDateTime to, Pageable page){
+        passengerService.get(passengerId);
         return rideRepository.findRidesByPassenger(passengerId, from, to, page);
     }
 

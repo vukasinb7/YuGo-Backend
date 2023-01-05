@@ -49,9 +49,7 @@ public class PassengerServiceImpl implements PassengerService {
         if (passengerOpt.isPresent()){
             return passengerOpt.get();
         }
-        else{
-            throw new NotFoundException("Passenger does not exist!");
-        }
+        throw new NotFoundException("Passenger does not exist!");
     }
 
     @Override

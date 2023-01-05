@@ -49,8 +49,8 @@ public class PassengerController {
     public ResponseEntity<UserDetailedInOut> addPassenger(@RequestBody UserDetailedIn user){
         Passenger passenger = new Passenger(user);
         passengerService.insert(passenger);
-        UserActivation newAct = new UserActivation(passenger, LocalDateTime.now(), Duration.ZERO);
-        userService.insertUserActivation(newAct);
+        UserActivation activation = new UserActivation(passenger, LocalDateTime.now(), Duration.ofDays(7));
+        userService.insertUserActivation(activation);
         return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passenger), HttpStatus.OK);
     }
 
