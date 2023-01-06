@@ -7,7 +7,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.exceptions.NotFoundException;
-import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.PasswordResetCode;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.model.UserActivation;
@@ -130,14 +129,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resetPassword(Integer userId, String newPassword, String code){
         getUser(userId);
-        PasswordResetCode passwordResetCode = passwordResetCodeService.get(code);
-        if (passwordResetCode.getDateCreated().plus(passwordResetCode.getLifeSpan()).isBefore(LocalDateTime.now())){
+        PasswordResetCode passwordResetCode = passwordResetCodeService.getValidCode(userId);
+        if (code.equals(passwordResetCode.getCode())){
+            User user = passwordResetCode.getUser();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            passwordResetCodeService.setCodeInvalid(passwordResetCode);
+        }
+        else{
             throw new BadRequestException("Code is expired or not correct!");
         }
-        User user = passwordResetCode.getUser();
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-        passwordResetCodeService.delete(passwordResetCode.getCode());
     }
 
     @Override

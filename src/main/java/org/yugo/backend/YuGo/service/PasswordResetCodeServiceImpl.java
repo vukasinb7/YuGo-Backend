@@ -3,13 +3,12 @@ package org.yugo.backend.YuGo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
-import org.yugo.backend.YuGo.exceptions.NotFoundException;
-import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.PasswordResetCode;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.repository.PasswordResetCodeRepository;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -24,22 +23,28 @@ public class PasswordResetCodeServiceImpl implements PasswordResetCodeService {
 
     @Override
     public PasswordResetCode generateCode(User user){
+        passwordResetCodeRepository.setUserCodesInvalid(user.getId());
         PasswordResetCode code = new PasswordResetCode(user, Duration.ofDays(1));
         passwordResetCodeRepository.save(code);
         return code;
     }
 
     @Override
-    public PasswordResetCode get(String code) {
-        Optional<PasswordResetCode> passwordResetCodeOpt = passwordResetCodeRepository.findById(code);
+    public PasswordResetCode getValidCode(Integer userId) {
+        Optional<PasswordResetCode> passwordResetCodeOpt = passwordResetCodeRepository.findByUserIdAndValidTrue(userId);
         if (passwordResetCodeOpt.isPresent()){
-            return passwordResetCodeOpt.get();
+            PasswordResetCode passwordResetCode = passwordResetCodeOpt.get();
+            if (!passwordResetCode.getDateCreated().plus(passwordResetCode.getLifeSpan()).isBefore(LocalDateTime.now())){
+                return passwordResetCode;
+            }
+            setCodeInvalid(passwordResetCode);
         }
         throw new BadRequestException("Code is expired or not correct!");
     }
 
     @Override
-    public void delete(String code) {
-        passwordResetCodeRepository.deleteById(code);
+    public void setCodeInvalid(PasswordResetCode code) {
+        code.setValid(false);
+        passwordResetCodeRepository.save(code);
     }
 }

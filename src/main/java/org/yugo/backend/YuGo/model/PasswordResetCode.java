@@ -21,14 +21,19 @@ public class PasswordResetCode {
     private LocalDateTime dateCreated;
     @Column(name = "life_span", nullable = false)
     private Duration lifeSpan;
-    @Id
     @Column(name = "code", nullable = false)
     private String code;
+    @Column(name = "valid", nullable = false)
+    private boolean valid;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     public PasswordResetCode(User user, Duration lifeSpan) {
-        this.code = String.valueOf(user.getEmail().hashCode());
+        this.code = RandomString.make(5) + user.getId().hashCode();
         this.user = user;
         this.dateCreated = LocalDateTime.now();
         this.lifeSpan = lifeSpan;
+        this.valid = true;
     }
 }
