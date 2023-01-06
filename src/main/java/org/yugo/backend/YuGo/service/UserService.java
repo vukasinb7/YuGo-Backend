@@ -10,14 +10,18 @@ import java.util.Optional;
 
 public interface UserService {
     User insertUser(User user);
-    Optional<User> getUser(Integer id);
+    User getUser(Integer id);
+    User getUserByEmail(String email);
     User updateUser(User userUpdate);
     List<User> getAllUsers();
+    Page<User> getUsersPage(Pageable page);
+    void blockUser(Integer userId);
+    void unblockUser(Integer userId);
+    void changePassword(Integer userId, String oldPassword, String newPassword);
+    void sendPasswordResetCode(Integer userId);
+    void resetPassword(Integer userId, String newPassword, String code);
+    void activateUser(Integer activationId);
     UserActivation insertUserActivation(UserActivation userActivation);
     Optional<UserActivation> getUserActivation(Integer id);
     List<UserActivation> getAllUserActivations();
-    Page<User> getUsersPage(Pageable page);
-    boolean blockUser(Integer userId);
-    boolean unblockUser(Integer userId);
-    boolean activateUser(Integer activationId);
 }

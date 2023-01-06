@@ -35,30 +35,21 @@ public class DriverController {
     private final DriverService driverService;
     private final DocumentService documentService;
     private final RideService rideService;
-    private final RoleService roleService;
-    private final BCryptPasswordEncoder passwordEncoder;
     @Autowired
-    public DriverController(DriverService driverService, DocumentService documentService, RideService rideService,
-                            RoleService roleService, BCryptPasswordEncoder passwordEncoder) {
+    public DriverController(DriverService driverService, DocumentService documentService, RideService rideService) {
         this.driverService = driverService;
         this.documentService = documentService;
         this.rideService = rideService;
-        this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping(
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody UserDetailedIn driverIn){
         Driver driver = new Driver(driverIn);
-        ArrayList<Role> roles = new ArrayList<>();
-        roles.add(roleService.findRoleByName("ROLE_DRIVER"));
-        driver.setRoles(roles);
-        Vehicle vehicle = new Vehicle();
-        driver.setVehicle(vehicle);
-        driver.setPassword(passwordEncoder.encode(driver.getPassword()));
+        driver.setActive(true);
         Driver driverNew = driverService.insertDriver(driver);
         return new ResponseEntity<>(new UserDetailedInOut(driverNew), HttpStatus.OK);
     }
@@ -101,6 +92,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<VehicleOut> createVehicle(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
         Optional<Driver> driverOpt = driverService.getDriver(id);
         if(driverOpt.isEmpty()){
@@ -116,6 +108,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<DocumentOut> createDocument(@PathVariable Integer id, @RequestBody DocumentIn documentIn){
         Optional<Driver> driverOpt = driverService.getDriver(id);
         if(driverOpt.isEmpty()){
@@ -132,6 +125,7 @@ public class DriverController {
             value = "/{id}/documents",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<List<DocumentOut>> getDocuments(@PathVariable Integer id){
         Optional<Driver> driverOpt = driverService.getDriver(id);
         if(driverOpt.isEmpty()){
@@ -149,6 +143,7 @@ public class DriverController {
     @DeleteMapping(
             value = "/document/{document-id}"
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<Void> deleteDocument(@PathVariable(name = "document-id") Integer documentId){
         documentService.delete(documentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -158,6 +153,7 @@ public class DriverController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<AllUsersOut> getDrivers(@RequestParam int page, @RequestParam int size){
         Page<User> drivers = driverService.getDriversPage(PageRequest.of(page, size));
         return new ResponseEntity<>(new AllUsersOut(drivers), HttpStatus.OK);
@@ -184,6 +180,7 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<VehicleOut> updateVehicle(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
         Optional<Driver> driverOpt = driverService.getDriver(id);
         if(driverOpt.isEmpty()){
@@ -200,6 +197,7 @@ public class DriverController {
             value = "/{id}/working-hour",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<AllWorkTimeOut> getWorkingTimes(@PathVariable(value = "id") Integer id,
                                                       @RequestParam(name = "page") int page,
                                                       @RequestParam(name = "size") int size,
@@ -222,6 +220,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@PathVariable Integer id, @RequestBody WorkTimeOut workTimeIn){
         WorkTime wt = new WorkTime();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
@@ -239,6 +238,7 @@ public class DriverController {
             value = "/working-hour/{working-hour-id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<WorkTimeOut> getWorkTimeById(@PathVariable(value = "working-hour-id") Integer id){
         Optional<WorkTime> workTimeOpt = driverService.getWorkTime(id);
         if(workTimeOpt.isEmpty()){
@@ -251,6 +251,7 @@ public class DriverController {
             value = "/{id}/ride",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<AllRidesOut> getRidesForDriver(@PathVariable(value = "id") Integer id,
                                                   @RequestParam(name = "page") int page,
                                                   @RequestParam(name = "size") int size,

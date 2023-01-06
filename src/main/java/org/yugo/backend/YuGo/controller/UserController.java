@@ -12,26 +12,22 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.mapper.MessageMapper;
 import org.yugo.backend.YuGo.mapper.NoteMapper;
-import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.*;
-import org.yugo.backend.YuGo.service.MessageService;
-import org.yugo.backend.YuGo.service.NoteService;
-import org.yugo.backend.YuGo.service.RideService;
-import org.yugo.backend.YuGo.service.UserService;
+import org.yugo.backend.YuGo.service.*;
 import org.yugo.backend.YuGo.security.TokenUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/user")
@@ -40,38 +36,44 @@ public class UserController {
     private final MessageService messageService;
     private final RideService rideService;
     private final NoteService noteService;
+    private final PasswordResetCodeService passwordResetCodeService;
     private final TokenUtils tokenUtils;
     private final AuthenticationManager authenticationManager;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public UserController(UserService userService, MessageService messageService,
-                          RideService rideService, NoteService noteService, TokenUtils tokenUtils, AuthenticationManager authenticationManager, BCryptPasswordEncoder passwordEncoder){
+                          RideService rideService, PasswordResetCodeService passwordResetCodeService, NoteService noteService, TokenUtils tokenUtils, AuthenticationManager authenticationManager){
         this.userService = userService;
         this.messageService = messageService;
         this.rideService = rideService;
         this.noteService = noteService;
         this.tokenUtils = tokenUtils;
         this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordResetCodeService=passwordResetCodeService;
     }
 
     @PostMapping(
             value = "/login",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) {
-        Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        User user = (User)authentication.getPrincipal();
-        String jwt = this.tokenUtils.generateToken(user);
-        return ResponseEntity.ok(new UserTokenState(jwt, ""));
+    public ResponseEntity<UserTokenStateOut> createAuthenticationToken(@RequestBody JwtAuthenticationIn authenticationRequest) {
+        try{
+            Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            User user = (User)authentication.getPrincipal();
+            String jwt = this.tokenUtils.generateToken(user);
+            return ResponseEntity.ok(new UserTokenStateOut(jwt, ""));
+        }
+        catch (AuthenticationException exception){
+            throw new BadRequestException("Wrong username or password!");
+        }
     }
 
     @GetMapping(
             value = "/logout",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity logoutUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!(auth instanceof AnonymousAuthenticationToken)){
@@ -81,8 +83,37 @@ public class UserController {
         else {
             throw new BadRequestException("User is not authenticated!");
         }
-
     }
+
+    @PutMapping(
+            value = "/{id}/changePassword",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
+    public ResponseEntity changePassword(@PathVariable Integer id, @RequestBody PasswordChangeIn passwordChangeIn) {
+        userService.changePassword(id, passwordChangeIn.getOldPassword(), passwordChangeIn.getNewPassword());
+        return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(
+            value = "/{id}/resetPassword",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    public ResponseEntity sendResetPasswordCode(@PathVariable Integer id) {
+        userService.sendPasswordResetCode(id);
+        return new ResponseEntity<>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping(
+            value = "/{id}/resetPassword",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    public ResponseEntity resetPasswordWithCode(@PathVariable Integer id, @RequestBody PasswordResetIn passwordResetIn) {
+        userService.resetPassword(id, passwordResetIn.getNewPassword(), passwordResetIn.getCode());
+        return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
+    }
+
+
 
     @GetMapping(
             value = "/{id}/ride",
@@ -113,9 +144,19 @@ public class UserController {
     }
 
     @GetMapping(
+            value = "{email}/email",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<UserSimplifiedOut> getUserByEmail(@PathVariable String email){
+        UserSimplifiedOut user =new UserSimplifiedOut(userService.getUserByEmail(email));
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping(
             value = "/{id}/message",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity<AllUserMessagesOut> getUserMessages(@PathVariable Integer id){
         return new ResponseEntity<>(new AllUserMessagesOut(messageService.getUserMessages(id)), HttpStatus.OK);
     }
@@ -124,17 +165,16 @@ public class UserController {
             value = "/{id}/message",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestBody MessageIn messageIn){
-        Optional<User> senderOpt = userService.getUser(2);
-        Optional<User> receiverOpt = userService.getUser(id);
-        if (senderOpt.isPresent() && receiverOpt.isPresent()) {
-            Message msg = new Message(senderOpt.get(), receiverOpt.get(),
-                    messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
-                    null);
-            messageService.insert(msg);
-            return new ResponseEntity<>(MessageMapper.fromMessagetoDTO(msg), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        User sender = userService.getUser(id);
+        User receiver = userService.getUser(messageIn.getReceiverId());
+        Ride ride = rideService.get(messageIn.getRideId());
+        Message msg = new Message(sender, receiver,
+                messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
+                ride);
+        messageService.insert(msg);
+        return new ResponseEntity<>(MessageMapper.fromMessagetoDTO(msg), HttpStatus.OK);
     }
 
     @PutMapping(
@@ -142,11 +182,11 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> blockUser(@PathVariable Integer id){
-        if (userService.blockUser(id)) {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity blockUser(@PathVariable Integer id){
+        userService.blockUser(id);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message","User is successfully blocked!");
+        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(
@@ -154,11 +194,11 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> unblockUser(@PathVariable Integer id){
-        if (userService.unblockUser(id)) {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity unblockUser(@PathVariable Integer id){
+        userService.unblockUser(id);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message","User is successfully unblocked!");
+        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(
@@ -167,13 +207,10 @@ public class UserController {
     )
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<NoteOut> createNote(@PathVariable Integer id, @RequestBody NoteIn noteIn){
-        Optional<User> userOpt = userService.getUser(id);
-        if (userOpt.isPresent()){
-            Note note = new Note(userOpt.get(), noteIn.getMessage(), LocalDateTime.now());
-            noteService.insert(note);
-            return new ResponseEntity<>(NoteMapper.fromNotetoDTO(note), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        User user = userService.getUser(id);
+        Note note = new Note(user, noteIn.getMessage(), LocalDateTime.now());
+        noteService.insert(note);
+        return new ResponseEntity<>(NoteMapper.fromNotetoDTO(note), HttpStatus.OK);
     }
 
     @GetMapping(

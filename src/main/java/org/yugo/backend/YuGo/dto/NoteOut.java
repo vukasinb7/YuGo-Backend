@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 public class NoteOut {
     Integer id;
     String message;
-    LocalDateTime date;
+    String date;
 
     public NoteOut(Integer id, String message, LocalDateTime date){
         this.id = id;
         this.message = message;
-        this.date = date;
+        this.date = date.toString();
     }
 }

@@ -70,7 +70,7 @@ INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,incl
 VALUES ('0','2022-12-08 23:35:33.172279','15','0','1','2022-12-08 23:35:33.172279','ACTIVE','50.0','6',null,null);
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
-VALUES ('0','2022-12-26 23:35:33.172279','15','0','1','2022-12-26 23:35:33.172279','ACTIVE','10.0','6',null,null);
+VALUES ('0','2022-12-26 23:35:33.172279','15','0','1','2022-12-26 23:35:33.172279','FINISHED','10.0','6',null,null);
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
 VALUES ('0','2022-12-10 23:35:33.172279','15','0','1','2022-12-10 23:35:33.172279','ACTIVE','150.0','6',null,null);
@@ -140,3 +140,5 @@ INSERT INTO PATHS (starting_point, destination, fav_path_id) VALUES ('2', '3', '
 
 INSERT INTO PATHS (starting_point, destination, fav_path_id) VALUES ('3', '1', '3');
 
+INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
+VALUES ('Vukasin', 'Bodanovic', 'https://upload.wikimedia.org/wikipedia/commons/a/a3/June_odd-eyed-cat.jpg', '+381123123', 'vukasin.bogdanovic610@gmail.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
