@@ -86,4 +86,9 @@ public class VehicleServiceImpl implements VehicleService {
     public VehicleChangeRequest insertVehicleChangeRequest(VehicleChangeRequest vehicleChangeRequest){
         return vehicleChangeRequestRepository.save(vehicleChangeRequest);
     }
+
+    @Override
+    public List<VehicleChangeRequest> getALlVehicleChangeRequests(){
+        return vehicleChangeRequestRepository.findAll();
+    }
 }

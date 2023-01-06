@@ -1,5 +1,6 @@
 package org.yugo.backend.YuGo.controller;
 
+import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.LocationInOut;
 import org.yugo.backend.YuGo.dto.VehicleIn;
 import org.yugo.backend.YuGo.mapper.LocationMapper;
+import org.yugo.backend.YuGo.mapper.VehicleChangeRequestMapper;
 import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.model.Vehicle;
 import org.yugo.backend.YuGo.model.VehicleChangeRequest;
@@ -39,7 +41,6 @@ public class VehicleController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
     @PostMapping(
             value = "/{id}/changeVehicle",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -54,5 +55,16 @@ public class VehicleController {
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Vehicle request created successfully!");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "/changeRequests",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    ResponseEntity getAllVehicleChangeRequestS(){
+        return new ResponseEntity<>(
+                vehicleService.getALlVehicleChangeRequests().stream().
+                        map(VehicleChangeRequestMapper::fromVehicleChangeRequestToDTO).toList(), HttpStatus.OK);
     }
 }

@@ -49,6 +49,7 @@ public class DriverController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody UserDetailedIn driverIn){
         Driver driver = new Driver(driverIn);
+        driver.setActive(true);
         Driver driverNew = driverService.insertDriver(driver);
         return new ResponseEntity<>(new UserDetailedInOut(driverNew), HttpStatus.OK);
     }

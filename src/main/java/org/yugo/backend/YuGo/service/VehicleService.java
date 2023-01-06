@@ -21,5 +21,6 @@ public interface VehicleService {
     public VehicleTypePrice getVehicleTypeByName(String name);
 
     /* =========================== VehicleChangeRequest =========================== */
-    public VehicleChangeRequest insertVehicleChangeRequest(VehicleChangeRequest vehicleChangeRequest);
+    VehicleChangeRequest insertVehicleChangeRequest(VehicleChangeRequest vehicleChangeRequest);
+    List<VehicleChangeRequest> getALlVehicleChangeRequests();
 }

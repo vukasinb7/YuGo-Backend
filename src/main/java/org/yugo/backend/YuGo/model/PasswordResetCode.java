@@ -30,7 +30,7 @@ public class PasswordResetCode {
     private Integer id;
 
     public PasswordResetCode(User user, Duration lifeSpan) {
-        this.code = RandomString.make(5) + user.getId().hashCode();
+        this.code = RandomString.make(5) + user.hashCode();
         this.user = user;
         this.dateCreated = LocalDateTime.now();
         this.lifeSpan = lifeSpan;
