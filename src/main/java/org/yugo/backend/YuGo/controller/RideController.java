@@ -12,7 +12,6 @@ import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.mapper.FavoritePathMapper;
 import org.yugo.backend.YuGo.mapper.PathMapper;
 import org.yugo.backend.YuGo.mapper.RideMapper;
-import org.yugo.backend.YuGo.mapper.RideReviewMapper;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.*;
 
@@ -31,15 +30,17 @@ public class RideController {
     private final DriverService driverService;
     private final VehicleService vehicleService;
     private final FavoritePathService favoritePathService;
+    private final RoutingService routingService;
 
     @Autowired
-    public RideController(RideService rideService, PanicService panicService, PassengerService passengerService,DriverService driverService, VehicleService vehicleService, FavoritePathService favoritePathService){
+    public RideController(RideService rideService, PanicService panicService, PassengerService passengerService, DriverService driverService, VehicleService vehicleService, FavoritePathService favoritePathService, RoutingService routingService){
         this.rideService=rideService;
         this.panicService=panicService;
         this.passengerService=passengerService;
         this.driverService=driverService;
         this.vehicleService=vehicleService;
         this.favoritePathService=favoritePathService;
+        this.routingService = routingService;
     }
 
     @PostMapping(
@@ -47,14 +48,23 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<RideDetailedOut> addRide(@RequestBody RideIn rideIn){
-        Set<Passenger> passengers=new HashSet<>();
-        for (UserSimplifiedOut user:rideIn.getPassengers()) {
-            passengers.add(passengerService.get(user.getId()).get());
-        }
-        Driver driver= (Driver) driverService.getDriver(2).get();
-        Ride ride= new Ride(LocalDateTime.now(),LocalDateTime.now(),100,driver,passengers,rideIn.getLocations().stream().map(PathMapper::fromDTOtoPath).toList(),10,new HashSet<>(),RideStatus.PENDING,null,false,rideIn.isBabyTransport(),rideIn.isPetTransport(),null);
-        rideService.insert(ride);
-        return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
+//        Set<Passenger> passengers=new HashSet<>();
+//        for (UserSimplifiedOut user:rideIn.getPassengers()) {
+//            passengers.add(passengerService.get(user.getId()).get());
+//        }
+//        Driver driver= (Driver) driverService.getDriver(2).get();
+//        Ride ride= new Ride(LocalDateTime.now(),LocalDateTime.now(),100,driver,passengers,rideIn.getLocations().stream().map(PathMapper::fromDTOtoPath).toList(),10,new HashSet<>(),RideStatus.PENDING,null,false,rideIn.isBabyTransport(),rideIn.isPetTransport(),null);
+//        rideService.insert(ride);
+        System.out.println("asffffffffffffffffffffffff");
+        double fromLat = rideIn.getLocations().get(0).getDeparture().getLatitude();
+        double fromLng = rideIn.getLocations().get(0).getDeparture().getLongitude();
+        double toLat = rideIn.getLocations().get(0).getDestination().getLatitude();
+        double toLng = rideIn.getLocations().get(0).getDestination().getLongitude();;
+
+        RouteProperties routeProperties = routingService.getRouteProperties(fromLat, fromLng, toLat, toLng);
+        System.out.println(routeProperties);
+        //return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @GetMapping(

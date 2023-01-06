@@ -11,5 +11,4 @@ public class RideIn {
     private String vehicleType;
     private boolean babyTransport;
     private boolean petTransport;
-
 }
