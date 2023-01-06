@@ -6,7 +6,9 @@ import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.exceptions.NotFoundException;
 import org.yugo.backend.YuGo.model.Location;
 import org.yugo.backend.YuGo.model.Vehicle;
+import org.yugo.backend.YuGo.model.VehicleChangeRequest;
 import org.yugo.backend.YuGo.model.VehicleTypePrice;
+import org.yugo.backend.YuGo.repository.VehicleChangeRequestRepository;
 import org.yugo.backend.YuGo.repository.VehicleRepository;
 import org.yugo.backend.YuGo.repository.VehicleTypeRepository;
 
@@ -17,11 +19,14 @@ import java.util.Optional;
 public class VehicleServiceImpl implements VehicleService {
     private final VehicleRepository vehicleRepository;
     private final VehicleTypeRepository vehicleTypeRepository;
+    private final VehicleChangeRequestRepository vehicleChangeRequestRepository;
 
     @Autowired
-    public VehicleServiceImpl(VehicleRepository vehicleRepository, VehicleTypeRepository vehicleTypeRepository) {
+    public VehicleServiceImpl(VehicleRepository vehicleRepository, VehicleTypeRepository vehicleTypeRepository,
+                              VehicleChangeRequestRepository vehicleChangeRequestRepository) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleTypeRepository = vehicleTypeRepository;
+        this.vehicleChangeRequestRepository = vehicleChangeRequestRepository;
     }
 
     /* =========================== Vehicle =========================== */
@@ -74,4 +79,11 @@ public class VehicleServiceImpl implements VehicleService {
     }
     @Override
     public VehicleTypePrice getVehicleTypeByName(String name){ return vehicleTypeRepository.findByType(name);}
+
+
+    /* =========================== VehicleChangeRequest =========================== */
+    @Override
+    public VehicleChangeRequest insertVehicleChangeRequest(VehicleChangeRequest vehicleChangeRequest){
+        return vehicleChangeRequestRepository.save(vehicleChangeRequest);
+    }
 }
