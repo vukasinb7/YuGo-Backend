@@ -20,10 +20,7 @@ import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.mapper.MessageMapper;
 import org.yugo.backend.YuGo.mapper.NoteMapper;
 import org.yugo.backend.YuGo.model.*;
-import org.yugo.backend.YuGo.service.MessageService;
-import org.yugo.backend.YuGo.service.NoteService;
-import org.yugo.backend.YuGo.service.RideService;
-import org.yugo.backend.YuGo.service.UserService;
+import org.yugo.backend.YuGo.service.*;
 import org.yugo.backend.YuGo.security.TokenUtils;
 
 import java.time.LocalDate;
@@ -39,18 +36,20 @@ public class UserController {
     private final MessageService messageService;
     private final RideService rideService;
     private final NoteService noteService;
+    private final PasswordResetCodeService passwordResetCodeService;
     private final TokenUtils tokenUtils;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
     public UserController(UserService userService, MessageService messageService,
-                          RideService rideService, NoteService noteService, TokenUtils tokenUtils, AuthenticationManager authenticationManager){
+                          RideService rideService, PasswordResetCodeService passwordResetCodeService, NoteService noteService, TokenUtils tokenUtils, AuthenticationManager authenticationManager){
         this.userService = userService;
         this.messageService = messageService;
         this.rideService = rideService;
         this.noteService = noteService;
         this.tokenUtils = tokenUtils;
         this.authenticationManager = authenticationManager;
+        this.passwordResetCodeService=passwordResetCodeService;
     }
 
     @PostMapping(
@@ -115,6 +114,7 @@ public class UserController {
     }
 
 
+
     @GetMapping(
             value = "/{id}/ride",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -141,6 +141,15 @@ public class UserController {
     public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size){
         Page<User> users = userService.getUsersPage(PageRequest.of(page, size));
         return new ResponseEntity<>(new AllUsersOut(users), HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "{email}/email",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<UserSimplifiedOut> getUserByEmail(@PathVariable String email){
+        UserSimplifiedOut user =new UserSimplifiedOut(userService.getUserByEmail(email));
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping(

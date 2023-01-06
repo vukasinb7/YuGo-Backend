@@ -7,4 +7,5 @@ public interface PasswordResetCodeService {
     PasswordResetCode generateCode(User user);
     PasswordResetCode getValidCode(Integer userId);
     void setCodeInvalid(PasswordResetCode code);
+    User getUserByCode(String code);
 }

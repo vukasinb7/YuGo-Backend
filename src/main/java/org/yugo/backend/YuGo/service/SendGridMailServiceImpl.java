@@ -7,6 +7,7 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.model.PasswordResetCode;
@@ -34,7 +35,14 @@ public class SendGridMailServiceImpl implements SendGridMailService {
         String subject = "Password reset request";
         Email to = new Email(user.getEmail());
         Content content = new Content("text/plain", code.getCode());
-        Mail mail = new Mail(from, subject, to, content);
+        Mail mail = new Mail();
+        mail.setFrom(from);
+        Personalization personalization = new Personalization();
+        personalization.addTo(to);
+        personalization.addDynamicTemplateData("url_page","http://localhost:4200/reset/"+code.getCode()+"/"+user.getId());
+        personalization.addDynamicTemplateData("subject","Reset Password");
+        mail.addPersonalization(personalization);
+        mail.setTemplateId("d-d3e6dfa729f24a98b2fce6aa128ee520");
 
         Request request = new Request();
         try {

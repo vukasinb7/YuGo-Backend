@@ -3,6 +3,7 @@ package org.yugo.backend.YuGo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
@@ -54,6 +55,14 @@ public class UserServiceImpl implements UserService {
         else{
             throw new NotFoundException("User does not exist!");
         }
+    }
+    @Override
+    public User getUserByEmail(String email){
+        Optional<User> userOpt= userRepository.findByEmail(email);
+        if (userOpt.isEmpty()){
+            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", email));
+        }
+        return userOpt.get();
     }
 
     @Override

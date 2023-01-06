@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface UserService {
     User insertUser(User user);
     User getUser(Integer id);
+    User getUserByEmail(String email);
     User updateUser(User userUpdate);
     List<User> getAllUsers();
     Page<User> getUsersPage(Pageable page);

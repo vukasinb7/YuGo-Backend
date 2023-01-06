@@ -16,4 +16,6 @@ public interface PasswordResetCodeRepository  extends JpaRepository<PasswordRese
     void setUserCodesInvalid(@Param("userID") Integer userID);
 
     Optional<PasswordResetCode> findByUserIdAndValidTrue(Integer userId);
+    Optional<PasswordResetCode> findByCodeAndValidTrue(String code);
+
 }

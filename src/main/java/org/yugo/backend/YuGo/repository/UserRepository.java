@@ -25,5 +25,5 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Query(value = "SELECT u FROM User u WHERE u.role != 'ADMIN'")
     public Page<User> findAllUsers(Pageable page);
 
-    public User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 }
