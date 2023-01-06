@@ -25,9 +25,9 @@ public class UserActivation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    public UserActivation(User user, LocalDateTime dateCreated, Duration lifeSpan) {
+    public UserActivation(User user, Duration lifeSpan) {
         this.user = user;
-        this.dateCreated = dateCreated;
+        this.dateCreated = LocalDateTime.now();
         this.lifeSpan = lifeSpan;
     }
 }

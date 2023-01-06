@@ -24,14 +24,14 @@ public class Ride {
     private LocalDateTime endTime;
     @Column(name = "price", nullable = false)
     private double totalCost;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST})
     @JoinColumn(name = "driver_id")
     private Driver driver;
     @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "passenger_rides", joinColumns = @JoinColumn(name = "ride_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "passenger_id", referencedColumnName = "id"))
-    private Set<Passenger> passengers = new HashSet<Passenger>();
+    private Set<Passenger> passengers = new HashSet<>();
     @JoinColumn(name = "path_id")
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST})
     private List<Path> locations;
     @Column(name = "estimated_time")
     private int estimatedTimeInMinutes;
@@ -49,7 +49,7 @@ public class Ride {
     private Boolean babyTransport;
     @Column(name = "includes_pets")
     private Boolean petTransport;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST})
     @JoinColumn(name = "vehicle_type_id")
     private VehicleTypePrice vehicleTypePrice;
 

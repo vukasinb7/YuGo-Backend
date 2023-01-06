@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.AllPassengersOut;
 import org.yugo.backend.YuGo.dto.AllRidesOut;
@@ -25,7 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/passenger")
@@ -46,18 +47,19 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<UserDetailedInOut> addPassenger(@RequestBody UserDetailedIn user){
-        Passenger newPass = new Passenger(user);
-        passengerService.insert(newPass);
-        UserActivation newAct = new UserActivation(newPass, LocalDateTime.now(), Duration.ZERO);
-        userService.insertUserActivation(newAct);
-        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(newPass), HttpStatus.OK);
+        Passenger passenger = new Passenger(user);
+        passengerService.insert(passenger);
+        UserActivation activation = new UserActivation(passenger, Duration.ofDays(7));
+        userService.insertUserActivation(activation);
+        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passenger), HttpStatus.OK);
     }
 
     @GetMapping(
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AllPassengersOut> getAllPassengers(@RequestParam int page, @RequestParam(name = "size") int size){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AllPassengersOut> getAllPassengers(@RequestParam int page, @RequestParam int size){
         Page<Passenger> passengers = passengerService.getPassengersPage(PageRequest.of(page, size));
         return new ResponseEntity<>(new AllPassengersOut(passengers), HttpStatus.OK);
     }
@@ -66,42 +68,39 @@ public class PassengerController {
             value = "/activate/{activationId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> activatePassenger(@PathVariable Integer activationId){
-        if (userService.activateUser(activationId)){
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    public ResponseEntity activatePassenger(@PathVariable Integer activationId){
+        userService.activateUser(activationId);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "Successful account activation!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER','DRIVER')")
     public ResponseEntity<UserDetailedInOut> getPassenger(@PathVariable Integer id){
-        Optional<Passenger> passengerOpt = passengerService.get(id);
-        if (passengerOpt.isPresent()){
-            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passengerOpt.get()), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passengerService.get(id)), HttpStatus.OK);
     }
 
     @PutMapping(
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
     public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody UserDetailedIn updatedUserDTO, @PathVariable Integer id){
-        Passenger updateForPassenger = new Passenger(updatedUserDTO);
-        Passenger updatedPassenger = passengerService.update(id, updateForPassenger);
-        if (updatedPassenger != null){
-            return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedPassenger), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        Passenger passengerUpdate = new Passenger(updatedUserDTO);
+        passengerUpdate.setId(id);
+        Passenger updatedPassenger = passengerService.update(passengerUpdate);
+        return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedPassenger), HttpStatus.OK);
     }
 
     @GetMapping(
             value = "/{id}/ride",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
     ResponseEntity<AllRidesOut> getPassengerRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
                                                   @RequestParam(name = "size") int size,
                                                   @RequestParam(name = "sort") String sort,

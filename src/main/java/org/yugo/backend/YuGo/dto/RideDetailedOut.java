@@ -14,8 +14,8 @@ import java.util.List;
 public class RideDetailedOut {
     private Integer id;
     private List<PathInOut> locations;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private String startTime;
+    private String endTime;
     private Double totalCost;
     private UserSimplifiedOut driver;
     private List<UserSimplifiedOut> passengers;
@@ -28,8 +28,8 @@ public class RideDetailedOut {
 
     public RideDetailedOut(Ride ride) {
         this.id= ride.getId();
-        this.startTime = ride.getStartTime();
-        this.endTime = ride.getEndTime();
+        this.startTime = ride.getStartTime().toString();
+        this.endTime = ride.getEndTime().toString();
         this.totalCost = ride.getTotalCost();
         this.driver = UserSimplifiedMapper.fromUsertoDTO(ride.getDriver());
         this.passengers = ride.getPassengers().stream().map(UserSimplifiedMapper::fromUsertoDTO).toList();

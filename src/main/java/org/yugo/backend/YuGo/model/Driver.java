@@ -11,7 +11,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @Getter @Setter
-@DiscriminatorValue("2")
+@DiscriminatorValue("DRIVER")
 public class Driver extends User{
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "driver_id")

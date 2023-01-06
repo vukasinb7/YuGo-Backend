@@ -46,6 +46,6 @@ public class Vehicle {
         this.currentLocation = location;
         this.numberOfSeats = vehicleIn.getPassengerSeats();
         this.areBabiesAllowed = vehicleIn.getBabyTransport();
-        this.arePetsAllowed = vehicleIn.getBabyTransport();
+        this.arePetsAllowed = vehicleIn.getPetTransport();
     }
 }

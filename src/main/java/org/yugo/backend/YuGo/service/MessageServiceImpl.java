@@ -11,10 +11,12 @@ import java.util.Optional;
 @Service
 public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
+    private final UserService userService;
 
     @Autowired
-    public MessageServiceImpl(MessageRepository messageRepository){
+    public MessageServiceImpl(MessageRepository messageRepository, UserService userService){
         this.messageRepository = messageRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -34,6 +36,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<Message> getUserMessages(Integer userId){
+        userService.getUser(userId);
         return messageRepository.findMessagesByUser(userId);
     }
 }
