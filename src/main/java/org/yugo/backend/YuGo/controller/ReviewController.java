@@ -44,7 +44,7 @@ public class ReviewController {
     public ResponseEntity<ReviewOut> addVehicleReview(@RequestBody ReviewIn reviewIn,@PathVariable Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
-        RideReview vehicleReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId).get(),passengerService.get(user.getId()).get(),ReviewType.VEHICLE);
+        RideReview vehicleReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(user.getId()),ReviewType.VEHICLE);
         reviewService.insertRideReview(vehicleReview);
         return new ResponseEntity<>(new ReviewOut(vehicleReview), HttpStatus.OK);
     }
@@ -58,7 +58,7 @@ public class ReviewController {
     public ResponseEntity<ReviewOut> addRideReview(@RequestBody ReviewIn reviewIn, @PathVariable Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
-        RideReview rideReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId).get(),passengerService.get(user.getId()).get(),ReviewType.DRIVER);
+        RideReview rideReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(user.getId()),ReviewType.DRIVER);
         reviewService.insertRideReview(rideReview);
         return new ResponseEntity<>(new ReviewOut(rideReview), HttpStatus.OK);
     }
@@ -67,6 +67,8 @@ public class ReviewController {
             value = "/vehicle/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity<AllRideReviewsOut> getAllVehicleReviewsByVehicle(@PathVariable int id) {
         List<RideReview> vehicleReviews = reviewService.getRideReviewsByVehicle(id);
         return new ResponseEntity<>(new AllRideReviewsOut(vehicleReviews), HttpStatus.OK);
@@ -75,6 +77,7 @@ public class ReviewController {
             value = "driver/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
     public ResponseEntity<AllRideReviewsOut> getAllRideReviewsByDriver(@PathVariable int id){
         List<RideReview> driverReviews = reviewService.getRideReviewsByDriver(id);
         return new ResponseEntity<>(new AllRideReviewsOut(driverReviews), HttpStatus.OK);
@@ -87,7 +90,7 @@ public class ReviewController {
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER','DRIVER')")
     public ResponseEntity<List<AcumulatedReviewsOut>> getAllRideReviews(@PathVariable int id){
         List<AcumulatedReviewsOut> result= new ArrayList<>();
-        for (Passenger passenger:rideService.get(id).get().getPassengers()) {
+        for (Passenger passenger:rideService.get(id).getPassengers()) {
             RideReview vehicleReviews = reviewService.getVehicleReviewsByRideByPassenger(id,passenger.getId());
             RideReview driverReviews = reviewService.getDriverReviewsByRideByPassenger(id,passenger.getId());
             AcumulatedReviewsOut acumulatedReviewsOut= new AcumulatedReviewsOut();

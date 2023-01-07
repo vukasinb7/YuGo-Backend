@@ -1,11 +1,12 @@
 package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.repository.UserRepository;
 import org.yugo.backend.YuGo.repository.VehicleRepository;
@@ -20,13 +21,19 @@ import java.util.Optional;
 public class DriverServiceImpl implements DriverService {
     private final UserRepository userRepository;
     private final WorkTimeRepository workTimeRepository;
-
     private final VehicleRepository vehicleRepository;
+
+    private final RoleService roleService;
+    private final BCryptPasswordEncoder passwordEncoder;
     @Autowired
-    public DriverServiceImpl(UserRepository userRepository, WorkTimeRepository workTimeRepository, VehicleRepository vehicleRepository){
+    public DriverServiceImpl(UserRepository userRepository, WorkTimeRepository workTimeRepository,
+                             VehicleRepository vehicleRepository, RoleService roleService,
+                             BCryptPasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.workTimeRepository = workTimeRepository;
         this.vehicleRepository = vehicleRepository;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -63,7 +70,17 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Driver insertDriver(Driver driver){
-        return userRepository.save(driver);
+        try{
+            ArrayList<Role> roles = new ArrayList<>();
+            roles.add(roleService.findRoleByName("ROLE_DRIVER"));
+            driver.setRoles(roles);
+            Vehicle vehicle = new Vehicle();
+            driver.setVehicle(vehicle);
+            driver.setPassword(passwordEncoder.encode(driver.getPassword()));
+            return userRepository.save(driver);
+        }catch (DataIntegrityViolationException e){
+            throw new BadRequestException("Email is already being used by another user");
+        }
     }
 
     @Override

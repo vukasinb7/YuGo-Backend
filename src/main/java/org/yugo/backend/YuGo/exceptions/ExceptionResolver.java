@@ -7,14 +7,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
+
 @ControllerAdvice
 public class ExceptionResolver {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity badRequestException(BadRequestException exception) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        return new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.BAD_REQUEST);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", exception.getMessage());
+        return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -23,6 +27,4 @@ public class ExceptionResolver {
         headers.setContentType(MediaType.TEXT_PLAIN);
         return new ResponseEntity<>(exception.getMessage(), headers, HttpStatus.NOT_FOUND);
     }
-
-
 }

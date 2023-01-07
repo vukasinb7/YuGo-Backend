@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.repository.UserRepository;
 
+import java.util.Optional;
+
 @Service
 public class SecurityUserDetailsService implements UserDetailsService {
     @Autowired
@@ -17,11 +19,10 @@ public class SecurityUserDetailsService implements UserDetailsService {
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = this.userRepository.findByEmail(username);
-        if (user == null) {
+        Optional<User> user = this.userRepository.findByEmail(username);
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
-        } else {
-            return user;
         }
+        return user.get();
     }
 }

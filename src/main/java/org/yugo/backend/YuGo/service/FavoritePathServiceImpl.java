@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.exceptions.NotFoundException;
 import org.yugo.backend.YuGo.model.FavoritePath;
 import org.yugo.backend.YuGo.model.Rejection;
 import org.yugo.backend.YuGo.repository.FavoritePathRepository;
@@ -39,5 +40,9 @@ public class FavoritePathServiceImpl implements FavoritePathService {
     public Optional<List<FavoritePath>> getByPassengerId(Integer id){return Optional.ofNullable(favoritePathRepository.findByPassengerId(id));}
 
     @Override
-    public void delete(Integer id){ favoritePathRepository.deleteById(id);}
+    public void delete(Integer id){
+        if (favoritePathRepository.findById(id).isEmpty())
+            throw new NotFoundException("Favorite Location does not exist!");
+        favoritePathRepository.deleteById(id);
+    }
 }

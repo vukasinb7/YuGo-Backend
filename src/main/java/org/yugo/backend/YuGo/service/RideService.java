@@ -13,11 +13,18 @@ import java.util.Optional;
 public interface RideService {
     Ride insert(Ride ride);
     Ride createRide(RideIn rideIn) throws Exception;
-    Optional<Ride> get(Integer id);
     Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
+    Ride get(Integer id);
+
     List<Ride> getAll();
     Ride getActiveRideByDriver(Integer id);
     Ride getActiveRideByPassenger(Integer id);
     Page<Ride> getPassengerRides(Integer passengerID, LocalDateTime from, LocalDateTime to, Pageable page);
     Page<Ride> getUserRides(Integer userID, LocalDateTime from, LocalDateTime to, Pageable page);
+    Ride cancelRide(Integer id);
+    Ride startRide(Integer id);
+    Ride acceptRide(Integer id);
+    Ride endRide(Integer id);
+    Ride rejectRide(Integer id,String reason);
+    Ride save(Ride ride);
 }
