@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.yugo.backend.YuGo.dto.RideIn;
 import org.yugo.backend.YuGo.model.Ride;
 
 import java.time.LocalDate;
@@ -11,9 +12,9 @@ import java.util.Optional;
 
 public interface RideService {
     Ride insert(Ride ride);
+    Ride createRide(RideIn rideIn) throws Exception;
     Optional<Ride> get(Integer id);
-
-    public Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
+    Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
     List<Ride> getAll();
     Ride getActiveRideByDriver(Integer id);
     Ride getActiveRideByPassenger(Integer id);

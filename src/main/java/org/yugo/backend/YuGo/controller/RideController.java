@@ -55,14 +55,11 @@ public class RideController {
 //        Driver driver= (Driver) driverService.getDriver(2).get();
 //        Ride ride= new Ride(LocalDateTime.now(),LocalDateTime.now(),100,driver,passengers,rideIn.getLocations().stream().map(PathMapper::fromDTOtoPath).toList(),10,new HashSet<>(),RideStatus.PENDING,null,false,rideIn.isBabyTransport(),rideIn.isPetTransport(),null);
 //        rideService.insert(ride);
-        System.out.println("asffffffffffffffffffffffff");
-        double fromLat = rideIn.getLocations().get(0).getDeparture().getLatitude();
-        double fromLng = rideIn.getLocations().get(0).getDeparture().getLongitude();
-        double toLat = rideIn.getLocations().get(0).getDestination().getLatitude();
-        double toLng = rideIn.getLocations().get(0).getDestination().getLongitude();;
-
-        RouteProperties routeProperties = routingService.getRouteProperties(fromLat, fromLng, toLat, toLng);
-        System.out.println(routeProperties);
+        try {
+            rideService.createRide(rideIn);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         //return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }

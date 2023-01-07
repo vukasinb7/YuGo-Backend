@@ -6,15 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.yugo.backend.YuGo.model.Driver;
-import org.yugo.backend.YuGo.model.User;
-import org.yugo.backend.YuGo.model.Vehicle;
-import org.yugo.backend.YuGo.model.WorkTime;
+import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.repository.UserRepository;
 import org.yugo.backend.YuGo.repository.VehicleRepository;
 import org.yugo.backend.YuGo.repository.WorkTimeRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +27,38 @@ public class DriverServiceImpl implements DriverService {
         this.userRepository = userRepository;
         this.workTimeRepository = workTimeRepository;
         this.vehicleRepository = vehicleRepository;
+    }
+
+    @Override
+    public List<Driver> getDriversInRange(double latitude, double longitude, double rangeInMeters) {
+        List<User> drivers = this.userRepository.findAllDrivers();
+        List<Driver> output = new ArrayList<>();
+        for(User user: drivers){
+            Driver driver = (Driver) user;
+            if(isInRange(driver, latitude, longitude, rangeInMeters)){
+                output.add(driver);
+            }
+        }
+        return output;
+    }
+
+    private boolean isInRange(Driver driver, double latitude, double longitude, double rangeInMeters){
+        final double R = 6371000;     // mean radius of earth in meters
+        double lat1 = driver.getVehicle().getCurrentLocation().getLatitude();
+        double lon1 = driver.getVehicle().getCurrentLocation().getLongitude();
+        double lat2 = latitude;
+        double lon2 = longitude;
+
+        double phi1 = lat1 * Math.PI / 180;
+        double phi2 = lat2 * Math.PI / 180;
+        double deltaPhi = (lat2 - lat1) * Math.PI / 180;
+        double deltaLambda = (lon2 - lon1) * Math.PI / 180;
+
+        double a = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
+                    Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double d = R * c;
+        return d <= rangeInMeters;
     }
 
     @Override

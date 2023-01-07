@@ -2,16 +2,14 @@ package org.yugo.backend.YuGo.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.yugo.backend.YuGo.model.Driver;
-import org.yugo.backend.YuGo.model.User;
-import org.yugo.backend.YuGo.model.Vehicle;
-import org.yugo.backend.YuGo.model.WorkTime;
+import org.yugo.backend.YuGo.model.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface DriverService {
+    List<Driver> getDriversInRange(double latitude, double longitude, double rangeInMeters);
     Driver insertDriver(Driver driver);
     Driver updateDriver(Driver driverUpdate);
 

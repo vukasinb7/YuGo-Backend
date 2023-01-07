@@ -1,5 +1,7 @@
 package org.yugo.backend.YuGo.service;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.yugo.backend.YuGo.dto.RouteProperties;
@@ -10,7 +12,7 @@ import java.net.URL;
 
 @Service
 public class RoutingServiceImpl implements RoutingService {
-    private static final String url = "http://router.project-osrm.org/route/v1/driving/%s,%s;%s,%s?annotations=distance";
+    private static final String url = "http://router.project-osrm.org/route/v1/driving/%s,%s;%s,%s?annotations=distance&overview=false";
 
 
     @Override
@@ -22,18 +24,11 @@ public class RoutingServiceImpl implements RoutingService {
         if(responseBody == null){
             return null;
         }
-        double distance = this.getDistanceFromResponse(responseBody);//TODO izmeniti nacin parsisranja respons-a
-        double duration = this.getDurationFromResponse(responseBody);//TODO izmeniti nacin parsisranja respons-a
+        JSONObject jsonResponse = new JSONObject(responseBody);
+        JSONArray routes = jsonResponse.getJSONArray("routes");
+        JSONObject route = routes.getJSONObject(0);
+        double distance = route.getDouble("distance");
+        double duration = route.getDouble("duration");
         return new RouteProperties(distance, duration);
-    }
-    private double getDistanceFromResponse(String responseBody){
-        int distanceIndex = responseBody.indexOf("distance:");
-        int closingBracesIndex = responseBody.indexOf("}", distanceIndex);
-        return Double.parseDouble(responseBody.substring(distanceIndex + 9, closingBracesIndex));
-    }
-    private double getDurationFromResponse(String responseBody){
-        int distanceIndex = responseBody.indexOf("duration:");
-        int closingBracesIndex = responseBody.indexOf("}", distanceIndex);
-        return Double.parseDouble(responseBody.substring(distanceIndex + 9, closingBracesIndex));
     }
 }
