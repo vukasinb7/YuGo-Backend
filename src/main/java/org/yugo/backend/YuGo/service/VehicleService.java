@@ -1,6 +1,7 @@
 package org.yugo.backend.YuGo.service;
 
-import org.yugo.backend.YuGo.model.Location;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.yugo.backend.YuGo.model.Vehicle;
 import org.yugo.backend.YuGo.model.VehicleChangeRequest;
 import org.yugo.backend.YuGo.model.VehicleTypePrice;
@@ -22,5 +23,7 @@ public interface VehicleService {
 
     /* =========================== VehicleChangeRequest =========================== */
     VehicleChangeRequest insertVehicleChangeRequest(VehicleChangeRequest vehicleChangeRequest);
-    List<VehicleChangeRequest> getALlVehicleChangeRequests();
+    Page<VehicleChangeRequest> getAllVehicleChangeRequests(Pageable page);
+    void acceptVehicleChangeRequest(Integer requestId);
+    void rejectVehicleChangeRequest(Integer requestId);
 }

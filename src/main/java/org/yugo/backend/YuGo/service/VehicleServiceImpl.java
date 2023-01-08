@@ -1,13 +1,12 @@
 package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.exceptions.NotFoundException;
-import org.yugo.backend.YuGo.model.Location;
-import org.yugo.backend.YuGo.model.Vehicle;
-import org.yugo.backend.YuGo.model.VehicleChangeRequest;
-import org.yugo.backend.YuGo.model.VehicleTypePrice;
+import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.repository.VehicleChangeRequestRepository;
 import org.yugo.backend.YuGo.repository.VehicleRepository;
 import org.yugo.backend.YuGo.repository.VehicleTypeRepository;
@@ -20,13 +19,16 @@ public class VehicleServiceImpl implements VehicleService {
     private final VehicleRepository vehicleRepository;
     private final VehicleTypeRepository vehicleTypeRepository;
     private final VehicleChangeRequestRepository vehicleChangeRequestRepository;
+    private final DriverService driverService;
 
     @Autowired
     public VehicleServiceImpl(VehicleRepository vehicleRepository, VehicleTypeRepository vehicleTypeRepository,
-                              VehicleChangeRequestRepository vehicleChangeRequestRepository) {
+                              VehicleChangeRequestRepository vehicleChangeRequestRepository,
+                              DriverService driverService) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleTypeRepository = vehicleTypeRepository;
         this.vehicleChangeRequestRepository = vehicleChangeRequestRepository;
+        this.driverService = driverService;
     }
 
     /* =========================== Vehicle =========================== */
@@ -88,7 +90,36 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<VehicleChangeRequest> getALlVehicleChangeRequests(){
-        return vehicleChangeRequestRepository.findAll();
+    public Page<VehicleChangeRequest> getAllVehicleChangeRequests(Pageable page){
+        return vehicleChangeRequestRepository.findAllVehicleChangeRequests(page);
+    }
+
+    @Override
+    public void acceptVehicleChangeRequest(Integer requestId){
+        Optional<VehicleChangeRequest> vehicleChangeRequestOptional = vehicleChangeRequestRepository.findById(requestId);
+        if (vehicleChangeRequestOptional.isPresent()){
+            VehicleChangeRequest vehicleChangeRequest = vehicleChangeRequestOptional.get();
+            driverService.updateDriverVehicle(vehicleChangeRequest.getDriver().getId(),
+                    vehicleChangeRequest.getVehicle());
+            vehicleChangeRequestRepository.rejectDriversVehicleChangeRequests(vehicleChangeRequest.getDriver().getId());
+            vehicleChangeRequest.setStatus(VehicleChangeRequestStatus.ACCEPTED);
+            vehicleChangeRequestRepository.save(vehicleChangeRequest);
+        }
+        else {
+            throw new NotFoundException("Vehicle change request not found!");
+        }
+    }
+
+    @Override
+    public void rejectVehicleChangeRequest(Integer requestId){
+        Optional<VehicleChangeRequest> vehicleChangeRequestOptional = vehicleChangeRequestRepository.findById(requestId);
+        if (vehicleChangeRequestOptional.isPresent()){
+            VehicleChangeRequest vehicleChangeRequest = vehicleChangeRequestOptional.get();
+            vehicleChangeRequest.setStatus(VehicleChangeRequestStatus.REJECTED);
+            vehicleChangeRequestRepository.save(vehicleChangeRequest);
+        }
+        else {
+            throw new NotFoundException("Vehicle change request not found!");
+        }
     }
 }
