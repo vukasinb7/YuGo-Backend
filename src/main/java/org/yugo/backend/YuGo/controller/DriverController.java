@@ -186,7 +186,7 @@ public class DriverController {
         if(driverOpt.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        Driver driver = (Driver) driverOpt.get();
+        Driver driver = driverOpt.get();
         Vehicle vehicle = new Vehicle(vehicleIn);
         Vehicle vehicleUpdated = driverService.changeVehicle(driver, vehicle);
 

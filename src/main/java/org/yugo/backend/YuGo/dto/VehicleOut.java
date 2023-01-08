@@ -30,6 +30,17 @@ public class VehicleOut {
         this.petTransport = petTransport;
     }
 
+    public VehicleOut(Integer id, String vehicleType, String model, String licenseNumber, LocationInOut currentLocation, int passengerSeats, Boolean babyTransport, Boolean petTransport) {
+        this.id = id;
+        this.vehicleType = vehicleType;
+        this.model = model;
+        this.licenseNumber = licenseNumber;
+        this.currentLocation = currentLocation;
+        this.passengerSeats = passengerSeats;
+        this.babyTransport = babyTransport;
+        this.petTransport = petTransport;
+    }
+
     public VehicleOut(Vehicle vehicle){
         this(
                 vehicle.getId(),
