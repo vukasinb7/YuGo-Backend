@@ -21,13 +21,15 @@ public class PassengerServiceImpl implements PassengerService {
     private final PassengerRepository passengerRepository;
     private final RoleService roleService;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final MailService mailService;
 
     @Autowired
     public PassengerServiceImpl(PassengerRepository passengerRepository, RoleService roleService,
-                                BCryptPasswordEncoder passwordEncoder){
+                                BCryptPasswordEncoder passwordEncoder, MailService mailService){
         this.passengerRepository = passengerRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.mailService = mailService;
     }
 
     @Override
@@ -37,7 +39,9 @@ public class PassengerServiceImpl implements PassengerService {
             roles.add(roleService.findRoleByName("ROLE_PASSENGER"));
             passenger.setRoles(roles);
             passenger.setPassword(passwordEncoder.encode(passenger.getPassword()));
-            return passengerRepository.save(passenger);
+            passenger = passengerRepository.save(passenger);
+            mailService.sendActivationMail(passenger);
+            return passenger;
         }catch (DataIntegrityViolationException e){
             throw new BadRequestException("Email is already being used by another user");
         }
