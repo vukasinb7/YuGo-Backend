@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.random.RandomGenerator;
 
 
 @Entity
@@ -32,6 +33,6 @@ public class UserActivation {
         this.dateCreated = LocalDateTime.now();
         this.lifeSpan = lifeSpan;
         this.valid = true;
-        this.code = Math.abs(user.hashCode() + dateCreated.hashCode());
+        this.code = Math.abs(user.hashCode() + dateCreated.hashCode() + RandomGenerator.getDefault().nextInt(100));
     }
 }

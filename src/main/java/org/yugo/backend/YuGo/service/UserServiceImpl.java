@@ -118,17 +118,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(Integer userId, String newPassword, String code){
+    public void sendPasswordResetCodeEfficient(String email){
+        User user = getUserByEmail(email);
+        mailService.sendPasswordResetMail(user);
+    }
+
+    @Override
+    public void resetPassword(Integer userId, String newPassword, Integer code){
         getUser(userId);
-        PasswordResetCode passwordResetCode = passwordResetCodeService.getValidCode(userId);
-        if (code.equals(passwordResetCode.getCode())){
-            User user = passwordResetCode.getUser();
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userRepository.save(user);
-            passwordResetCodeService.setCodeInvalid(passwordResetCode);
-        }
-        else{
-            throw new BadRequestException("Code is expired or not correct!");
-        }
+        PasswordResetCode passwordResetCode = passwordResetCodeService.get(code);
+        User user = getUser(passwordResetCode.getUser().getId());
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        passwordResetCodeService.setCodeInvalid(passwordResetCode);
+    }
+
+    @Override
+    public void resetPasswordEfficient(Integer code, String newPassword){
+        PasswordResetCode passwordResetCode = passwordResetCodeService.get(code);
+        User user = getUser(passwordResetCode.getUser().getId());
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        passwordResetCodeService.setCodeInvalid(passwordResetCode);
     }
 }

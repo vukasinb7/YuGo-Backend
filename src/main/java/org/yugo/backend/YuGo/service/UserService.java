@@ -19,5 +19,7 @@ public interface UserService {
     void unblockUser(Integer userId);
     void changePassword(Integer userId, String oldPassword, String newPassword);
     void sendPasswordResetCode(Integer userId);
-    void resetPassword(Integer userId, String newPassword, String code);
+    void sendPasswordResetCodeEfficient(String email);
+    void resetPassword(Integer userId, String newPassword, Integer code);
+    void resetPasswordEfficient(Integer code, String newPassword);
 }

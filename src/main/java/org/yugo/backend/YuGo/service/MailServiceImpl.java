@@ -42,7 +42,7 @@ public class MailServiceImpl implements MailService {
         mail.setFrom(from);
         Personalization personalization = new Personalization();
         personalization.addTo(to);
-        personalization.addDynamicTemplateData("url_page","http://localhost:4200/reset/"+code.getCode()+"/"+user.getId());
+        personalization.addDynamicTemplateData("url_page","http://localhost:4200/reset/"+code.getCode());
         personalization.addDynamicTemplateData("subject","Reset Password");
         mail.addPersonalization(personalization);
         mail.setTemplateId("d-d3e6dfa729f24a98b2fce6aa128ee520");
@@ -70,10 +70,11 @@ public class MailServiceImpl implements MailService {
         mail.setFrom(from);
         Personalization personalization = new Personalization();
         personalization.addTo(to);
-        personalization.addDynamicTemplateData("url_page","http://localhost:4200/reset/"+ activation.getCode() +"/"+user.getId());
-        personalization.addDynamicTemplateData("subject","Reset Password");
+        personalization.addDynamicTemplateData("url_page","http://localhost:4200/home?accountActivationDialog=true/"+ activation.getCode());
+        personalization.addDynamicTemplateData("user_name", user.getName());
+        personalization.addDynamicTemplateData("subject","YuGo Activation");
         mail.addPersonalization(personalization);
-        mail.setTemplateId("d-d3e6dfa729f24a98b2fce6aa128ee520");
+        mail.setTemplateId("d-a8dc11707b5a4320872f2d0a8b093948");
 
         Request request = new Request();
         try {

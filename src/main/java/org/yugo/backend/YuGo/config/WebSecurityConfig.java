@@ -68,7 +68,9 @@ public class WebSecurityConfig {
         http.headers().frameOptions().disable();
         http.authorizeHttpRequests().requestMatchers("/api/user/login","api/user/logout",
                         "/api/user/{email}/email","/api/passenger","/api/passenger/activate/{id}",
-                        "/api/user/{id}/resetPassword", "/api/image/**", "/api/vehicleType").permitAll().
+                        "/api/user/{id}/resetPassword", "/api/user/{email}/resetPassword",
+                        "/api/user/resetPassword", "/api/image/**",
+                        "/api/vehicleType").permitAll().
                 requestMatchers(toH2Console()).permitAll().anyRequest().authenticated()
                 .and().addFilterBefore(new TokenAuthenticationFilter(this.tokenUtils, this.userDetailsService()),
                         BasicAuthenticationFilter.class);

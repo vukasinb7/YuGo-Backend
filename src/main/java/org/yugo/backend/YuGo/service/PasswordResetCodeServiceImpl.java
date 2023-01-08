@@ -30,8 +30,8 @@ public class PasswordResetCodeServiceImpl implements PasswordResetCodeService {
     }
 
     @Override
-    public PasswordResetCode getValidCode(Integer userId) {
-        Optional<PasswordResetCode> passwordResetCodeOpt = passwordResetCodeRepository.findByUserIdAndValidTrue(userId);
+    public PasswordResetCode get(Integer code){
+        Optional<PasswordResetCode> passwordResetCodeOpt = passwordResetCodeRepository.findById(code);
         if (passwordResetCodeOpt.isPresent()){
             PasswordResetCode passwordResetCode = passwordResetCodeOpt.get();
             if (!passwordResetCode.getDateCreated().plus(passwordResetCode.getLifeSpan()).isBefore(LocalDateTime.now())){
@@ -46,18 +46,5 @@ public class PasswordResetCodeServiceImpl implements PasswordResetCodeService {
     public void setCodeInvalid(PasswordResetCode code) {
         code.setValid(false);
         passwordResetCodeRepository.save(code);
-    }
-
-    @Override
-    public User getUserByCode(String code){
-        Optional<PasswordResetCode> passwordResetCodeOpt = passwordResetCodeRepository.findByCodeAndValidTrue(code);
-        if (passwordResetCodeOpt.isPresent()){
-            PasswordResetCode passwordResetCode = passwordResetCodeOpt.get();
-            if (!passwordResetCode.getDateCreated().plus(passwordResetCode.getLifeSpan()).isBefore(LocalDateTime.now())){
-                return passwordResetCode.getUser();
-            }
-            setCodeInvalid(passwordResetCode);
-        }
-        throw new BadRequestException("Code is expired or not correct!");
     }
 }
