@@ -70,7 +70,7 @@ public class MailServiceImpl implements MailService {
         mail.setFrom(from);
         Personalization personalization = new Personalization();
         personalization.addTo(to);
-        personalization.addDynamicTemplateData("url_page","http://localhost:4200/home?accountActivationDialog=true/"+ activation.getCode());
+        personalization.addDynamicTemplateData("url_page","http://localhost:4200/home?accountActivationDialog=true&code="+activation.getCode());
         personalization.addDynamicTemplateData("user_name", user.getName());
         personalization.addDynamicTemplateData("subject","YuGo Activation");
         mail.addPersonalization(personalization);
