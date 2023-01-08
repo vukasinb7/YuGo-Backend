@@ -20,19 +20,16 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final UserActivationRepository userActivationRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final SendGridMailService sendGridMailService;
+    private final MailService mailService;
     private final PasswordResetCodeService passwordResetCodeService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserActivationRepository userActivationRepository,
-                           BCryptPasswordEncoder passwordEncoder, SendGridMailService sendGridMailService,
-                           PasswordResetCodeService passwordResetCodeService){
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder,
+                           MailService mailService, PasswordResetCodeService passwordResetCodeService){
         this.userRepository = userRepository;
-        this.userActivationRepository = userActivationRepository;
         this.passwordEncoder = passwordEncoder;
-        this.sendGridMailService = sendGridMailService;
+        this.mailService = mailService;
         this.passwordResetCodeService = passwordResetCodeService;
     }
 
@@ -78,21 +75,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserActivation insertUserActivation(UserActivation userActivation){
-        return userActivationRepository.save(userActivation);
-    }
-
-    @Override
-    public List<UserActivation> getAllUserActivations() {
-        return userActivationRepository.findAll();
-    }
-
-    @Override
-    public Optional<UserActivation> getUserActivation(Integer id) {
-        return userActivationRepository.findById(id);
-    }
-
-    @Override
     public Page<User> getUsersPage(Pageable page){
         return userRepository.findAllUsers(page);
     }
@@ -132,7 +114,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void sendPasswordResetCode(Integer userId){
         User user = getUser(userId);
-        sendGridMailService.sendMail(user);
+        mailService.sendPasswordResetMail(user);
     }
 
     @Override
@@ -147,23 +129,6 @@ public class UserServiceImpl implements UserService {
         }
         else{
             throw new BadRequestException("Code is expired or not correct!");
-        }
-    }
-
-    @Override
-    public void activateUser(Integer activationId){
-        Optional<UserActivation> userActivationOpt = userActivationRepository.findById(activationId);
-        if (userActivationOpt.isPresent()){
-            UserActivation userActivation = userActivationOpt.get();
-
-            if (userActivation.getDateCreated().plus(userActivation.getLifeSpan()).isBefore(LocalDateTime.now())){
-                throw new BadRequestException("Activation expired. Register again!");
-            }
-            userActivation.getUser().setActive(true);
-            userActivationRepository.save(userActivation);
-        }
-        else{
-            throw new NotFoundException("Activation with entered id does not exist!");
         }
     }
 }

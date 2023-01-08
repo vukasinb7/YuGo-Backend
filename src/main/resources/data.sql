@@ -34,9 +34,6 @@ INSERT INTO USER_ROLE (user_id, role_id) VALUES (5, 2);
 
 INSERT INTO USER_ROLE (user_id, role_id) VALUES (6, 3);
 
-INSERT INTO USER_ACTIVATIONS (date_created, life_span, user_id)
-VALUES ('2022-12-05 23:35:33.172279', TIMESTAMP '2022-09-03 12:47:00.000000' - TIMESTAMP '2022-09-03 13:13:00.000000', '1');
-
 INSERT INTO Vehicles(are_babies_allowed,are_pets_allowed,licence_plate_number,model,number_of_seats,vehicle_type,driver_id)
 VALUES ('1','0','SM074HZ','Skoda Octavia','5','1','6');
 
