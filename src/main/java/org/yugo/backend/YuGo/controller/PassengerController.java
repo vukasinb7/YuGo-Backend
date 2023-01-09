@@ -16,13 +16,11 @@ import org.yugo.backend.YuGo.dto.UserDetailedInOut;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.Ride;
-import org.yugo.backend.YuGo.model.UserActivation;
 import org.yugo.backend.YuGo.service.PassengerService;
 import org.yugo.backend.YuGo.service.RideService;
 import org.yugo.backend.YuGo.service.UserActivationService;
 import org.yugo.backend.YuGo.service.UserService;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

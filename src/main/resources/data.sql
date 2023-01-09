@@ -5,22 +5,22 @@ INSERT INTO ROLES (name) VALUES('ROLE_PASSENGER');
 INSERT INTO ROLES (name) VALUES('ROLE_DRIVER');
 
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
-VALUES ('Pera', 'Perić', 'https://upload.wikimedia.org/wikipedia/commons/a/a3/June_odd-eyed-cat.jpg', '+12312321314', 'pera.peric@email.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
+VALUES ('Pera', 'Perić', 'DEFAULT_PROFILE_PICTURE.jpg', '+12312321314', 'pera.peric@email.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
 
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
-VALUES ('Marko', 'Markovic', 'https://upload.wikimedia.org/wikipedia/commons/a/a3/June_odd-eyed-cat.jpg', '+12312321314', 'marko.markovic@email.com', 'Bulevar Oslobodjenja 75', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'ADMIN');
+VALUES ('Marko', 'Markovic', 'DEFAULT_PROFILE_PICTURE.jpg', '+12312321314', 'marko.markovic@email.com', 'Bulevar Oslobodjenja 75', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'ADMIN');
 
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
-VALUES ('Darko', 'Darkovic', 'https://upload.wikimedia.org/wikipedia/commons/a/a3/June_odd-eyed-cat.jpg', '+12312321314', 'darko.darkovic@email.com', 'Bulevar Oslobodjenja 76', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
+VALUES ('Darko', 'Darkovic', 'DEFAULT_PROFILE_PICTURE.jpg', '+12312321314', 'darko.darkovic@email.com', 'Bulevar Oslobodjenja 76', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
 
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
-VALUES ('Petar', 'Petrovic', 'https://upload.wikimedia.org/wikipedia/commons/a/a3/June_odd-eyed-cat.jpg', '+12312321314', 'petar.petrovic@email.com', 'Bulevar Oslobodjenja 77', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
+VALUES ('Petar', 'Petrovic', 'DEFAULT_PROFILE_PICTURE.jpg', '+12312321314', 'petar.petrovic@email.com', 'Bulevar Oslobodjenja 77', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
 
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
-VALUES ('Perica', 'Petkovic', 'https://upload.wikimedia.org/wikipedia/commons/a/a3/June_odd-eyed-cat.jpg', '+12312321314', 'parica.petkovic@email.com', 'Bulevar Oslobodjenja 78', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
+VALUES ('Perica', 'Petkovic', 'DEFAULT_PROFILE_PICTURE.jpg', '+12312321314', 'parica.petkovic@email.com', 'Bulevar Oslobodjenja 78', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
 
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
-VALUES ('Pera', 'Perić', 'https://upload.wikimedia.org/wikipedia/commons/a/a3/June_odd-eyed-cat.jpg', '+12312321314', 'perislav.peric@email.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'DRIVER');
+VALUES ('Pera', 'Perić', 'DEFAULT_PROFILE_PICTURE.jpg', '+12312321314', 'perislav.peric@email.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'DRIVER');
 
 INSERT INTO USER_ROLE (user_id, role_id) VALUES (2, 1);
 
@@ -132,4 +132,4 @@ INSERT INTO PATHS (starting_point, destination, fav_path_id) VALUES ('2', '3', '
 INSERT INTO PATHS (starting_point, destination, fav_path_id) VALUES ('3', '1', '3');
 
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
-VALUES ('Vukasin', 'Bodanovic', 'https://upload.wikimedia.org/wikipedia/commons/a/a3/June_odd-eyed-cat.jpg', '+12312321314', 'vukasin.bogdanovic610@gmail.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
+VALUES ('Vukasin', 'Bodanovic', 'DEFAULT_PROFILE_PICTURE.jpg', '+12312321314', 'vukasin.bogdanovic610@gmail.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');

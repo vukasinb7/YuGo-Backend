@@ -10,8 +10,7 @@ import org.yugo.backend.YuGo.model.DocumentType;
 @NoArgsConstructor
 public class DocumentIn {
     private String name;
-    String  documentImage;
-
+    private String documentImage;
     private DocumentType documentType;
 
     public DocumentIn(String name, String documentImage,DocumentType documentType) {

@@ -132,7 +132,7 @@ public class DriverController {
         String path="src\\main\\resources\\img\\"+id+"_"+documentType+".jpg";
         Document document= new Document(id+"_"+documentType+".jpg",path,driverService.getDriver(id).get(),DocumentType.valueOf(documentType));
         documentService.insert(document);
-        Files.write(Paths.get("src\\main\\resources\\img\\", id+"_"+documentType+".jpg"),file.getBytes());
+        Files.write(Paths.get(path),file.getBytes());
         return new ResponseEntity<>(new DocumentOut(document), HttpStatus.OK);
     }
 
