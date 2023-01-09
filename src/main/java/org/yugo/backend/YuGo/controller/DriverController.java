@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.yugo.backend.YuGo.dto.*;
+import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.mapper.WorkingTimeMapper;
 import org.yugo.backend.YuGo.model.*;
@@ -52,7 +53,7 @@ public class DriverController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody UserDetailedIn driverIn){
         Driver driver = new Driver(driverIn);
-        driver.setActive(true);
+        driver.setActive(true); // TODO da li ova linija treba da se nalazi ovde?
         Driver driverNew = driverService.insertDriver(driver);
         return new ResponseEntity<>(new UserDetailedInOut(driverNew), HttpStatus.OK);
     }
@@ -63,12 +64,8 @@ public class DriverController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER', 'DRIVER')")
     public ResponseEntity<UserDetailedInOut> getDriver(@PathVariable Integer id){
-        Driver driver = driverService.getDriver(id).orElse(null);
-        if(driver == null){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+        Driver driver = driverService.getDriver(id);
         return new ResponseEntity<>(new UserDetailedInOut(driver), HttpStatus.OK);
-
     }
 
     @GetMapping(
@@ -77,16 +74,7 @@ public class DriverController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<VehicleOut> getVehicle(@PathVariable Integer id){
-        Optional<Driver> driverOpt = driverService.getDriver(id);
-
-        if(driverOpt.isEmpty()){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        Driver driver = (Driver) driverOpt.get();
-        Vehicle vehicle = driver.getVehicle();
-        if(vehicle == null){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+        Vehicle vehicle = driverService.getDriverVehicle(id);
         return new ResponseEntity<>(new VehicleOut(vehicle), HttpStatus.OK);
     }
 
@@ -97,27 +85,20 @@ public class DriverController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<VehicleOut> createVehicle(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
-        Optional<Driver> driverOpt = driverService.getDriver(id);
-        if(driverOpt.isEmpty()){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        Driver driver = (Driver)driverOpt.get();
+        Driver driver = driverService.getDriver(id);
         Vehicle vehicle = new Vehicle(vehicleIn);
         Vehicle vehicleUpdated = driverService.changeVehicle(driver, vehicle);
         return new ResponseEntity<>(new VehicleOut(vehicleUpdated), HttpStatus.OK);
     }
+
     @PostMapping(
             value = "/{id}/documents",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')") // NE KORISTITI OVO, KORISTI uploadDocument
     public ResponseEntity<DocumentOut> createDocument(@PathVariable Integer id, @RequestBody DocumentIn documentIn){
-        Optional<Driver> driverOpt = driverService.getDriver(id);
-        if(driverOpt.isEmpty()){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        Driver driver = (Driver)driverOpt.get();
+        Driver driver = driverService.getDriver(id);
         Document document = new Document(documentIn.getName(), documentIn.getDocumentImage(), driver,DocumentType.DRIVING_LICENCE);
         documentService.insert(document);
 
@@ -130,9 +111,11 @@ public class DriverController {
     public ResponseEntity<DocumentOut> uploadDocument(@PathVariable Integer id,@PathVariable String documentType,@RequestParam("image") MultipartFile file)
             throws IOException {
         String path="src\\main\\resources\\img\\"+id+"_"+documentType+".jpg";
-        Document document= new Document(id+"_"+documentType+".jpg",path,driverService.getDriver(id).get(),DocumentType.valueOf(documentType));
+        Document document= new Document(id+"_"+documentType+".jpg",path,driverService.getDriver(id),DocumentType.valueOf(documentType));
         documentService.insert(document);
         Files.write(Paths.get(path),file.getBytes());
+        // TODO ne raditi ovo ovde,
+        //  napraviti metodu u nekom servisu koja ce da kreira fajl na odgovarajucoj lokaciji i baca izuzetak ako je fajl veci od 5mb ili nije slika
         return new ResponseEntity<>(new DocumentOut(document), HttpStatus.OK);
     }
 
@@ -142,11 +125,7 @@ public class DriverController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<List<DocumentOut>> getDocuments(@PathVariable Integer id){
-        Optional<Driver> driverOpt = driverService.getDriver(id);
-        if(driverOpt.isEmpty()){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        Driver driver = (Driver) driverOpt.get();
+        Driver driver = driverService.getDriver(id);
         List<DocumentOut> documents = new ArrayList<>();
         for(Document d : driver.getDocuments()){
             documents.add(new DocumentOut(d));
@@ -197,11 +176,7 @@ public class DriverController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<VehicleOut> updateVehicle(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
-        Optional<Driver> driverOpt = driverService.getDriver(id);
-        if(driverOpt.isEmpty()){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        Driver driver = driverOpt.get();
+        Driver driver = driverService.getDriver(id);
         Vehicle vehicle = new Vehicle(vehicleIn);
         Vehicle vehicleUpdated = driverService.changeVehicle(driver, vehicle);
 
@@ -218,14 +193,9 @@ public class DriverController {
                                                       @RequestParam(name = "size") int size,
                                                       @RequestParam(name = "from") String from,
                                                       @RequestParam(name = "to") String to){
-        Optional<Driver> driverOpt = driverService.getDriver(id);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime fromTime = LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
         LocalDateTime toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
-        if(driverOpt.isEmpty()){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
         Page<WorkTime> workTimes = driverService.getDriverWorkingTimesPage(id, PageRequest.of(page, size), fromTime, toTime);
         return new ResponseEntity<>(new AllWorkTimeOut(workTimes.stream()), HttpStatus.OK);
     }
@@ -236,11 +206,11 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@PathVariable Integer id, @RequestBody WorkTimeOut workTimeIn){
+    ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@PathVariable Integer id, @RequestBody WorkTimeIn workTimeIn){
         WorkTime wt = new WorkTime();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         wt.setStartTime(LocalDateTime.parse(workTimeIn.getStart(), formatter));
-        wt.setEndTime(LocalDateTime.parse(workTimeIn.getEnd(), formatter));
+
         WorkTime workTimeNew = driverService.insertWorkTime(id, wt);
         if(workTimeNew == null){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -255,11 +225,8 @@ public class DriverController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     ResponseEntity<WorkTimeOut> getWorkTimeById(@PathVariable(value = "working-hour-id") Integer id){
-        Optional<WorkTime> workTimeOpt = driverService.getWorkTime(id);
-        if(workTimeOpt.isEmpty()){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(WorkingTimeMapper.fromWorkTimeToDTO(workTimeOpt.get()), HttpStatus.OK);
+        WorkTime workTime = driverService.getWorkTime(id);
+        return new ResponseEntity<>(WorkingTimeMapper.fromWorkTimeToDTO(workTime), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -287,17 +254,11 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<WorkTimeOut> updateWorkTime(@PathVariable(value = "working-hour-id") Integer id, @RequestBody WorkTimeOut workTimeIn){
-        //WorkTime workTime = WorkingTimeMapper.fromDTOtoWorkTime(workTimeIn);
+    ResponseEntity<WorkTimeOut> updateWorkTime(@PathVariable(value = "working-hour-id") Integer id, @RequestBody EndWorkTimeIn workTimeIn){
+
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-        WorkTime workTime = new WorkTime();
-        workTime.setStartTime(LocalDateTime.parse(workTimeIn.getStart(), formatter));
-        workTime.setEndTime(LocalDateTime.parse(workTimeIn.getEnd(), formatter));
-        workTime.setId(id);
-        WorkTime workTimeUpdated = driverService.updateWorkTime(workTime);
-        if(workTimeUpdated == null){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+        LocalDateTime endTime = LocalDateTime.parse(workTimeIn.getEnd(), formatter);
+        WorkTime workTimeUpdated = driverService.endWorkTime(id, endTime);
         return new ResponseEntity<>(WorkingTimeMapper.fromWorkTimeToDTO(workTimeUpdated), HttpStatus.OK);
     }
 }

@@ -9,14 +9,12 @@ import org.yugo.backend.YuGo.model.WorkTime;
 @NoArgsConstructor
 public class WorkTimeIn {
     private String start;
-    private String end;
 
-    public WorkTimeIn(String start, String end) {
+    public WorkTimeIn(String start) {
         this.start = start;
-        this.end = end;
     }
 
     public WorkTimeIn(WorkTime workTime){
-        this(workTime.getStartTime().toString(), workTime.getEndTime().toString());
+        this(workTime.getStartTime().toString());
     }
 }
