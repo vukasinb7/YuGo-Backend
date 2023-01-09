@@ -23,7 +23,8 @@ public class Driver extends User{
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
-
+    @Column(name = "is_online")
+    private boolean isOnline;
     public Driver(UserDetailedIn userDetailedIn) {
         super(userDetailedIn);
     }

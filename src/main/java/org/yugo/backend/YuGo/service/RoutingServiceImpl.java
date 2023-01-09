@@ -27,7 +27,6 @@ public class RoutingServiceImpl implements RoutingService {
     public RouteProperties getRouteProperties(double fromLat, double fromLng, double toLat, double toLng) {
         String url = String.format(osrmUrl, Double.toString(fromLng), Double.toString(fromLat), Double.toString(toLng), Double.toString(toLat));
         String responseBody = sendRequest(url);
-        System.out.println(responseBody);
         JSONObject jsonResponse = new JSONObject(responseBody);
         JSONArray routes = jsonResponse.getJSONArray("routes");
         JSONObject route = routes.getJSONObject(0);

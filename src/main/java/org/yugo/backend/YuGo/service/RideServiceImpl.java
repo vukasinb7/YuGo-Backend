@@ -129,7 +129,7 @@ public class RideServiceImpl implements RideService {
         if(availableDrivers.isEmpty()){
             throw new BadRequestException("There are no available drivers at the moment");
         }
-        availableDrivers.removeIf(driver -> !driver.isActive());
+        availableDrivers.removeIf(driver -> !driver.isOnline());
         if(availableDrivers.isEmpty()){
             throw new BadRequestException("There are no available drivers at the moment");
         }

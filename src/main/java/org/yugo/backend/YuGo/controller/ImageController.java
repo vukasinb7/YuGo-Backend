@@ -36,7 +36,6 @@ public class ImageController {
         if(name == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        System.out.println(name);
         if(name.contains("/") || name.contains("..")){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
