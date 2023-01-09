@@ -80,9 +80,7 @@ public class UserController {
             SecurityContextHolder.clearContext();
             return new ResponseEntity<>("You successfully logged out!", HttpStatus.OK);
         }
-        else {
-            throw new BadRequestException("User is not authenticated!");
-        }
+        throw new BadRequestException("User is not authenticated!");
     }
 
     @PutMapping(
@@ -99,8 +97,17 @@ public class UserController {
             value = "/{id}/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity sendResetPasswordCode(@PathVariable Integer id) {
+    public ResponseEntity<String> sendResetPasswordCode(@PathVariable Integer id) {
         userService.sendPasswordResetCode(id);
+        return new ResponseEntity<>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping(
+            value = "/{email}/resetPassword",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    public ResponseEntity<String> sendResetPasswordCodeEfficient(@PathVariable String email) {
+        userService.sendPasswordResetCodeEfficient(email);
         return new ResponseEntity<>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
     }
 
@@ -108,12 +115,19 @@ public class UserController {
             value = "/{id}/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity resetPasswordWithCode(@PathVariable Integer id, @RequestBody PasswordResetIn passwordResetIn) {
+    public ResponseEntity<String> resetPasswordWithCode(@PathVariable Integer id, @RequestBody PasswordResetIn passwordResetIn) {
         userService.resetPassword(id, passwordResetIn.getNewPassword(), passwordResetIn.getCode());
         return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
     }
 
-
+    @PutMapping(
+            value = "/resetPassword",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    public ResponseEntity<String> resetPasswordWithCodeEfficient(@RequestBody PasswordResetIn passwordResetIn) {
+        userService.resetPasswordEfficient(passwordResetIn.getCode(), passwordResetIn.getNewPassword());
+        return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
+    }
 
     @GetMapping(
             value = "/{id}/ride",

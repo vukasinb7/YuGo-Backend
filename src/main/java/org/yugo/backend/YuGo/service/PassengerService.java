@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.yugo.backend.YuGo.model.Passenger;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PassengerService {
     Passenger insert(Passenger passenger);

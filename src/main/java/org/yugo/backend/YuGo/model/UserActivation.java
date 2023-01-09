@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.random.RandomGenerator;
 
 
 @Entity
@@ -21,13 +22,17 @@ public class UserActivation {
     private LocalDateTime dateCreated;
     @Column(name = "life_span", nullable = false)
     private Duration lifeSpan;
+    @Column(name = "valid", nullable = false)
+    private boolean valid;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "code", nullable = false)
+    private Integer code;
 
     public UserActivation(User user, Duration lifeSpan) {
         this.user = user;
         this.dateCreated = LocalDateTime.now();
         this.lifeSpan = lifeSpan;
+        this.valid = true;
+        this.code = Math.abs(user.hashCode() + dateCreated.hashCode() + RandomGenerator.getDefault().nextInt(100));
     }
 }

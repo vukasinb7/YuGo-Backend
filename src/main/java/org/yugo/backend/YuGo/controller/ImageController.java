@@ -1,20 +1,32 @@
 package org.yugo.backend.YuGo.controller;
 
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.yugo.backend.YuGo.model.User;
+import org.yugo.backend.YuGo.service.DocumentService;
+import org.yugo.backend.YuGo.service.UserService;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping(value = "/api/image")
 public class ImageController {
+    private final DocumentService documentService;
+    private final UserService userService;
+    @Autowired
+    public ImageController(DocumentService documentService, UserService userService){
+        this.documentService=documentService;
+        this.userService = userService;
+    }
 
     @GetMapping(
             value = "/{name}"
@@ -43,4 +55,16 @@ public class ImageController {
         return null;
     }
 
+    @PostMapping(value = "/{id}/profilePicture",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
+    public ResponseEntity uploadProfilePicture(@PathVariable Integer id, @RequestParam("image") MultipartFile file)
+            throws IOException {
+        String pictureName = id+"_PROFILE_PICTURE"+".jpg";
+        String path="src\\main\\resources\\img\\" + pictureName;
+        Files.write(Paths.get(path),file.getBytes());
+        HashMap<String, String> response = new HashMap<>();
+        response.put("pictureName", pictureName);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.dto.VehicleIn;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.repository.RideRepository;
@@ -23,7 +24,6 @@ public class DriverServiceImpl implements DriverService {
     private final UserRepository userRepository;
     private final WorkTimeRepository workTimeRepository;
     private final VehicleRepository vehicleRepository;
-
     private final RideRepository rideRepository;
     private final RoleService roleService;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -78,12 +78,10 @@ public class DriverServiceImpl implements DriverService {
             ArrayList<Role> roles = new ArrayList<>();
             roles.add(roleService.findRoleByName("ROLE_DRIVER"));
             driver.setRoles(roles);
-            Vehicle vehicle = new Vehicle();
-            driver.setVehicle(vehicle);
             driver.setPassword(passwordEncoder.encode(driver.getPassword()));
             return userRepository.save(driver);
         }catch (DataIntegrityViolationException e){
-            throw new BadRequestException("Email is already being used by another user");
+            throw new BadRequestException("Email is already being used by another user!");
         }
     }
 
@@ -131,6 +129,19 @@ public class DriverServiceImpl implements DriverService {
         driver.setTelephoneNumber(driverUpdate.getTelephoneNumber());
         driver.setEmail(driverUpdate.getEmail());
         driver.setAddress(driverUpdate.getAddress());
+        return userRepository.save(driver);
+    }
+
+    @Override
+    public Driver updateDriverVehicle(Integer driverId, Vehicle vehicle){
+        Optional<User> driverOpt = userRepository.findById(driverId);
+        if(driverOpt.isEmpty()){
+            return null;
+        }
+        Driver driver = (Driver) driverOpt.get();
+        driver.setVehicle(vehicle);
+        vehicle.setDriver(driver);
+        vehicleRepository.save(vehicle);
         return userRepository.save(driver);
     }
 

@@ -8,9 +8,9 @@ import lombok.Setter;
 @Getter @Setter
 public class PasswordResetIn {
     String newPassword;
-    String code;
+    Integer code;
 
-    public PasswordResetIn(String newPassword, String code){
+    public PasswordResetIn(String newPassword, Integer code){
         this.newPassword = newPassword;
         this.code = code;
     }

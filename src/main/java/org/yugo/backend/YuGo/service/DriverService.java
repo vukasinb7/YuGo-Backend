@@ -12,7 +12,7 @@ public interface DriverService {
     List<Driver> getDriversInRange(double latitude, double longitude, double rangeInMeters);
     Driver insertDriver(Driver driver);
     Driver updateDriver(Driver driverUpdate);
-
+    Driver updateDriverVehicle(Integer driverId, Vehicle vehicle);
     List<User> getAllDrivers();
     Page<User> getDriversPage(Pageable page);
 

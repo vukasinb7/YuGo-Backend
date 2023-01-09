@@ -16,12 +16,11 @@ import org.yugo.backend.YuGo.dto.UserDetailedInOut;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.Ride;
-import org.yugo.backend.YuGo.model.UserActivation;
 import org.yugo.backend.YuGo.service.PassengerService;
 import org.yugo.backend.YuGo.service.RideService;
+import org.yugo.backend.YuGo.service.UserActivationService;
 import org.yugo.backend.YuGo.service.UserService;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,23 +33,24 @@ public class PassengerController {
     private final PassengerService passengerService;
     private final UserService userService;
     private final RideService rideService;
+    private final UserActivationService userActivationService;
 
     @Autowired
-    public PassengerController(PassengerService passengerService, UserService userService, RideService rideService){
+    public PassengerController(PassengerService passengerService, UserService userService, RideService rideService,
+                               UserActivationService userActivationService){
         this.passengerService = passengerService;
         this.userService = userService;
         this.rideService = rideService;
+        this.userActivationService = userActivationService;
     }
 
     @PostMapping(
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserDetailedInOut> addPassenger(@RequestBody UserDetailedIn user){
+    public ResponseEntity<UserDetailedInOut> createPassenger(@RequestBody UserDetailedIn user){
         Passenger passenger = new Passenger(user);
         passengerService.insert(passenger);
-        UserActivation activation = new UserActivation(passenger, Duration.ofDays(7));
-        userService.insertUserActivation(activation);
         return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passenger), HttpStatus.OK);
     }
 
@@ -69,7 +69,7 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity activatePassenger(@PathVariable Integer activationId){
-        userService.activateUser(activationId);
+        userActivationService.activateUser(activationId);
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Successful account activation!");
         return new ResponseEntity<>(response, HttpStatus.OK);
