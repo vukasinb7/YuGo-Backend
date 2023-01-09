@@ -12,8 +12,11 @@ import lombok.Setter;
 public class Document {
     @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "image", nullable = false)
-    private String image;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "document_type", nullable = false)
+    private DocumentType type;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "driver_id")
     private Driver driver;
@@ -21,9 +24,13 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    public Document(String name, String image, Driver driver) {
+    @Column(name = "image")
+    private String image;
+
+    public Document(String name, String image, Driver driver,DocumentType documentType) {
         this.name = name;
         this.image = image;
         this.driver = driver;
+        this.type=documentType;
     }
 }

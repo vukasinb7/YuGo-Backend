@@ -1,20 +1,25 @@
 package org.yugo.backend.YuGo.controller;
 
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.MediaType;
+import org.yugo.backend.YuGo.service.DocumentService;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 
 @RestController
 @RequestMapping(value = "/api/image")
 public class ImageController {
+    private  DocumentService documentService;
+    @Autowired
+    public ImageController(DocumentService documentService){
+        this.documentService=documentService;
+    }
 
     @GetMapping(
             value = "/{name}"
@@ -42,5 +47,6 @@ public class ImageController {
         }
         return null;
     }
+
 
 }

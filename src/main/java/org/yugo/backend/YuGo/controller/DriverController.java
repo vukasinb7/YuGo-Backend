@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.mapper.WorkingTimeMapper;
@@ -17,8 +17,11 @@ import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.DocumentService;
 import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.RideService;
-import org.yugo.backend.YuGo.service.RoleService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -115,9 +118,21 @@ public class DriverController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         Driver driver = (Driver)driverOpt.get();
-        Document document = new Document(documentIn.getName(), documentIn.getDocumentImage(), driver);
+        Document document = new Document(documentIn.getName(), documentIn.getDocumentImage(), driver,DocumentType.DRIVING_LICENCE);
         documentService.insert(document);
 
+        return new ResponseEntity<>(new DocumentOut(document), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/{id}/document/{documentType}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    public ResponseEntity<DocumentOut> uploadDocument(@PathVariable Integer id,@PathVariable String documentType,@RequestParam("image") MultipartFile file)
+            throws IOException {
+        String path="src\\main\\resources\\img\\"+id+"_"+documentType+".jpg";
+        Document document= new Document(id+"_"+documentType+".jpg",path,driverService.getDriver(id).get(),DocumentType.valueOf(documentType));
+        documentService.insert(document);
+        Files.write(Paths.get("src\\main\\resources\\img\\", id+"_"+documentType+".jpg"),file.getBytes());
         return new ResponseEntity<>(new DocumentOut(document), HttpStatus.OK);
     }
 
