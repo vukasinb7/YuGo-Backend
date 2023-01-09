@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface RideRepository extends JpaRepository<Ride,Integer> {
+
+    @Query(value = "SELECT * FROM RIDES WHERE driver_id = :driver_id AND start_time = (SELECT MIN(start_time) FROM RIDES WHERE start_time > CURRENT_TIMESTAMP())",
+            nativeQuery = true)
+    Optional<Ride> getNextRide(@Param("driver_id") Integer driverID);
     @Query(value = "SELECT * FROM RIDES r WHERE r.driver_id = :driver_id and r.status='ACTIVE'",
             nativeQuery = true)
     Optional<Ride> findActiveRideByDriver(@Param("driver_id") Integer driverID);

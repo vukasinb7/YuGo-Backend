@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 import org.yugo.backend.YuGo.dto.UserDetailedIn;
 
 import java.util.Set;
@@ -18,7 +20,7 @@ public class Driver extends User{
     private Set<Document> documents;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH,mappedBy = "driver")
     private Set<Ride> rides;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 

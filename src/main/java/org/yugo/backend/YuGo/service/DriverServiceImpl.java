@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.model.*;
+import org.yugo.backend.YuGo.repository.RideRepository;
 import org.yugo.backend.YuGo.repository.UserRepository;
 import org.yugo.backend.YuGo.repository.VehicleRepository;
 import org.yugo.backend.YuGo.repository.WorkTimeRepository;
@@ -23,15 +24,17 @@ public class DriverServiceImpl implements DriverService {
     private final WorkTimeRepository workTimeRepository;
     private final VehicleRepository vehicleRepository;
 
+    private final RideRepository rideRepository;
     private final RoleService roleService;
     private final BCryptPasswordEncoder passwordEncoder;
     @Autowired
     public DriverServiceImpl(UserRepository userRepository, WorkTimeRepository workTimeRepository,
-                             VehicleRepository vehicleRepository, RoleService roleService,
+                             VehicleRepository vehicleRepository, RideRepository rideRepository, RoleService roleService,
                              BCryptPasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.workTimeRepository = workTimeRepository;
         this.vehicleRepository = vehicleRepository;
+        this.rideRepository = rideRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -48,6 +51,7 @@ public class DriverServiceImpl implements DriverService {
         }
         return output;
     }
+
 
     private boolean isInRange(Driver driver, double latitude, double longitude, double rangeInMeters){
         final double R = 6371000;     // mean radius of earth in meters
