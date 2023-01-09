@@ -50,7 +50,7 @@ public class PassengerController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserDetailedInOut> addPassenger(@RequestBody UserDetailedIn user){
+    public ResponseEntity<UserDetailedInOut> createPassenger(@RequestBody UserDetailedIn user){
         Passenger passenger = new Passenger(user);
         passengerService.insert(passenger);
         return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passenger), HttpStatus.OK);

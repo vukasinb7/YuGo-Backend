@@ -74,12 +74,10 @@ public class DriverServiceImpl implements DriverService {
             ArrayList<Role> roles = new ArrayList<>();
             roles.add(roleService.findRoleByName("ROLE_DRIVER"));
             driver.setRoles(roles);
-            Vehicle vehicle = new Vehicle();
-            driver.setVehicle(vehicle);
             driver.setPassword(passwordEncoder.encode(driver.getPassword()));
             return userRepository.save(driver);
         }catch (DataIntegrityViolationException e){
-            throw new BadRequestException("Email is already being used by another user");
+            throw new BadRequestException("Email is already being used by another user!");
         }
     }
 

@@ -80,9 +80,7 @@ public class UserController {
             SecurityContextHolder.clearContext();
             return new ResponseEntity<>("You successfully logged out!", HttpStatus.OK);
         }
-        else {
-            throw new BadRequestException("User is not authenticated!");
-        }
+        throw new BadRequestException("User is not authenticated!");
     }
 
     @PutMapping(

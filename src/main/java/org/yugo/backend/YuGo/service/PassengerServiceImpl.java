@@ -43,7 +43,7 @@ public class PassengerServiceImpl implements PassengerService {
             mailService.sendActivationMail(passenger);
             return passenger;
         }catch (DataIntegrityViolationException e){
-            throw new BadRequestException("Email is already being used by another user");
+            throw new BadRequestException("Email is already being used by another user!");
         }
     }
 
