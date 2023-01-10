@@ -96,11 +96,10 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')") // NE KORISTITI OVO, KORISTI uploadDocument
-    public ResponseEntity<DocumentOut> createDocument(@PathVariable Integer id, @RequestBody DocumentIn documentIn){
+    public ResponseEntity<DocumentOut> createDocument(@PathVariable Integer id, @RequestBody DocumentIn documentIn) throws IOException {
         Driver driver = driverService.getDriver(id);
         Document document = new Document(documentIn.getName(), documentIn.getDocumentImage(), driver,DocumentType.DRIVING_LICENCE);
         documentService.insert(document);
-
         return new ResponseEntity<>(new DocumentOut(document), HttpStatus.OK);
     }
 
@@ -111,10 +110,7 @@ public class DriverController {
             throws IOException {
         String path="src\\main\\resources\\img\\"+id+"_"+documentType+".jpg";
         Document document= new Document(id+"_"+documentType+".jpg",path,driverService.getDriver(id),DocumentType.valueOf(documentType));
-        documentService.insert(document);
-        Files.write(Paths.get(path),file.getBytes());
-        // TODO ne raditi ovo ovde,
-        //  napraviti metodu u nekom servisu koja ce da kreira fajl na odgovarajucoj lokaciji i baca izuzetak ako je fajl veci od 5mb ili nije slika
+        documentService.upload(document,file);
         return new ResponseEntity<>(new DocumentOut(document), HttpStatus.OK);
     }
 

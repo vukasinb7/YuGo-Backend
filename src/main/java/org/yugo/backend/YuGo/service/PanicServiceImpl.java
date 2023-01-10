@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.exceptions.NotFoundException;
 import org.yugo.backend.YuGo.model.Panic;
 import org.yugo.backend.YuGo.repository.PanicRepository;
 
@@ -27,7 +28,11 @@ public class PanicServiceImpl implements PanicService {
     }
 
     @Override
-    public Optional<Panic> get(Integer id) {
-        return panicRepository.findById(id);
+    public Panic get(Integer id) {
+        Optional<Panic> panicOptional = panicRepository.findById(id);
+        if (panicOptional.isPresent()){
+            return panicOptional.get();
+        }
+        throw new NotFoundException("Panic not found!");
     }
 }

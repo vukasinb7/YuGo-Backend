@@ -34,8 +34,12 @@ public class UserActivationServiceImpl implements UserActivationService {
     }
 
     @Override
-    public Optional<UserActivation> getUserActivation(Integer id) {
-        return userActivationRepository.findById(id);
+    public UserActivation getUserActivation(Integer id) {
+        Optional<UserActivation> userActivationOptional = userActivationRepository.findById(id);
+        if (userActivationOptional.isPresent()){
+            return userActivationOptional.get();
+        }
+        throw new NotFoundException("User activation not found!");
     }
 
     @Override

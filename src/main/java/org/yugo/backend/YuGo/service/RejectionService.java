@@ -10,5 +10,5 @@ public interface RejectionService {
 
     List<Rejection> getAll();
 
-    Optional<Rejection> get(Integer id);
+    Rejection get(Integer id);
 }

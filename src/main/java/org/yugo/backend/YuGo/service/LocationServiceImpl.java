@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.exceptions.NotFoundException;
 import org.yugo.backend.YuGo.model.Location;
 import org.yugo.backend.YuGo.repository.LocationRepository;
 
@@ -28,7 +29,11 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Optional<Location> get(Integer id) {
-        return locationRepository.findById(id);
+    public Location get(Integer id) {
+        Optional<Location> locationOptional = locationRepository.findById(id);
+        if (locationOptional.isPresent()){
+            return locationOptional.get();
+        }
+        throw new NotFoundException("Location not found!");
     }
 }

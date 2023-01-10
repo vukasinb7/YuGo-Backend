@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.exceptions.NotFoundException;
 import org.yugo.backend.YuGo.model.Path;
 import org.yugo.backend.YuGo.repository.PathRepository;
 
@@ -27,7 +28,11 @@ public class PathServiceImpl implements PathService {
     }
 
     @Override
-    public Optional<Path> get(Integer id) {
-        return pathRepository.findById(id);
+    public Path get(Integer id) {
+        Optional<Path> pathOptional = pathRepository.findById(id);
+        if (pathOptional.isPresent()){
+            return pathOptional.get();
+        }
+        throw new NotFoundException("Path not found!");
     }
 }

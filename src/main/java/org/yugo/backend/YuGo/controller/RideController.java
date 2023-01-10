@@ -164,7 +164,7 @@ public class RideController {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
-        if (favoritePathService.getByPassengerId(user.getId()).get().size()>10)
+        if (favoritePathService.getByPassengerId(user.getId()).size()>10)
             throw new BadRequestException("Number of favorite rides cannot exceed 10!");
         FavoritePath favoritePath= new FavoritePath(favoritePathIn.getFavoriteName(),favoritePathIn.getLocations().stream().map(PathMapper::fromDTOtoPath).collect(Collectors.toList()), passengers,vehicleService.getVehicleTypeByName(favoritePathIn.getVehicleType()),favoritePathIn.getBabyTransport(),favoritePathIn.getPetTransport());
         favoritePath.setOwner(passengerService.get(user.getId()));
@@ -181,7 +181,7 @@ public class RideController {
     public ResponseEntity<List<FavoritePathOut>> getFavoritePathByPassengerId(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
-        return new ResponseEntity<>(favoritePathService.getByPassengerId(user.getId()).get().stream()
+        return new ResponseEntity<>(favoritePathService.getByPassengerId(user.getId()).stream()
                 .map(FavoritePathMapper::fromFavoritePathtoDTO)
                 .toList(), HttpStatus.OK);
     }

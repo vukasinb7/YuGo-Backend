@@ -10,7 +10,7 @@ public interface UserActivationService {
 
     List<UserActivation> getAllUserActivations();
 
-    Optional<UserActivation> getUserActivation(Integer id);
+    UserActivation getUserActivation(Integer id);
 
     void activateUser(Integer activationId);
 }

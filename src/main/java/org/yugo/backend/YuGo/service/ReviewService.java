@@ -8,13 +8,9 @@ import java.util.List;
 
 public interface ReviewService {
     RideReview insertRideReview(RideReview rideReview);
-
     RideReview getRideReview(Integer id);
-
     List<RideReview> getAllRideReviews();
-
     List<RideReview> getRideReviewsByDriver(Integer id);
-
     List<RideReview> getRideReviewsByVehicle(Integer id);
     List<RideReview> getDriverReviewsByRide(Integer id);
     List<RideReview> getVehicleReviewsByRide(Integer id);

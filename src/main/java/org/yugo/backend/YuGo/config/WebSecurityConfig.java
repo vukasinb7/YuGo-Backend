@@ -72,6 +72,7 @@ public class WebSecurityConfig {
         http.headers().frameOptions().disable();
         http.authorizeHttpRequests().
                 requestMatchers(HttpMethod.POST, "/api/user/login").permitAll().
+                requestMatchers(HttpMethod.POST, "/api/user/refreshToken").permitAll().
                 requestMatchers(HttpMethod.GET,"api/user/logout").permitAll().
                 requestMatchers(HttpMethod.GET, "/api/user/{email}/email").permitAll().
                 requestMatchers(HttpMethod.POST, "/api/passenger").permitAll().
