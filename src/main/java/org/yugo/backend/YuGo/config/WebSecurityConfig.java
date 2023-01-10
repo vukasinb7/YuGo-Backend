@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.yugo.backend.YuGo.security.RestAccessDeniedHandler;
 import org.yugo.backend.YuGo.security.RestAuthenticationEntryPoint;
 import org.yugo.backend.YuGo.security.TokenAuthenticationFilter;
 import org.yugo.backend.YuGo.service.SecurityUserDetailsService;
@@ -28,12 +30,15 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
         jsr250Enabled = true
 )
 public class WebSecurityConfig {
+    private final RestAccessDeniedHandler restAccessDeniedHandler;
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
     private final TokenUtils tokenUtils;
 
-    public WebSecurityConfig(TokenUtils tokenUtils, RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
+    public WebSecurityConfig(TokenUtils tokenUtils, RestAuthenticationEntryPoint restAuthenticationEntryPoint,
+                             RestAccessDeniedHandler restAccessDeniedHandler) {
         this.tokenUtils = tokenUtils;
         this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+        this.restAccessDeniedHandler = restAccessDeniedHandler;
     }
 
     @Bean
@@ -62,19 +67,28 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.exceptionHandling().authenticationEntryPoint(this.restAuthenticationEntryPoint);
         http.csrf().disable();
         http.cors();
         http.headers().frameOptions().disable();
-        http.authorizeHttpRequests().requestMatchers("/api/user/login","api/user/logout",
-                        "/api/user/{email}/email","/api/passenger","/api/passenger/activate/{id}",
-                        "/api/user/{id}/resetPassword", "/api/user/{email}/resetPassword",
-                        "/api/user/resetPassword", "/api/image/**",
-                        "/api/vehicleType").permitAll().
-                requestMatchers(toH2Console()).permitAll().anyRequest().authenticated()
-                .and().addFilterBefore(new TokenAuthenticationFilter(this.tokenUtils, this.userDetailsService()),
-                        BasicAuthenticationFilter.class);
-        http.authenticationProvider(this.authenticationProvider());
+        http.authorizeHttpRequests().
+                requestMatchers(HttpMethod.POST, "/api/user/login").permitAll().
+                requestMatchers(HttpMethod.GET,"api/user/logout").permitAll().
+                requestMatchers(HttpMethod.GET, "/api/user/{email}/email").permitAll().
+                requestMatchers(HttpMethod.POST, "/api/passenger").permitAll().
+                requestMatchers(HttpMethod.GET, "/api/passenger/activate/{activationId}").permitAll().
+                requestMatchers(HttpMethod.GET,"/api/user/{id}/resetPassword").permitAll().
+                requestMatchers(HttpMethod.PUT,"/api/user/{id}/resetPassword").permitAll().
+                requestMatchers(HttpMethod.POST,"/api/user/{email}/resetPassword").permitAll().
+                requestMatchers(HttpMethod.PUT,"/api/user/resetPassword").permitAll().
+                requestMatchers("/api/image/**").permitAll().
+                requestMatchers("/api/vehicleType").permitAll().
+                requestMatchers(toH2Console()).permitAll().
+                anyRequest().authenticated().and()
+                .exceptionHandling().accessDeniedHandler(this.restAccessDeniedHandler).and()
+                .exceptionHandling().authenticationEntryPoint(this.restAuthenticationEntryPoint).and()
+                .addFilterBefore(new TokenAuthenticationFilter(this.tokenUtils, this.userDetailsService()),
+                        BasicAuthenticationFilter.class)
+                .authenticationProvider(this.authenticationProvider());
         return http.build();
     }
 

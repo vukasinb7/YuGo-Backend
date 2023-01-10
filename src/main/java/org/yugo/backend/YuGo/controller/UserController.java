@@ -36,20 +36,18 @@ public class UserController {
     private final MessageService messageService;
     private final RideService rideService;
     private final NoteService noteService;
-    private final PasswordResetCodeService passwordResetCodeService;
     private final TokenUtils tokenUtils;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
     public UserController(UserService userService, MessageService messageService,
-                          RideService rideService, PasswordResetCodeService passwordResetCodeService, NoteService noteService, TokenUtils tokenUtils, AuthenticationManager authenticationManager){
+                          RideService rideService, NoteService noteService, TokenUtils tokenUtils, AuthenticationManager authenticationManager){
         this.userService = userService;
         this.messageService = messageService;
         this.rideService = rideService;
         this.noteService = noteService;
         this.tokenUtils = tokenUtils;
         this.authenticationManager = authenticationManager;
-        this.passwordResetCodeService=passwordResetCodeService;
     }
 
     @PostMapping(
@@ -154,6 +152,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size){
         Page<User> users = userService.getUsersPage(PageRequest.of(page, size));
+        Authentication a = SecurityContextHolder.getContext().getAuthentication();
         return new ResponseEntity<>(new AllUsersOut(users), HttpStatus.OK);
     }
 

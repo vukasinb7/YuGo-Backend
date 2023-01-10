@@ -89,7 +89,8 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody UserDetailedIn updatedUserDTO, @PathVariable Integer id){
+    public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody UserDetailedIn updatedUserDTO,
+                                                             @PathVariable Integer id){
         Passenger passengerUpdate = new Passenger(updatedUserDTO);
         passengerUpdate.setId(id);
         Passenger updatedPassenger = passengerService.update(passengerUpdate);
