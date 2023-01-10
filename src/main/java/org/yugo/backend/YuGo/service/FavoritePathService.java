@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface FavoritePathService {
 
-    public FavoritePath insert(FavoritePath favoritePath);
-    public List<FavoritePath> getAll();
-    public Optional<FavoritePath> get(Integer id);
-    public Optional<List<FavoritePath>> getByPassengerId(Integer id);
+    FavoritePath insert(FavoritePath favoritePath);
+    List<FavoritePath> getAll();
+    FavoritePath get(Integer id);
+    List<FavoritePath> getByPassengerId(Integer id);
     void delete(Integer id);
 }

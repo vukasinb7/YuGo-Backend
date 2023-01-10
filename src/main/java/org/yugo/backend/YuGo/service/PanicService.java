@@ -10,6 +10,6 @@ public interface PanicService {
 
     List<Panic> getAll();
 
-    Optional<Panic> get(Integer id);
+    Panic get(Integer id);
 
 }

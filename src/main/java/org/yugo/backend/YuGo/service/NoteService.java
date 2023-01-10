@@ -12,7 +12,7 @@ public interface NoteService {
 
     List<Note> getAll();
 
-    Optional<Note> get(Integer id);
+    Note get(Integer id);
 
     Page<Note> getUserNotes(Integer userId, Pageable page);
 }

@@ -10,5 +10,5 @@ public interface LocationService {
 
     List<Location> getAll();
 
-    Optional<Location> get(Integer id);
+    Location get(Integer id);
 }

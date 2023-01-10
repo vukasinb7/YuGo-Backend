@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.exceptions.NotFoundException;
 import org.yugo.backend.YuGo.model.Message;
 import org.yugo.backend.YuGo.repository.MessageRepository;
 
@@ -30,8 +31,12 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Optional<Message> get(Integer id) {
-        return messageRepository.findById(id);
+    public Message get(Integer id) {
+        Optional<Message> messageOptional = messageRepository.findById(id);
+        if (messageOptional.isPresent()){
+            return messageOptional.get();
+        }
+        throw new NotFoundException("Message not found!");
     }
 
     @Override

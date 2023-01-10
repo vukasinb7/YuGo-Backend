@@ -6,9 +6,10 @@ import org.springframework.data.repository.query.Param;
 import org.yugo.backend.YuGo.model.FavoritePath;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FavoritePathRepository extends JpaRepository<FavoritePath,Integer> {
 
     @Query(value = "select * from favorite_paths where owner=:passengerId",nativeQuery = true)
-    List<FavoritePath> findByPassengerId(@Param("passengerId") Integer passengerId);
+    Optional<List<FavoritePath>> findByPassengerId(@Param("passengerId") Integer passengerId);
 }
