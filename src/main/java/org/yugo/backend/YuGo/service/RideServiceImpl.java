@@ -4,10 +4,10 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.util.EnumUtils;
 import org.yugo.backend.YuGo.dto.RideIn;
 import org.yugo.backend.YuGo.dto.RouteProperties;
 import org.yugo.backend.YuGo.dto.UserSimplifiedOut;
@@ -35,15 +35,17 @@ public class RideServiceImpl implements RideService {
     private final PassengerService passengerService;
     private final VehicleService vehicleService;
 
+    private final WebSocketService webSocketService;
     private final WorkTimeRepository workTimeRepository;
     @Autowired
-    public RideServiceImpl(RideRepository rideRepository, RoutingService routingService, DriverService driverService, UserService userService, PassengerService passengerService, VehicleService vehicleService, WorkTimeRepository workTimeRepository){
+    public RideServiceImpl(RideRepository rideRepository, RoutingService routingService, DriverService driverService, UserService userService, PassengerService passengerService, VehicleService vehicleService, WebSocketService webSocketService, WorkTimeRepository workTimeRepository){
         this.rideRepository = rideRepository;
         this.routingService = routingService;
         this.driverService = driverService;
         this.userService = userService;
         this.passengerService=passengerService;
         this.vehicleService = vehicleService;
+        this.webSocketService = webSocketService;
         this.workTimeRepository = workTimeRepository;
     }
 
@@ -67,7 +69,6 @@ public class RideServiceImpl implements RideService {
         User user = (User) auth.getPrincipal();
         if (rideRepository.findPendingRidesByUser(user.getId())!=null)
             throw new BadRequestException("Cannot create a ride while you have one already pending!");
-
 
         Ride ride;
 
@@ -93,41 +94,50 @@ public class RideServiceImpl implements RideService {
         rideDeparture.setLongitude(rideIn.getLocations().get(0).getDeparture().getLongitude());
         rideDeparture.setAddress(routingService.reverseAddressSearch(rideDeparture.getLatitude(), rideDeparture.getLongitude()));
 
-        VehicleType vehicleType = EnumUtils.findEnumInsensitiveCase(VehicleType.class, rideIn.getVehicleType());
-        List<Driver> availableDrivers = filterDrivers(rideDeparture, vehicleType, rideIn.isBabyTransport(), rideIn.isPetTransport(), rideIn.getPassengers().size());
-
         if(now.until(rideDateTime, ChronoUnit.MINUTES) > 30){
             ride = assembleRide(
                 routeProperties,
-                    rideIn.isBabyTransport(),
+                rideIn.isBabyTransport(),
                 rideIn.isPetTransport(),
                 rideDestination,
                 rideDeparture,
-                null,
-                vehicleTypePrice,
-                rideDateTime,
-                passengers);
+                    vehicleTypePrice,
+                    passengers,
+                RideStatus.SCHEDULED);
+        }else{
+            ride = assembleRide(
+                    routeProperties,
+                    rideIn.isBabyTransport(),
+                    rideIn.isPetTransport(),
+                    rideDestination,
+                    rideDeparture,
+                    vehicleTypePrice,
+                    passengers,
+                    RideStatus.PENDING);
         }
-
-        DriverAvailability driverAvailability = findDriver(availableDrivers, rideDateTime, routeProperties.getDuration() / 60.0, rideDeparture, rideDestination);
-        if(driverAvailability == null){
-            throw new NotFoundException("There are no available drivers at the moment");
-        }
-
-        ride = assembleRide(
-          routeProperties,
-                rideIn.isBabyTransport(),
-          rideIn.isPetTransport(),
-          rideDestination,
-          rideDeparture,
-          driverAvailability,
-          vehicleTypePrice,
-          rideDateTime,
-          passengers);
 
         return rideRepository.save(ride);
     }
 
+    @Async
+    public void searchForDriver(Ride ride, LocalDateTime rideStartTime){
+        Location rideDeparture = ride.getLocations().get(0).getDeparture();
+        Location rideDestination = ride.getLocations().get(0).getDestination();
+        List<Driver> availableDrivers = filterDrivers(rideDeparture, ride.getVehicleTypePrice().getVehicleType(), ride.getBabyTransport(), ride.getPetTransport(), ride.getPassengers().size());
+        DriverAvailability driverAvailability = findDriver(availableDrivers, rideStartTime, ride.getEstimatedTimeInMinutes(), rideDeparture, rideDestination);
+        if(driverAvailability != null){
+            if(driverAvailability.earliestAvailableTime.isBefore(rideStartTime)){
+                ride.setStartTime(rideStartTime);
+            }else{
+                ride.setStartTime(driverAvailability.earliestAvailableTime);
+            }
+            ride.setDriver(driverAvailability.driver);
+        }else{
+            //TODO obavesti korisnika da nije moguce zakazati voznju
+            return;
+        }
+        webSocketService.sendRideRequestToDriver(driverAvailability.driver.getId(), ride.getId());
+    }
     private List<Driver> filterDrivers(Location rideDeparture, VehicleType vehicleType, boolean isBabyTransport, boolean isPetTransport, int passengerCount){
         List<Driver> availableDrivers = driverService.getDriversInRange(rideDeparture.getLatitude(), rideDeparture.getLongitude(), 10000);
         if(availableDrivers.isEmpty()){
@@ -153,9 +163,9 @@ public class RideServiceImpl implements RideService {
     private <T> T unproxy(T object){
         return (T) Hibernate.unproxy(object);
     }
-    private Ride assembleRide(RouteProperties routeProperties, boolean isBabyTransport, boolean isPetTransport, Location rideDestination, Location rideDeparture, DriverAvailability driverAvailability, VehicleTypePrice vehicleTypePrice, LocalDateTime rideStartTime, Set<Passenger> passengers){
+    private Ride assembleRide(RouteProperties routeProperties, boolean isBabyTransport, boolean isPetTransport, Location rideDestination, Location rideDeparture, VehicleTypePrice vehicleTypePrice, Set<Passenger> passengers, RideStatus rideStatus){
         Ride ride = new Ride();
-        ride.setStatus(RideStatus.PENDING);
+        ride.setStatus(rideStatus);
         ride.setIsPanicPressed(false);
         ride.setEstimatedTimeInMinutes((int) (routeProperties.getDuration() / 60.0));
         ride.setBabyTransport(isBabyTransport);
@@ -168,22 +178,9 @@ public class RideServiceImpl implements RideService {
         paths.add(newRidePath);
         ride.setLocations(paths);
 
-        if(driverAvailability == null){
-            ride.setDriver(null);
-        }else {
-            ride.setDriver(driverAvailability.driver);
-        }
-
         ride.setTotalCost(vehicleTypePrice.getPricePerKM() * routeProperties.getDistance() / 1000.0);
         ride.setVehicleTypePrice(vehicleTypePrice);
 
-        if(driverAvailability != null){
-            if(driverAvailability.earliestAvailableTime.isBefore(rideStartTime)){
-                ride.setStartTime(rideStartTime);
-            }else{
-                ride.setStartTime(driverAvailability.earliestAvailableTime);
-            }
-        }
         ride.setPassengers(passengers);
 
         return ride;

@@ -17,6 +17,7 @@ import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,6 +52,9 @@ public class RideController {
     @PreAuthorize("hasRole('PASSENGER')")
     public ResponseEntity<RideDetailedOut> addRide(@RequestBody RideIn rideIn) throws Exception {
         Ride ride = rideService.createRide(rideIn);
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        LocalDateTime rideStart = LocalDateTime.parse(rideIn.getDateTime(), formatter);
+        rideService.searchForDriver(ride, rideStart);
         return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
     }
 
