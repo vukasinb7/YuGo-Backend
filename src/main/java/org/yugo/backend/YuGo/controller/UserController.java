@@ -20,6 +20,7 @@ import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.mapper.MessageMapper;
 import org.yugo.backend.YuGo.mapper.NoteMapper;
 import org.yugo.backend.YuGo.model.*;
+import org.yugo.backend.YuGo.security.RefreshTokenService;
 import org.yugo.backend.YuGo.service.*;
 import org.yugo.backend.YuGo.security.TokenUtils;
 
@@ -37,34 +38,50 @@ public class UserController {
     private final RideService rideService;
     private final NoteService noteService;
     private final TokenUtils tokenUtils;
+    private final RefreshTokenService refreshTokenService;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
     public UserController(UserService userService, MessageService messageService,
-                          RideService rideService, NoteService noteService, TokenUtils tokenUtils, AuthenticationManager authenticationManager){
+                          RideService rideService, NoteService noteService, TokenUtils tokenUtils,
+                          AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService){
         this.userService = userService;
         this.messageService = messageService;
         this.rideService = rideService;
         this.noteService = noteService;
         this.tokenUtils = tokenUtils;
         this.authenticationManager = authenticationManager;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @PostMapping(
             value = "/login",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserTokenStateOut> createAuthenticationToken(@RequestBody JwtAuthenticationIn authenticationRequest) {
+    public ResponseEntity<TokenStateOut> createAuthenticationToken(@RequestBody JwtAuthenticationIn authenticationRequest) {
         try{
             Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             User user = (User)authentication.getPrincipal();
             String jwt = this.tokenUtils.generateToken(user);
-            return ResponseEntity.ok(new UserTokenStateOut(jwt, ""));
+            String refreshToken = this.refreshTokenService.createRefreshToken(user).getToken();
+            return ResponseEntity.ok(new TokenStateOut(jwt, refreshToken));
         }
         catch (AuthenticationException exception){
             throw new BadRequestException("Wrong username or password!");
         }
+    }
+
+    @PostMapping(
+            value = "/refreshToken",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshIn request) {
+        RefreshToken refreshToken = refreshTokenService.findByToken(request.getRefreshToken());
+        refreshTokenService.verifyExpiration(refreshToken);
+        User user = refreshToken.getUser();
+        String newToken = tokenUtils.generateToken(user);
+        return ResponseEntity.ok(new TokenStateOut(newToken, request.getRefreshToken()));
     }
 
     @GetMapping(
