@@ -51,7 +51,7 @@ public class VehicleController {
     public ResponseEntity makeVehicleChangeRequest(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
         Vehicle vehicle = new Vehicle(vehicleIn);
         vehicleService.insertVehicle(vehicle);
-        Driver driver = driverService.getDriver(id).get(); //TODO promeniti kad servis uradi handling
+        Driver driver = driverService.getDriver(id);
         VehicleChangeRequest vehicleChangeRequest = new VehicleChangeRequest(driver, vehicle);
         vehicleService.insertVehicleChangeRequest(vehicleChangeRequest);
         HashMap<String, String> response = new HashMap<>();

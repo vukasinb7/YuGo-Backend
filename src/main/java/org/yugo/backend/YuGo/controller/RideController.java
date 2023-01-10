@@ -49,21 +49,9 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> addRide(@RequestBody RideIn rideIn){
-//        Set<Passenger> passengers=new HashSet<>();
-//        for (UserSimplifiedOut user:rideIn.getPassengers()) {
-//            passengers.add(passengerService.get(user.getId()).get());
-//        }
-//        Driver driver= (Driver) driverService.getDriver(2).get();
-//        Ride ride= new Ride(LocalDateTime.now(),LocalDateTime.now(),100,driver,passengers,rideIn.getLocations().stream().map(PathMapper::fromDTOtoPath).toList(),10,new HashSet<>(),RideStatus.PENDING,null,false,rideIn.isBabyTransport(),rideIn.isPetTransport(),null);
-//        rideService.insert(ride);
-        try {
-            rideService.createRide(rideIn);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        //return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
-        return new ResponseEntity<>(null, HttpStatus.OK);
+    public ResponseEntity<RideDetailedOut> addRide(@RequestBody RideIn rideIn) throws Exception {
+        Ride ride = rideService.createRide(rideIn);
+        return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
     }
 
     @GetMapping(
