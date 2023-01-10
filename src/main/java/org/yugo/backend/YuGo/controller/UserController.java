@@ -88,8 +88,7 @@ public class UserController {
             value = "/logout",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity logoutUser() {
+    public ResponseEntity<?> logoutUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!(auth instanceof AnonymousAuthenticationToken)){
             SecurityContextHolder.clearContext();
@@ -103,7 +102,7 @@ public class UserController {
             produces = MediaType.TEXT_PLAIN_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity changePassword(@PathVariable Integer id, @RequestBody PasswordChangeIn passwordChangeIn) {
+    public ResponseEntity<?> changePassword(@PathVariable Integer id, @RequestBody PasswordChangeIn passwordChangeIn) {
         userService.changePassword(id, passwordChangeIn.getOldPassword(), passwordChangeIn.getNewPassword());
         return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
     }
@@ -212,7 +211,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity blockUser(@PathVariable Integer id){
+    public ResponseEntity<?> blockUser(@PathVariable Integer id){
         userService.blockUser(id);
         HashMap<String, String> response = new HashMap<>();
         response.put("message","User is successfully blocked!");
@@ -224,7 +223,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity unblockUser(@PathVariable Integer id){
+    public ResponseEntity<?> unblockUser(@PathVariable Integer id){
         userService.unblockUser(id);
         HashMap<String, String> response = new HashMap<>();
         response.put("message","User is successfully unblocked!");

@@ -19,7 +19,6 @@ import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.service.PassengerService;
 import org.yugo.backend.YuGo.service.RideService;
 import org.yugo.backend.YuGo.service.UserActivationService;
-import org.yugo.backend.YuGo.service.UserService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,15 +30,13 @@ import java.util.HashMap;
 @RequestMapping("/api/passenger")
 public class PassengerController {
     private final PassengerService passengerService;
-    private final UserService userService;
     private final RideService rideService;
     private final UserActivationService userActivationService;
 
     @Autowired
-    public PassengerController(PassengerService passengerService, UserService userService, RideService rideService,
+    public PassengerController(PassengerService passengerService, RideService rideService,
                                UserActivationService userActivationService){
         this.passengerService = passengerService;
-        this.userService = userService;
         this.rideService = rideService;
         this.userActivationService = userActivationService;
     }
@@ -68,7 +65,7 @@ public class PassengerController {
             value = "/activate/{activationId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity activatePassenger(@PathVariable Integer activationId){
+    public ResponseEntity<?> activatePassenger(@PathVariable Integer activationId){
         userActivationService.activateUser(activationId);
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Successful account activation!");

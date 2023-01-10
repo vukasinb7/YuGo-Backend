@@ -6,14 +6,10 @@ import org.yugo.backend.YuGo.exceptions.ForbiddenException;
 import org.yugo.backend.YuGo.exceptions.NotFoundException;
 import org.yugo.backend.YuGo.model.RefreshToken;
 import org.yugo.backend.YuGo.model.User;
-import org.yugo.backend.YuGo.repository.UserRepository;
 import org.yugo.backend.YuGo.service.UserService;
 
-import java.sql.Ref;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
