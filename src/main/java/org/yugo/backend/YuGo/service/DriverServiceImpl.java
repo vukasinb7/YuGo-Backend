@@ -72,6 +72,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public Driver insertDriver(Driver driver){
         try{
+            driver.setActive(true);
             ArrayList<Role> roles = new ArrayList<>();
             roles.add(roleService.findRoleByName("ROLE_DRIVER"));
             driver.setRoles(roles);

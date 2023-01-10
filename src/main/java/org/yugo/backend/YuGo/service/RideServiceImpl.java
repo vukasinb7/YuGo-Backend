@@ -19,6 +19,7 @@ import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.exceptions.NotFoundException;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.repository.RideRepository;
+import org.yugo.backend.YuGo.repository.WorkTimeRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -33,14 +34,17 @@ public class RideServiceImpl implements RideService {
     private final UserService userService;
     private final PassengerService passengerService;
     private final VehicleService vehicleService;
+
+    private final WorkTimeRepository workTimeRepository;
     @Autowired
-    public RideServiceImpl(RideRepository rideRepository, RoutingService routingService, DriverService driverService, UserService userService, PassengerService passengerService, VehicleService vehicleService){
+    public RideServiceImpl(RideRepository rideRepository, RoutingService routingService, DriverService driverService, UserService userService, PassengerService passengerService, VehicleService vehicleService, WorkTimeRepository workTimeRepository){
         this.rideRepository = rideRepository;
         this.routingService = routingService;
         this.driverService = driverService;
         this.userService = userService;
         this.passengerService=passengerService;
         this.vehicleService = vehicleService;
+        this.workTimeRepository = workTimeRepository;
     }
 
     @Override
@@ -107,7 +111,7 @@ public class RideServiceImpl implements RideService {
 
         DriverAvailability driverAvailability = findDriver(availableDrivers, rideDateTime, routeProperties.getDuration() / 60.0, rideDeparture, rideDestination);
         if(driverAvailability == null){
-            throw new BadRequestException("There are no available drivers at the moment");
+            throw new NotFoundException("There are no available drivers at the moment");
         }
 
         ride = assembleRide(
@@ -127,18 +131,22 @@ public class RideServiceImpl implements RideService {
     private List<Driver> filterDrivers(Location rideDeparture, VehicleType vehicleType, boolean isBabyTransport, boolean isPetTransport, int passengerCount){
         List<Driver> availableDrivers = driverService.getDriversInRange(rideDeparture.getLatitude(), rideDeparture.getLongitude(), 10000);
         if(availableDrivers.isEmpty()){
-            throw new BadRequestException("There are no available drivers at the moment");
+            throw new NotFoundException("There are no available drivers at the moment");
         }
         availableDrivers.removeIf(driver -> !driver.isOnline());
         if(availableDrivers.isEmpty()){
-            throw new BadRequestException("There are no available drivers at the moment");
+            throw new NotFoundException("There are no available drivers at the moment");
+        }
+        availableDrivers.removeIf(driver -> workTimeRepository.getTotalWorkTimeInLast24Hours(driver.getId()) >= 8);
+        if(availableDrivers.isEmpty()){
+            throw new NotFoundException("There are no available drivers at the moment");
         }
         availableDrivers.removeIf(driver ->  unproxy(driver.getVehicle()).getVehicleType() != vehicleType ||
                 (!unproxy(driver.getVehicle()).getAreBabiesAllowed() && isBabyTransport) ||
                 (!unproxy(driver.getVehicle()).getArePetsAllowed() && isPetTransport) ||
                 unproxy(driver.getVehicle()).getNumberOfSeats() < passengerCount);
         if(availableDrivers.isEmpty()){
-            throw new BadRequestException("There are no available drivers at the moment");
+            throw new NotFoundException("There are no available drivers at the moment");
         }
         return availableDrivers;
     }
