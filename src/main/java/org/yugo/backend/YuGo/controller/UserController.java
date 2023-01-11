@@ -230,13 +230,14 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    @AuthorizeSelf(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity<MessageOut> sendMessageToUser(@NotNull(message = "Field (id) is required")
                                                         @Positive(message = "Id must be positive")
                                                         @PathVariable(value="id") Integer id,
                                                         @RequestBody @Valid MessageIn messageIn){
-        User sender = userService.getUser(id);
-        User receiver = userService.getUser(messageIn.getReceiverId());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userFromToken = (User) auth.getPrincipal();
+        User sender = userService.getUser(userFromToken.getId());
+        User receiver = userService.getUser(id);
         Ride ride = rideService.get(messageIn.getRideId());
         Message msg = new Message(sender, receiver,
                 messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
