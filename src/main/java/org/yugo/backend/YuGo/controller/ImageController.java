@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.service.DocumentService;
 import org.yugo.backend.YuGo.service.UserService;
@@ -61,6 +62,7 @@ public class ImageController {
     @PostMapping(value = "/{id}/profilePicture",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity uploadProfilePicture(@NotNull(message = "Field (id) is required")
                                                @Positive(message = "Id must be positive")
                                                @PathVariable(value="id") Integer id,

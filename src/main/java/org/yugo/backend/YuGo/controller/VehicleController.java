@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelf;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.dto.AllVehicleChangeRequestsOut;
 import org.yugo.backend.YuGo.dto.LocationInOut;
 import org.yugo.backend.YuGo.dto.VehicleIn;
@@ -54,6 +56,7 @@ public class VehicleController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity makeVehicleChangeRequest(@PathVariable @NotNull @Positive Integer id,
                                                    @RequestBody @Valid VehicleIn vehicleIn){
         Vehicle vehicle = new Vehicle(vehicleIn);

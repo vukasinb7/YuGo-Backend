@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.mapper.WorkingTimeMapper;
@@ -51,6 +52,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody @Valid UserDetailedIn driverIn){
         Driver driver = new Driver(driverIn);
         Driver driverNew = driverService.insertDriver(driver);
@@ -74,6 +76,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity<VehicleOut> getVehicle(@NotNull(message = "Field (id) is required")
                                                  @Positive(message = "Id must be positive")
                                                  @PathVariable Integer id){
@@ -87,6 +90,7 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity<VehicleOut> createVehicle(@NotNull(message = "Field (id) is required")
                                                     @Positive(message = "Id must be positive")
                                                     @PathVariable Integer id,
@@ -103,6 +107,7 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity<DocumentOut> createDocument(@NotNull(message = "Field (id) is required")
                                                       @Positive(message = "Id must be positive")
                                                       @PathVariable Integer id,
@@ -117,6 +122,7 @@ public class DriverController {
     @PostMapping(value = "/{id}/document/{documentType}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity<DocumentOut> uploadDocument(@NotNull(message = "Field (id) is required")
                                                       @Positive(message = "Id must be positive")
                                                       @PathVariable Integer id,
@@ -136,6 +142,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     ResponseEntity<List<DocumentOut>> getDocuments(@NotNull(message = "Field (id) is required")
                                                    @Positive(message = "Id must be positive")
                                                    @PathVariable Integer id){
@@ -152,6 +159,7 @@ public class DriverController {
             value = "/document/{document-id}"
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     ResponseEntity<Void> deleteDocument(@PathVariable(name = "document-id")
                                         @NotNull(message = "Field (document-id) is required")
                                         @Positive(message = "Document-id must be positive") Integer documentId){
@@ -180,6 +188,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity<UserDetailedInOut> updateDriver(@NotNull(message = "Field (id) is required")
                                                           @Positive(message = "Id must be positive")
                                                           @PathVariable Integer id,
@@ -199,6 +208,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     ResponseEntity<VehicleOut> updateVehicle(@NotNull(message = "Field (id) is required")
                                              @Positive(message = "Id must be positive")
                                              @PathVariable Integer id,
@@ -215,6 +225,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     ResponseEntity<AllWorkTimeOut> getWorkingTimes(@NotNull(message = "Field (id) is required")
                                                    @Positive(message = "Id must be positive")
                                                    @PathVariable(value="id") Integer id,
@@ -241,6 +252,7 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@NotNull(message = "Field (id) is required")
                                                         @Positive(message = "Id must be positive")
                                                         @PathVariable(value="id") Integer id,
@@ -262,6 +274,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     ResponseEntity<WorkTimeOut> getWorkTimeById(@NotNull(message = "Field (id) is required")
                                                 @Positive(message = "Id must be positive")
                                                 @PathVariable(value = "working-hour-id") Integer id){
@@ -274,6 +287,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     ResponseEntity<AllRidesOut> getRidesForDriver(@NotNull(message = "Field (id) is required")
                                                   @Positive(message = "Id must be positive")
                                                   @PathVariable(value="id") Integer id,
@@ -302,6 +316,8 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     ResponseEntity<WorkTimeOut> updateWorkTime(@NotNull(message = "Field (working-hour-id) is required")
                                                @Positive(message = "Working-hour-id must be positive")
                                                @PathVariable(value = "working-hour-id")  Integer id,

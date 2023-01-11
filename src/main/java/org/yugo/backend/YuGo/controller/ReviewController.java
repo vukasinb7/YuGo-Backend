@@ -12,6 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelf;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.dto.AcumulatedReviewsOut;
 import org.yugo.backend.YuGo.dto.AllRideReviewsOut;
 import org.yugo.backend.YuGo.dto.ReviewIn;
@@ -29,7 +31,6 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
     private final RideService rideService;
-
     private final PassengerService passengerService;
 
     @Autowired

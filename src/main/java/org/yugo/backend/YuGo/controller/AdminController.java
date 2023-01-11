@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelf;
 import org.yugo.backend.YuGo.dto.UserDetailedIn;
 import org.yugo.backend.YuGo.dto.UserDetailedInOut;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
@@ -31,6 +32,7 @@ public class AdminController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
+    @AuthorizeSelf(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity<UserDetailedInOut> getAdmin(@NotNull(message = "Field (id) is required")
                                                       @Positive(message = "Id must be positive")
                                                       @PathVariable(value="id") Integer id){
@@ -42,6 +44,7 @@ public class AdminController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
+    @AuthorizeSelf(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity<UserDetailedInOut> updateAdmin(@NotNull(message = "Field (id) is required")
                                                          @Positive(message = "Id must be positive")
                                                          @PathVariable(value="id") Integer id,

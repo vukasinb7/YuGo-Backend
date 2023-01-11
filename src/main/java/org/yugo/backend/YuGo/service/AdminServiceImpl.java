@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.exception.BadRequestException;
 import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.Admin;
+import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.repository.AdminRepository;
 import java.util.List;
 import java.util.Optional;
@@ -13,10 +14,12 @@ import java.util.Optional;
 @Service
 public class AdminServiceImpl implements AdminService {
     private final AdminRepository adminRepository;
+    private final UserService userService;
 
     @Autowired
-    public AdminServiceImpl(AdminRepository adminRepository){
+    public AdminServiceImpl(AdminRepository adminRepository, UserService userService){
         this.adminRepository = adminRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -31,6 +34,13 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Admin update(Admin adminUpdate){
         Admin admin = get(adminUpdate.getId());
+        try{
+            User foundUser = userService.getUserByEmail(adminUpdate.getEmail());
+            if (!foundUser.getEmail().equals(admin.getEmail())){
+                throw new BadRequestException("User with that email already exists");
+            }
+        }
+        catch (NotFoundException ignored){}
         admin.setName(adminUpdate.getName());
         admin.setSurname(adminUpdate.getSurname());
         admin.setProfilePicture(adminUpdate.getProfilePicture());

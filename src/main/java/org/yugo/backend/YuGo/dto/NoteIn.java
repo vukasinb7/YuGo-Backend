@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 public class NoteIn {
-
     @NotBlank(message = "Field (message) is required")
     @Size(max = 300,message = "message cannot be longer than 300 characters")
     String message;

@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.yugo.backend.YuGo.annotation.AuthorizeSelf;
 import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.dto.AllPassengersOut;
 import org.yugo.backend.YuGo.dto.AllRidesOut;
@@ -101,6 +100,7 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity<UserDetailedInOut> updatePassenger(@NotNull(message = "Field (id) is required")
                                                              @Positive(message = "Id must be positive")
                                                              @PathVariable(value="id") Integer id,

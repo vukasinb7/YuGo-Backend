@@ -11,6 +11,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelf;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.exception.BadRequestException;
 import org.yugo.backend.YuGo.mapper.FavoritePathMapper;
@@ -87,7 +89,7 @@ public class RideController {
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasRole('PASSENGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','PASSENGER')")
     public ResponseEntity<RideDetailedOut> getRideById(@NotNull(message = "Field (id) is required")
                                                        @Positive(message = "Id must be positive")
                                                        @PathVariable(value="id") Integer id){
@@ -109,7 +111,7 @@ public class RideController {
             value = "/{id}/start",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasRole('PASSENGER')")
+    @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<RideDetailedOut> startRide(@NotNull(message = "Field (id) is required")
                                                      @Positive(message = "Id must be positive")
                                                      @PathVariable(value="id") Integer id){
@@ -121,7 +123,7 @@ public class RideController {
             value = "/{id}/accept",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasRole('PASSENGER')")
+    @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<RideDetailedOut> acceptRide(@NotNull(message = "Field (id) is required")
                                                       @Positive(message = "Id must be positive")
                                                       @PathVariable(value="id") Integer id){

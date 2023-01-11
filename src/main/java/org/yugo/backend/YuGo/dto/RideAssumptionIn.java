@@ -3,11 +3,13 @@ package org.yugo.backend.YuGo.dto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.yugo.backend.YuGo.model.VehicleType;
 
 import java.util.List;
 @Getter @Setter
+@NoArgsConstructor
 public class RideAssumptionIn {
     @NotNull(message = "Field (locations) is required")
     @Valid
