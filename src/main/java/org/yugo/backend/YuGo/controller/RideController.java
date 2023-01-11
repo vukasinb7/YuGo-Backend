@@ -110,7 +110,6 @@ public class RideController {
     )
     @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
     public ResponseEntity<RideDetailedOut> acceptRide(@PathVariable Integer id){
-        System.out.println("ride accepted");
         return new ResponseEntity<>(new RideDetailedOut(rideService.acceptRide(id)), HttpStatus.OK);
     }
 
@@ -146,7 +145,6 @@ public class RideController {
 
     @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<RideDetailedOut> rejectRide(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
-        System.out.println("Ride rejected");
         return new ResponseEntity<>(new RideDetailedOut(rideService.rejectRide(id,reasonIn.getReason())), HttpStatus.OK);
 
     }

@@ -135,8 +135,10 @@ public class RideServiceImpl implements RideService {
             ride.setDriver(driverAvailability.driver);
         }else{
             //TODO obavesti korisnika da nije moguce zakazati voznju
+            rideRepository.delete(ride);
             return;
         }
+        rideRepository.save(ride);
         webSocketService.sendRideRequestToDriver(driverAvailability.driver.getId(), ride.getId());
     }
     private List<Driver> filterDrivers(Location rideDeparture, VehicleType vehicleType, boolean isBabyTransport, boolean isPetTransport, int passengerCount){
