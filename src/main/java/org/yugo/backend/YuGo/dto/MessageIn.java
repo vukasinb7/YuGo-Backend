@@ -11,9 +11,6 @@ import org.yugo.backend.YuGo.model.MessageType;
 @Getter @Setter
 @NoArgsConstructor
 public class MessageIn {
-    @NotNull(message = "Field (receiverId) is required")
-    @Positive
-    private Integer receiverId;
     @NotBlank(message = "Field (address) is required")
     @Size(max = 300,message = "address cannot be longer than 300 characters")
     private String message;
@@ -23,9 +20,8 @@ public class MessageIn {
     @Positive
     private Integer rideId;
 
-    public MessageIn(Integer receiverId, String message, MessageType type, Integer rideId) {
+    public MessageIn(String message, MessageType type, Integer rideId) {
         super();
-        this.receiverId = receiverId;
         this.message = message;
         this.type = type;
         this.rideId = rideId;
