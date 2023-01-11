@@ -6,15 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
-import org.yugo.backend.YuGo.exceptions.NotFoundException;
+import org.yugo.backend.YuGo.exception.BadRequestException;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.PasswordResetCode;
 import org.yugo.backend.YuGo.model.User;
-import org.yugo.backend.YuGo.model.UserActivation;
-import org.yugo.backend.YuGo.repository.UserActivationRepository;
 import org.yugo.backend.YuGo.repository.UserRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 @Service

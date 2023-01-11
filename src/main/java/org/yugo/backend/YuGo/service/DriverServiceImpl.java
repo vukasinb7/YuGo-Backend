@@ -7,8 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
-import org.yugo.backend.YuGo.exceptions.NotFoundException;
+import org.yugo.backend.YuGo.exception.BadRequestException;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.repository.*;
 

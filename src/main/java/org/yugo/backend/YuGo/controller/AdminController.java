@@ -31,7 +31,9 @@ public class AdminController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserDetailedInOut> getAdmin(@PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<UserDetailedInOut> getAdmin(@NotNull(message = "Field (id) is required")
+                                                      @Positive(message = "Id must be positive")
+                                                      @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(adminService.get(id)), HttpStatus.OK);
     }
 
@@ -41,7 +43,9 @@ public class AdminController {
     )
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDetailedInOut> updateAdmin(@RequestBody @Valid UserDetailedIn updatedAdminDTO,
-                                                         @PathVariable @NotNull @Positive Integer id){
+                                                         @NotNull(message = "Field (id) is required")
+                                                         @Positive(message = "Id must be positive")
+                                                         @PathVariable(value="id") Integer id){
         Admin adminUpdate = new Admin(updatedAdminDTO);
         adminUpdate.setId(id);
         Admin updatedAdmin = adminService.update(adminUpdate);

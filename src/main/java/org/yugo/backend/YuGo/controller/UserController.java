@@ -17,8 +17,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelf;
 import org.yugo.backend.YuGo.dto.*;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
+import org.yugo.backend.YuGo.exception.BadRequestException;
 import org.yugo.backend.YuGo.mapper.MessageMapper;
 import org.yugo.backend.YuGo.mapper.NoteMapper;
 import org.yugo.backend.YuGo.model.*;
@@ -180,6 +181,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
+    @AuthorizeSelf
     public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam(name="page") int page,
                                                    @Positive(message = "size must be positive")
                                                    @NotNull(message = "Field (size) is required")

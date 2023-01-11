@@ -1,6 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.yugo.backend.YuGo.dto.*;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.mapper.WorkingTimeMapper;
 import org.yugo.backend.YuGo.model.*;
@@ -23,9 +24,6 @@ import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.RideService;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,7 +31,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/driver")
@@ -65,7 +62,9 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER', 'DRIVER')")
-    public ResponseEntity<UserDetailedInOut> getDriver(@PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<UserDetailedInOut> getDriver(@NotNull(message = "Field (id) is required")
+                                                       @Positive(message = "Id must be positive")
+                                                       @PathVariable Integer id){
         Driver driver = driverService.getDriver(id);
         return new ResponseEntity<>(new UserDetailedInOut(driver), HttpStatus.OK);
     }
@@ -75,7 +74,9 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    public ResponseEntity<VehicleOut> getVehicle(@PathVariable Integer id){
+    public ResponseEntity<VehicleOut> getVehicle(@NotNull(message = "Field (id) is required")
+                                                 @Positive(message = "Id must be positive")
+                                                 @PathVariable Integer id){
         Vehicle vehicle = driverService.getDriverVehicle(id);
         return new ResponseEntity<>(new VehicleOut(vehicle), HttpStatus.OK);
     }
@@ -86,7 +87,9 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    public ResponseEntity<VehicleOut> createVehicle(@PathVariable @NotNull @Positive Integer id,
+    public ResponseEntity<VehicleOut> createVehicle(@NotNull(message = "Field (id) is required")
+                                                    @Positive(message = "Id must be positive")
+                                                    @PathVariable Integer id,
                                                     @RequestBody @Valid VehicleIn vehicleIn){
         Driver driver = driverService.getDriver(id);
         Vehicle vehicle = new Vehicle(vehicleIn);
@@ -100,9 +103,13 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')") // NE KORISTITI OVO, KORISTI uploadDocument
-    public ResponseEntity<DocumentOut> createDocument(@PathVariable @NotNull @Positive Integer id, @RequestBody @Valid DocumentIn documentIn) throws IOException {
+    public ResponseEntity<DocumentOut> createDocument(@NotNull(message = "Field (id) is required")
+                                                      @Positive(message = "Id must be positive")
+                                                      @PathVariable Integer id,
+                                                      @RequestBody @Valid DocumentIn documentIn) throws IOException {
         Driver driver = driverService.getDriver(id);
-        Document document = new Document(documentIn.getName(), documentIn.getDocumentImage(), driver,DocumentType.DRIVING_LICENCE);
+        Document document = new Document(documentIn.getName(), documentIn.getDocumentImage(), driver,
+                DocumentType.DRIVING_LICENCE);
         documentService.insert(document);
         return new ResponseEntity<>(new DocumentOut(document), HttpStatus.OK);
     }
@@ -110,7 +117,13 @@ public class DriverController {
     @PostMapping(value = "/{id}/document/{documentType}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    public ResponseEntity<DocumentOut> uploadDocument(@PathVariable Integer id,@PathVariable String documentType,@RequestParam("image") MultipartFile file)
+    public ResponseEntity<DocumentOut> uploadDocument(@NotNull(message = "Field (id) is required")
+                                                      @Positive(message = "Id must be positive")
+                                                      @PathVariable Integer id,
+                                                      @NotBlank(message = "Field (documentType) is required")
+                                                      @PathVariable String documentType,
+                                                      @NotNull(message = "Field (file) is required")
+                                                      @RequestParam("image") MultipartFile file)
             throws IOException {
         String path="src\\main\\resources\\img\\"+id+"_"+documentType+".jpg";
         Document document= new Document(id+"_"+documentType+".jpg",path,driverService.getDriver(id),DocumentType.valueOf(documentType));
@@ -123,7 +136,9 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    ResponseEntity<List<DocumentOut>> getDocuments(@PathVariable Integer id){
+    ResponseEntity<List<DocumentOut>> getDocuments(@NotNull(message = "Field (id) is required")
+                                                   @Positive(message = "Id must be positive")
+                                                   @PathVariable Integer id){
         Driver driver = driverService.getDriver(id);
         List<DocumentOut> documents = new ArrayList<>();
         for(Document d : driver.getDocuments()){
@@ -137,7 +152,9 @@ public class DriverController {
             value = "/document/{document-id}"
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    ResponseEntity<Void> deleteDocument(@PathVariable(name = "document-id") Integer documentId){
+    ResponseEntity<Void> deleteDocument(@PathVariable(name = "document-id")
+                                        @NotNull(message = "Field (document-id) is required")
+                                        @Positive(message = "Document-id must be positive") Integer documentId){
         documentService.delete(documentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -147,7 +164,12 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<AllUsersOut> getDrivers(@RequestParam int page, @RequestParam int size){
+    ResponseEntity<AllUsersOut> getDrivers(@Min(value=0, message = "Page must be positive")
+                                           @NotNull(message = "Field (page) is required")
+                                           @RequestParam int page,
+                                           @Positive(message = "Size must be positive")
+                                           @NotNull(message = "Field (size) is required")
+                                           @RequestParam int size){
         Page<User> drivers = driverService.getDriversPage(PageRequest.of(page, size));
         return new ResponseEntity<>(new AllUsersOut(drivers), HttpStatus.OK);
     }
@@ -158,8 +180,10 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    public ResponseEntity<UserDetailedInOut> updateDriver(@PathVariable @NotNull @Positive Integer id,
-                                                   @RequestBody @Valid UserDetailedIn driverDTO){
+    public ResponseEntity<UserDetailedInOut> updateDriver(@NotNull(message = "Field (id) is required")
+                                                          @Positive(message = "Id must be positive")
+                                                          @PathVariable Integer id,
+                                                          @RequestBody @Valid UserDetailedIn driverDTO){
         Driver driverUpdate = UserDetailedMapper.fromDTOtoDriver(driverDTO);
         driverUpdate.setId(id);
         User userUpdated = driverService.updateDriver(driverUpdate);
@@ -175,7 +199,9 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    ResponseEntity<VehicleOut> updateVehicle(@PathVariable @NotNull @Positive Integer id,
+    ResponseEntity<VehicleOut> updateVehicle(@NotNull(message = "Field (id) is required")
+                                             @Positive(message = "Id must be positive")
+                                             @PathVariable Integer id,
                                              @RequestBody @Valid VehicleIn vehicleIn){
         Driver driver = driverService.getDriver(id);
         Vehicle vehicle = new Vehicle(vehicleIn);
@@ -189,11 +215,19 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    ResponseEntity<AllWorkTimeOut> getWorkingTimes(@PathVariable(value = "id") Integer id,
-                                                      @RequestParam(name = "page") int page,
-                                                      @RequestParam(name = "size") int size,
-                                                      @RequestParam(name = "from") String from,
-                                                      @RequestParam(name = "to") String to){
+    ResponseEntity<AllWorkTimeOut> getWorkingTimes(@NotNull(message = "Field (id) is required")
+                                                   @Positive(message = "Id must be positive")
+                                                   @PathVariable(value="id") Integer id,
+                                                   @Min(value=0, message = "Page must be positive")
+                                                   @NotNull(message = "Field (page) is required")
+                                                   @RequestParam(name="page") int page,
+                                                   @Positive(message = "Size must be positive")
+                                                   @NotNull(message = "Field (size) is required")
+                                                   @RequestParam(name="size") int size,
+                                                   @NotBlank(message = "Field (from) is required")
+                                                   @RequestParam(name = "from") String from,
+                                                   @NotBlank(message = "Field (to) is required")
+                                                   @RequestParam(name = "to") String to){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime fromTime = LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
         LocalDateTime toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
@@ -207,7 +241,9 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@PathVariable @NotNull @Positive Integer id,
+    ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@NotNull(message = "Field (id) is required")
+                                                        @Positive(message = "Id must be positive")
+                                                        @PathVariable(value="id") Integer id,
                                                         @RequestBody @Valid WorkTimeIn workTimeIn){
         WorkTime wt = new WorkTime();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
@@ -226,7 +262,9 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    ResponseEntity<WorkTimeOut> getWorkTimeById(@PathVariable(value = "working-hour-id") Integer id){
+    ResponseEntity<WorkTimeOut> getWorkTimeById(@NotNull(message = "Field (id) is required")
+                                                @Positive(message = "Id must be positive")
+                                                @PathVariable(value = "working-hour-id") Integer id){
         WorkTime workTime = driverService.getWorkTime(id);
         return new ResponseEntity<>(WorkingTimeMapper.fromWorkTimeToDTO(workTime), HttpStatus.OK);
     }
@@ -236,11 +274,19 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    ResponseEntity<AllRidesOut> getRidesForDriver(@PathVariable(value = "id") Integer id,
-                                                  @RequestParam(name = "page") int page,
-                                                  @RequestParam(name = "size") int size,
+    ResponseEntity<AllRidesOut> getRidesForDriver(@NotNull(message = "Field (id) is required")
+                                                  @Positive(message = "Id must be positive")
+                                                  @PathVariable(value="id") Integer id,
+                                                  @Min(value=0, message = "Page must be positive")
+                                                  @NotNull(message = "Field (page) is required")
+                                                  @RequestParam(name="page") int page,
+                                                  @Positive(message = "Size must be positive")
+                                                  @NotNull(message = "Field (size) is required")
+                                                  @RequestParam(name="size") int size,
                                                   @RequestParam(name = "sort", required = false) String sort,
+                                                  @NotBlank(message = "Field (from) is required")
                                                   @RequestParam(name = "from") String from,
+                                                  @NotBlank(message = "Field (to) is required")
                                                   @RequestParam(name = "to") String to){
         PageRequest pageRequest;
         pageRequest = PageRequest.of(page, size, Sort.by(Objects.requireNonNullElse(sort, "id")));
@@ -256,7 +302,10 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<WorkTimeOut> updateWorkTime(@PathVariable(value = "working-hour-id") @NotNull @Positive Integer id, @RequestBody @Valid EndWorkTimeIn workTimeIn){
+    ResponseEntity<WorkTimeOut> updateWorkTime(@NotNull(message = "Field (working-hour-id) is required")
+                                               @Positive(message = "Working-hour-id must be positive")
+                                               @PathVariable(value = "working-hour-id")  Integer id,
+                                               @RequestBody @Valid EndWorkTimeIn workTimeIn){
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime endTime = LocalDateTime.parse(workTimeIn.getEnd(), formatter);

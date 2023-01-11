@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.*;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
+import org.yugo.backend.YuGo.exception.BadRequestException;
 import org.yugo.backend.YuGo.mapper.FavoritePathMapper;
 import org.yugo.backend.YuGo.mapper.PathMapper;
 import org.yugo.backend.YuGo.mapper.RideMapper;

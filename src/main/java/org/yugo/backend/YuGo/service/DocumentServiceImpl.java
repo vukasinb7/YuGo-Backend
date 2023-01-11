@@ -4,8 +4,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
-import org.yugo.backend.YuGo.exceptions.NotFoundException;
+import org.yugo.backend.YuGo.exception.BadRequestException;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.Document;
 import org.yugo.backend.YuGo.repository.DocumentRepository;
 

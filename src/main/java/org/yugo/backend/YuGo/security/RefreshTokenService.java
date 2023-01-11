@@ -2,8 +2,8 @@ package org.yugo.backend.YuGo.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.yugo.backend.YuGo.exceptions.ForbiddenException;
-import org.yugo.backend.YuGo.exceptions.NotFoundException;
+import org.yugo.backend.YuGo.exception.ForbiddenException;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.RefreshToken;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.service.UserService;

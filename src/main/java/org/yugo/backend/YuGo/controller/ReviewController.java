@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.AcumulatedReviewsOut;
 import org.yugo.backend.YuGo.dto.AllRideReviewsOut;
@@ -45,7 +44,10 @@ public class ReviewController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<ReviewOut> addVehicleReview(@RequestBody @Valid ReviewIn reviewIn, @PathVariable @NotNull @Positive Integer rideId){
+    public ResponseEntity<ReviewOut> addVehicleReview(@RequestBody @Valid ReviewIn reviewIn,
+                                                      @NotNull(message = "Field (id) is required")
+                                                      @Positive(message = "Id must be positive")
+                                                      @PathVariable(value="rideId") Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         RideReview vehicleReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(user.getId()),ReviewType.VEHICLE);
@@ -59,7 +61,10 @@ public class ReviewController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<ReviewOut> addRideReview(@Valid @RequestBody  ReviewIn reviewIn, @PathVariable @NotNull @Positive Integer rideId){
+    public ResponseEntity<ReviewOut> addRideReview(@RequestBody @Valid ReviewIn reviewIn,
+                                                   @NotNull(message = "Field (rideId) is required")
+                                                   @Positive(message = "RideId must be positive")
+                                                   @PathVariable(value="rideId") Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         RideReview rideReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(user.getId()),ReviewType.DRIVER);
@@ -71,9 +76,10 @@ public class ReviewController {
             value = "/vehicle/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<AllRideReviewsOut> getAllVehicleReviewsByVehicle(@PathVariable int id) {
+    public ResponseEntity<AllRideReviewsOut> getAllVehicleReviewsByVehicle(@NotNull(message = "Field (id) is required")
+                                                                           @Positive(message = "Id must be positive")
+                                                                           @PathVariable(value="id") Integer id) {
         List<RideReview> vehicleReviews = reviewService.getRideReviewsByVehicle(id);
         return new ResponseEntity<>(new AllRideReviewsOut(vehicleReviews), HttpStatus.OK);
     }
@@ -82,7 +88,9 @@ public class ReviewController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<AllRideReviewsOut> getAllRideReviewsByDriver(@PathVariable int id){
+    public ResponseEntity<AllRideReviewsOut> getAllRideReviewsByDriver(@NotNull(message = "Field (id) is required")
+                                                                       @Positive(message = "Id must be positive")
+                                                                       @PathVariable(value="id") Integer id){
         List<RideReview> driverReviews = reviewService.getRideReviewsByDriver(id);
         return new ResponseEntity<>(new AllRideReviewsOut(driverReviews), HttpStatus.OK);
     }
@@ -92,7 +100,9 @@ public class ReviewController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER','DRIVER')")
-    public ResponseEntity<List<AcumulatedReviewsOut>> getAllRideReviews(@PathVariable int id){
+    public ResponseEntity<List<AcumulatedReviewsOut>> getAllRideReviews(@NotNull(message = "Field (id) is required")
+                                                                        @Positive(message = "Id must be positive")
+                                                                        @PathVariable(value="id") Integer id){
         List<AcumulatedReviewsOut> result= new ArrayList<>();
         for (Passenger passenger:rideService.get(id).getPassengers()) {
             RideReview vehicleReviews = reviewService.getVehicleReviewsByRideByPassenger(id,passenger.getId());

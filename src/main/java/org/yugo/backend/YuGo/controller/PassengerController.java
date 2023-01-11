@@ -1,6 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +61,12 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AllPassengersOut> getAllPassengers(@RequestParam int page, @RequestParam int size){
+    public ResponseEntity<AllPassengersOut> getAllPassengers(@Min(value=0, message = "Page must be positive")
+                                                             @NotNull(message = "Field (page) is required")
+                                                             @RequestParam int page,
+                                                             @Positive(message = "Size must be positive")
+                                                             @NotNull(message = "Field (size) is required")
+                                                             @RequestParam int size){
         Page<Passenger> passengers = passengerService.getPassengersPage(PageRequest.of(page, size));
         return new ResponseEntity<>(new AllPassengersOut(passengers), HttpStatus.OK);
     }
@@ -68,7 +75,9 @@ public class PassengerController {
             value = "/activate/{activationId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> activatePassenger(@PathVariable Integer activationId){
+    public ResponseEntity<?> activatePassenger(@NotNull(message = "Field (id) is required")
+                                               @Positive(message = "Id must be positive")
+                                               @PathVariable(value="id") Integer activationId){
         userActivationService.activateUser(activationId);
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Successful account activation!");
@@ -80,7 +89,9 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER','DRIVER')")
-    public ResponseEntity<UserDetailedInOut> getPassenger(@PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<UserDetailedInOut> getPassenger(@NotNull(message = "Field (id) is required")
+                                                          @Positive(message = "Id must be positive")
+                                                          @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passengerService.get(id)), HttpStatus.OK);
     }
 
@@ -90,7 +101,9 @@ public class PassengerController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
     public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody @Valid UserDetailedIn updatedUserDTO,
-                                                             @PathVariable @NotNull @Positive Integer id){
+                                                             @NotNull(message = "Field (id) is required")
+                                                             @Positive(message = "Id must be positive")
+                                                             @PathVariable(value="id") Integer id){
         Passenger passengerUpdate = new Passenger(updatedUserDTO);
         passengerUpdate.setId(id);
         Passenger updatedPassenger = passengerService.update(passengerUpdate);
@@ -102,10 +115,19 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    ResponseEntity<AllRidesOut> getPassengerRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
-                                                  @RequestParam(name = "size") int size,
-                                                  @RequestParam(name = "sort") String sort,
+    ResponseEntity<AllRidesOut> getPassengerRides(@NotNull(message = "Field (id) is required")
+                                                  @Positive(message = "Id must be positive")
+                                                  @PathVariable(value="id") Integer id,
+                                                  @Min(value=0, message = "Page must be positive")
+                                                  @NotNull(message = "Field (page) is required")
+                                                  @RequestParam(name="page") int page,
+                                                  @Positive(message = "Size must be positive")
+                                                  @NotNull(message = "Field (size) is required")
+                                                  @RequestParam(name="size") int size,
+                                                  @RequestParam(name = "sort", required = false) String sort,
+                                                  @NotBlank(message = "Field (from) is required")
                                                   @RequestParam(name = "from") String from,
+                                                  @NotBlank(message = "Field (to) is required")
                                                   @RequestParam(name = "to") String to) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime fromTime = LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
