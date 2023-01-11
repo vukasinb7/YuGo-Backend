@@ -104,7 +104,10 @@ public class UserController {
             produces = MediaType.TEXT_PLAIN_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<?> changePassword(@PathVariable @NotNull @Positive Integer id, @RequestBody @Valid PasswordChangeIn passwordChangeIn) {
+    public ResponseEntity<?> changePassword(@NotNull(message = "Field (id) is required")
+                                            @Positive(message = "Id must be positive")
+                                            @PathVariable(value="id") Integer id,
+                                            @RequestBody @Valid PasswordChangeIn passwordChangeIn) {
         userService.changePassword(id, passwordChangeIn.getOldPassword(), passwordChangeIn.getNewPassword());
         return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
     }
@@ -113,7 +116,9 @@ public class UserController {
             value = "/{id}/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity<String> sendResetPasswordCode(@PathVariable @NotNull @Positive Integer id) {
+    public ResponseEntity<String> sendResetPasswordCode(@NotNull(message = "Field (id) is required")
+                                                        @Positive(message = "Id must be positive")
+                                                        @PathVariable(value="id") Integer id) {
         userService.sendPasswordResetCode(id);
         return new ResponseEntity<>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
     }
@@ -133,7 +138,10 @@ public class UserController {
             value = "/{id}/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity<String> resetPasswordWithCode(@PathVariable @NotNull @Positive Integer id, @RequestBody @Valid PasswordResetIn passwordResetIn) {
+    public ResponseEntity<String> resetPasswordWithCode(@NotNull(message = "Field (id) is required")
+                                                        @Positive(message = "Id must be positive")
+                                                        @PathVariable(value="id") Integer id,
+                                                        @RequestBody @Valid PasswordResetIn passwordResetIn) {
         userService.resetPassword(id, passwordResetIn.getNewPassword(), passwordResetIn.getCode());
         return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
     }
@@ -205,7 +213,9 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<AllUserMessagesOut> getUserMessages(@PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<AllUserMessagesOut> getUserMessages(@NotNull(message = "Field (id) is required")
+                                                              @Positive(message = "Id must be positive")
+                                                              @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(new AllUserMessagesOut(messageService.getUserMessages(id)), HttpStatus.OK);
     }
 
@@ -214,7 +224,10 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable @NotNull @Positive Integer id, @RequestBody @Valid MessageIn messageIn){
+    public ResponseEntity<MessageOut> sendMessageToUser(@NotNull(message = "Field (id) is required")
+                                                        @Positive(message = "Id must be positive")
+                                                        @PathVariable(value="id") Integer id,
+                                                        @RequestBody @Valid MessageIn messageIn){
         User sender = userService.getUser(id);
         User receiver = userService.getUser(messageIn.getReceiverId());
         Ride ride = rideService.get(messageIn.getRideId());
@@ -230,7 +243,9 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> blockUser(@PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<?> blockUser(@NotNull(message = "Field (id) is required")
+                                       @Positive(message = "Id must be positive")
+                                       @PathVariable(value="id") Integer id){
         userService.blockUser(id);
         HashMap<String, String> response = new HashMap<>();
         response.put("message","User is successfully blocked!");
@@ -242,7 +257,9 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> unblockUser(@PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<?> unblockUser(@NotNull(message = "Field (id) is required")
+                                         @Positive(message = "Id must be positive")
+                                         @PathVariable(value="id") Integer id){
         userService.unblockUser(id);
         HashMap<String, String> response = new HashMap<>();
         response.put("message","User is successfully unblocked!");
@@ -254,7 +271,10 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<NoteOut> createNote(@PathVariable @NotNull @Positive Integer id, @RequestBody @Valid NoteIn noteIn){
+    public ResponseEntity<NoteOut> createNote(@NotNull(message = "Field (id) is required")
+                                              @Positive(message = "Id must be positive")
+                                              @PathVariable(value="id") Integer id,
+                                              @RequestBody @Valid NoteIn noteIn){
         User user = userService.getUser(id);
         Note note = new Note(user, noteIn.getMessage(), LocalDateTime.now());
         noteService.insert(note);

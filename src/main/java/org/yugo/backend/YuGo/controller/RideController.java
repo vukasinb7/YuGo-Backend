@@ -66,7 +66,9 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('DRIVER')")
-    public ResponseEntity<RideDetailedOut> getActiveRidesByDriver(@PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<RideDetailedOut> getActiveRidesByDriver(@NotNull(message = "Field (id) is required")
+                                                                  @Positive(message = "Id must be positive")
+                                                                  @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(new RideDetailedOut(rideService.getActiveRideByDriver(id)), HttpStatus.OK);
     }
 
@@ -75,7 +77,9 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> getActiveRidesByPassenger(@PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<RideDetailedOut> getActiveRidesByPassenger(@NotNull(message = "Field (id) is required")
+                                                                     @Positive(message = "Id must be positive")
+                                                                     @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(new RideDetailedOut(rideService.getActiveRideByPassenger(id)), HttpStatus.OK);
     }
 
@@ -84,7 +88,9 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> getRideById(@PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<RideDetailedOut> getRideById(@NotNull(message = "Field (id) is required")
+                                                       @Positive(message = "Id must be positive")
+                                                       @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(new RideDetailedOut(rideService.get(id)), HttpStatus.OK);
     }
 
@@ -93,7 +99,9 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> cancelRide(@PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<RideDetailedOut> cancelRide(@NotNull(message = "Field (id) is required")
+                                                      @Positive(message = "Id must be positive")
+                                                      @PathVariable(value="id") Integer id){
 
         return new ResponseEntity<>(new RideDetailedOut(rideService.cancelRide(id)), HttpStatus.OK);
     }
@@ -102,7 +110,9 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> startRide(@PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<RideDetailedOut> startRide(@NotNull(message = "Field (id) is required")
+                                                     @Positive(message = "Id must be positive")
+                                                     @PathVariable(value="id") Integer id){
 
         return new ResponseEntity<>(new RideDetailedOut(rideService.startRide(id)), HttpStatus.OK);
     }
@@ -112,7 +122,9 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> acceptRide(@PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<RideDetailedOut> acceptRide(@NotNull(message = "Field (id) is required")
+                                                      @Positive(message = "Id must be positive")
+                                                      @PathVariable(value="id") Integer id){
 
         return new ResponseEntity<>(new RideDetailedOut(rideService.acceptRide(id)), HttpStatus.OK);
     }
@@ -122,7 +134,9 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> endRide(@PathVariable @NotNull @Valid Integer id){
+    public ResponseEntity<RideDetailedOut> endRide(@NotNull(message = "Field (id) is required")
+                                                   @Positive(message = "Id must be positive")
+                                                   @PathVariable(value="id") Integer id){
 
         return new ResponseEntity<>(new RideDetailedOut(rideService.endRide(id)), HttpStatus.OK);
     }
@@ -132,7 +146,10 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<PanicOut> addPanic(@RequestBody @Valid ReasonIn reasonIn, @PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<PanicOut> addPanic(@RequestBody @Valid ReasonIn reasonIn,
+                                             @NotNull(message = "Field (id) is required")
+                                             @Positive(message = "Id must be positive")
+                                             @PathVariable(value="id") Integer id){
         Ride ride= rideService.get(id);
         Panic panic= new Panic(passengerService.get(1),ride, LocalDateTime.now(), reasonIn.getReason());
         ride.setIsPanicPressed(true);
@@ -148,7 +165,10 @@ public class RideController {
     )
 
     @PreAuthorize("hasRole('DRIVER')")
-    public ResponseEntity<RideDetailedOut> rejectRide(@RequestBody @Valid ReasonIn reasonIn, @PathVariable @NotNull @Positive Integer id){
+    public ResponseEntity<RideDetailedOut> rejectRide(@RequestBody @Valid ReasonIn reasonIn,
+                                                      @NotNull(message = "Field (id) is required")
+                                                      @Positive(message = "Id must be positive")
+                                                      @PathVariable(value="id") Integer id){
 
         return new ResponseEntity<>(new RideDetailedOut(rideService.rejectRide(id,reasonIn.getReason())), HttpStatus.OK);
 
@@ -193,8 +213,10 @@ public class RideController {
             value = "/favorites/{id}"
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    ResponseEntity<Void> deleteFavoritePath(@PathVariable(name = "id") @NotNull @Positive Integer favoritePathId){
-        favoritePathService.delete(favoritePathId);
+    ResponseEntity<Void> deleteFavoritePath(@NotNull(message = "Field (id) is required")
+                                            @Positive(message = "Id must be positive")
+                                            @PathVariable(value="id") Integer id){
+        favoritePathService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
