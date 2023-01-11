@@ -59,7 +59,7 @@ public class ReviewController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<ReviewOut> addRideReview(@RequestBody @Valid ReviewIn reviewIn, @PathVariable @NotNull @Positive Integer rideId){
+    public ResponseEntity<ReviewOut> addRideReview(@Valid @RequestBody  ReviewIn reviewIn, @PathVariable @NotNull @Positive Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         RideReview rideReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(user.getId()),ReviewType.DRIVER);

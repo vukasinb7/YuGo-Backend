@@ -66,7 +66,7 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('DRIVER')")
-    public ResponseEntity<RideDetailedOut> getActiveRidesByDriver(@PathVariable Integer id){
+    public ResponseEntity<RideDetailedOut> getActiveRidesByDriver(@PathVariable @NotNull @Positive Integer id){
         return new ResponseEntity<>(new RideDetailedOut(rideService.getActiveRideByDriver(id)), HttpStatus.OK);
     }
 
@@ -75,7 +75,7 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> getActiveRidesByPassenger(@PathVariable Integer id){
+    public ResponseEntity<RideDetailedOut> getActiveRidesByPassenger(@PathVariable @NotNull @Positive Integer id){
         return new ResponseEntity<>(new RideDetailedOut(rideService.getActiveRideByPassenger(id)), HttpStatus.OK);
     }
 
@@ -84,7 +84,7 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> getRideById(@PathVariable Integer id){
+    public ResponseEntity<RideDetailedOut> getRideById(@PathVariable @NotNull @Positive Integer id){
         return new ResponseEntity<>(new RideDetailedOut(rideService.get(id)), HttpStatus.OK);
     }
 
@@ -93,7 +93,7 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> cancelRide(@PathVariable Integer id){
+    public ResponseEntity<RideDetailedOut> cancelRide(@PathVariable @NotNull @Positive Integer id){
 
         return new ResponseEntity<>(new RideDetailedOut(rideService.cancelRide(id)), HttpStatus.OK);
     }
@@ -102,7 +102,7 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> startRide(@PathVariable Integer id){
+    public ResponseEntity<RideDetailedOut> startRide(@PathVariable @NotNull @Positive Integer id){
 
         return new ResponseEntity<>(new RideDetailedOut(rideService.startRide(id)), HttpStatus.OK);
     }
@@ -112,7 +112,7 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> acceptRide(@PathVariable Integer id){
+    public ResponseEntity<RideDetailedOut> acceptRide(@PathVariable @NotNull @Positive Integer id){
 
         return new ResponseEntity<>(new RideDetailedOut(rideService.acceptRide(id)), HttpStatus.OK);
     }
@@ -122,7 +122,7 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> endRide(@PathVariable Integer id){
+    public ResponseEntity<RideDetailedOut> endRide(@PathVariable @NotNull @Valid Integer id){
 
         return new ResponseEntity<>(new RideDetailedOut(rideService.endRide(id)), HttpStatus.OK);
     }
@@ -193,7 +193,7 @@ public class RideController {
             value = "/favorites/{id}"
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    ResponseEntity<Void> deleteFavoritePath(@PathVariable(name = "id") Integer favoritePathId){
+    ResponseEntity<Void> deleteFavoritePath(@PathVariable(name = "id") @NotNull @Positive Integer favoritePathId){
         favoritePathService.delete(favoritePathId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

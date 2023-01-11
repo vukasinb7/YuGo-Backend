@@ -1,8 +1,7 @@
 package org.yugo.backend.YuGo.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -114,7 +113,7 @@ public class UserController {
             value = "/{id}/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity<String> sendResetPasswordCode(@PathVariable Integer id) {
+    public ResponseEntity<String> sendResetPasswordCode(@PathVariable @NotNull @Positive Integer id) {
         userService.sendPasswordResetCode(id);
         return new ResponseEntity<>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
     }
@@ -123,7 +122,9 @@ public class UserController {
             value = "/{email}/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity<String> sendResetPasswordCodeEfficient(@PathVariable String email) {
+    public ResponseEntity<String> sendResetPasswordCodeEfficient(@NotBlank(message = "Field (email) is required")
+                                                                 @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
+                                                                 @PathVariable String email) {
         userService.sendPasswordResetCodeEfficient(email);
         return new ResponseEntity<>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
     }
@@ -151,10 +152,20 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<AllRidesOut> getUserRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
-                                             @RequestParam(name = "size") int size, @RequestParam(name = "sort") String sort,
+    ResponseEntity<AllRidesOut> getUserRides(@NotNull(message = "Field (id) is required")
+                                             @Positive(message = "Id must be positive")
+                                             @PathVariable(value="id") Integer id,
+                                             @Min(value=0, message = "Page must be positive")
+                                             @NotNull(message = "Field (page) is required")
+                                             @RequestParam(name="page") int page,
+                                             @Positive(message = "size must be positive")
+                                             @NotNull(message = "Field (size) is required")
+                                             @RequestParam(name="size") int size,
+                                             @NotBlank(message = "Field (from) is required")
                                              @RequestParam(name = "from") String from,
-                                             @RequestParam(name = "to") String to){
+                                             @NotBlank(message = "Field (to) is required")
+                                             @RequestParam(name = "to") String to,
+                                             @RequestParam(name = "sort", required = false) String sort){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime fromTime = LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
         LocalDateTime toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
@@ -169,7 +180,10 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size){
+    public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam(name="page") int page,
+                                                   @Positive(message = "size must be positive")
+                                                   @NotNull(message = "Field (size) is required")
+                                                   @RequestParam(name="size") int size){
         Page<User> users = userService.getUsersPage(PageRequest.of(page, size));
         Authentication a = SecurityContextHolder.getContext().getAuthentication();
         return new ResponseEntity<>(new AllUsersOut(users), HttpStatus.OK);
@@ -179,7 +193,9 @@ public class UserController {
             value = "{email}/email",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserSimplifiedOut> getUserByEmail(@PathVariable String email){
+    public ResponseEntity<UserSimplifiedOut> getUserByEmail(@NotBlank(message = "Field (email) is required")
+                                                            @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
+                                                            @PathVariable String email){
         UserSimplifiedOut user =new UserSimplifiedOut(userService.getUserByEmail(email));
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -189,7 +205,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<AllUserMessagesOut> getUserMessages(@PathVariable Integer id){
+    public ResponseEntity<AllUserMessagesOut> getUserMessages(@PathVariable @NotNull @Positive Integer id){
         return new ResponseEntity<>(new AllUserMessagesOut(messageService.getUserMessages(id)), HttpStatus.OK);
     }
 
@@ -214,7 +230,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> blockUser(@PathVariable Integer id){
+    public ResponseEntity<?> blockUser(@PathVariable @NotNull @Positive Integer id){
         userService.blockUser(id);
         HashMap<String, String> response = new HashMap<>();
         response.put("message","User is successfully blocked!");
@@ -226,7 +242,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> unblockUser(@PathVariable Integer id){
+    public ResponseEntity<?> unblockUser(@PathVariable @NotNull @Positive Integer id){
         userService.unblockUser(id);
         HashMap<String, String> response = new HashMap<>();
         response.put("message","User is successfully unblocked!");
@@ -250,8 +266,11 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AllNotesOut> getUserNotes(@PathVariable Integer id, @RequestParam(name = "page") int page,
-                                                    @RequestParam(name = "size") int size){
+    public ResponseEntity<AllNotesOut> getUserNotes(@PathVariable @NotNull @Positive Integer id,
+                                                    @RequestParam(name="page") int page,
+                                                    @Positive(message = "size must be positive")
+                                                    @NotNull(message = "Field (size) is required")
+                                                    @RequestParam(name="size") int size){
         Page<Note> notes = noteService.getUserNotes(id, PageRequest.of(page, size));
         return new ResponseEntity<>(new AllNotesOut(notes), HttpStatus.OK);
     }
