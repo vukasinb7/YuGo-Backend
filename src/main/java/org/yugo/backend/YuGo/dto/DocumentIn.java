@@ -22,7 +22,6 @@ public class DocumentIn {
     @Size(max = 100,message = "documentImage cannot be longer than 100 characters")
     private String documentImage;
 
-    @NotNull(message = "Field (documentType) is required")
     private DocumentType documentType;
 
     public DocumentIn(String name, String documentImage,DocumentType documentType) {

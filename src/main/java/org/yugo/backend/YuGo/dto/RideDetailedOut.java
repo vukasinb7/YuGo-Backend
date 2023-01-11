@@ -29,7 +29,10 @@ public class RideDetailedOut {
     public RideDetailedOut(Ride ride) {
         this.id= ride.getId();
         this.startTime = ride.getStartTime().toString();
-        this.endTime = ride.getEndTime().toString();
+        if (ride.getEndTime()!=null)
+            this.endTime = ride.getEndTime().toString();
+        else
+            this.endTime=null;
         this.totalCost = ride.getTotalCost();
         this.driver = UserSimplifiedMapper.fromUsertoDTO(ride.getDriver());
         this.passengers = ride.getPassengers().stream().map(UserSimplifiedMapper::fromUsertoDTO).toList();

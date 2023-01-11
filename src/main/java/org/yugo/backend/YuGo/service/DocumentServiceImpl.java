@@ -11,6 +11,7 @@ import org.yugo.backend.YuGo.repository.DocumentRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -29,6 +30,8 @@ public class DocumentServiceImpl implements DocumentService {
     public Document insert(Document document) throws IOException {
         document.getDriver();
         Path path = Paths.get(document.getImage());
+        if (!Files.exists(path))
+            throw new BadRequestException("Path does not exist!");
         if (Files.size(path)>5000000)
             throw new BadRequestException("File is bigger than 5mb!");
         String fileName=document.getImage();
@@ -41,6 +44,9 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Document upload(Document document, MultipartFile file) throws IOException {
         document.getDriver();
+        Path path = Paths.get(document.getImage());
+        if (!Files.exists(path))
+            throw new BadRequestException("Path does not exist!");
         if (file.getSize()>5000000)
             throw new BadRequestException("File is bigger than 5mb!");
         String fileName=file.getOriginalFilename();

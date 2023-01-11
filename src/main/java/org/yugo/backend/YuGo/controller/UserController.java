@@ -203,8 +203,9 @@ public class UserController {
             value = "{email}/email",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+
     public ResponseEntity<UserSimplifiedOut> getUserByEmail(@NotBlank(message = "Field (email) is required")
-                                                            @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
+                                                            @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",message = "Field Email format invalid")
                                                             @PathVariable String email){
         UserSimplifiedOut user =new UserSimplifiedOut(userService.getUserByEmail(email));
         return new ResponseEntity<>(user, HttpStatus.OK);

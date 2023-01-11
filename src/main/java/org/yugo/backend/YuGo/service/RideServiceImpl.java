@@ -73,7 +73,7 @@ public class RideServiceImpl implements RideService {
         Ride ride;
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-        LocalDateTime rideDateTime = LocalDateTime.parse(rideIn.getDateTime(), formatter);
+        LocalDateTime rideDateTime= LocalDateTime.parse(rideIn.getDateTime(), formatter);
         LocalDateTime now = LocalDateTime.now();
 
         VehicleTypePrice vehicleTypePrice = vehicleService.getVehicleTypeByName(rideIn.getVehicleType());

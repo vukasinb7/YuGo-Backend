@@ -102,7 +102,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')") // NE KORISTITI OVO, KORISTI uploadDocument
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public ResponseEntity<DocumentOut> createDocument(@NotNull(message = "Field (id) is required")
                                                       @Positive(message = "Id must be positive")
                                                       @PathVariable Integer id,

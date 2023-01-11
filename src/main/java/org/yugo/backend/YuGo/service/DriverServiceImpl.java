@@ -147,7 +147,7 @@ public class DriverServiceImpl implements DriverService {
         if(!driver.getTelephoneNumber().matches("^(\\+\\d{1,2}\\s?)?1?\\-?\\.?\\s?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$")){
             throw new BadRequestException("Invalid phone number");
         }
-        if(!driver.getEmail().matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\\\.[A-Za-z0-9-]+)*(\\\\.[A-Za-z]{2,})$")){
+        if(!driver.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")){
             throw new BadRequestException("Invalid email address");
         }
         driver.setName(driverUpdate.getName());
