@@ -1,5 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,7 +48,7 @@ public class PassengerController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserDetailedInOut> createPassenger(@RequestBody UserDetailedIn user){
+    public ResponseEntity<UserDetailedInOut> createPassenger(@RequestBody @Valid UserDetailedIn user){
         Passenger passenger = new Passenger(user);
         passengerService.insert(passenger);
         return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passenger), HttpStatus.OK);
@@ -77,7 +80,7 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER','DRIVER')")
-    public ResponseEntity<UserDetailedInOut> getPassenger(@PathVariable Integer id){
+    public ResponseEntity<UserDetailedInOut> getPassenger(@PathVariable @NotNull @Positive Integer id){
         return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passengerService.get(id)), HttpStatus.OK);
     }
 
@@ -86,8 +89,8 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody UserDetailedIn updatedUserDTO,
-                                                             @PathVariable Integer id){
+    public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody @Valid UserDetailedIn updatedUserDTO,
+                                                             @PathVariable @NotNull @Positive Integer id){
         Passenger passengerUpdate = new Passenger(updatedUserDTO);
         passengerUpdate.setId(id);
         Passenger updatedPassenger = passengerService.update(passengerUpdate);

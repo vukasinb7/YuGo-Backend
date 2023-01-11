@@ -1,5 +1,6 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -50,7 +51,7 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> addRide(@RequestBody RideIn rideIn) throws Exception {
+    public ResponseEntity<RideDetailedOut> addRide(@RequestBody @Valid RideIn rideIn) throws Exception {
         Ride ride = rideService.createRide(rideIn);
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime rideStart = LocalDateTime.parse(rideIn.getDateTime(), formatter);

@@ -1,5 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,7 +54,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody UserDetailedIn driverIn){
+    public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody @Valid UserDetailedIn driverIn){
         Driver driver = new Driver(driverIn);
         Driver driverNew = driverService.insertDriver(driver);
         return new ResponseEntity<>(new UserDetailedInOut(driverNew), HttpStatus.OK);
@@ -62,7 +65,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER', 'DRIVER')")
-    public ResponseEntity<UserDetailedInOut> getDriver(@PathVariable Integer id){
+    public ResponseEntity<UserDetailedInOut> getDriver(@PathVariable @NotNull @Positive Integer id){
         Driver driver = driverService.getDriver(id);
         return new ResponseEntity<>(new UserDetailedInOut(driver), HttpStatus.OK);
     }
@@ -83,7 +86,8 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    public ResponseEntity<VehicleOut> createVehicle(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
+    public ResponseEntity<VehicleOut> createVehicle(@PathVariable @NotNull @Positive Integer id,
+                                                    @RequestBody @Valid VehicleIn vehicleIn){
         Driver driver = driverService.getDriver(id);
         Vehicle vehicle = new Vehicle(vehicleIn);
         Vehicle vehicleUpdated = driverService.changeVehicle(driver, vehicle);
@@ -154,7 +158,8 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    ResponseEntity<UserDetailedInOut> updateDriver(@PathVariable Integer id, @RequestBody UserDetailedIn driverDTO){
+    public ResponseEntity<UserDetailedInOut> updateDriver(@PathVariable @NotNull @Positive Integer id,
+                                                   @RequestBody @Valid UserDetailedIn driverDTO){
         Driver driverUpdate = UserDetailedMapper.fromDTOtoDriver(driverDTO);
         driverUpdate.setId(id);
         User userUpdated = driverService.updateDriver(driverUpdate);
@@ -170,7 +175,8 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    ResponseEntity<VehicleOut> updateVehicle(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
+    ResponseEntity<VehicleOut> updateVehicle(@PathVariable @NotNull @Positive Integer id,
+                                             @RequestBody @Valid VehicleIn vehicleIn){
         Driver driver = driverService.getDriver(id);
         Vehicle vehicle = new Vehicle(vehicleIn);
         Vehicle vehicleUpdated = driverService.changeVehicle(driver, vehicle);
@@ -201,7 +207,8 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@PathVariable Integer id, @RequestBody WorkTimeIn workTimeIn){
+    ResponseEntity<WorkTimeOut> createWorkTimeForDriver(@PathVariable @NotNull @Positive Integer id,
+                                                        @RequestBody @Valid WorkTimeIn workTimeIn){
         WorkTime wt = new WorkTime();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         wt.setStartTime(LocalDateTime.parse(workTimeIn.getStart(), formatter));

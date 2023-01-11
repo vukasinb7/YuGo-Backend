@@ -1,5 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +31,7 @@ public class AdminController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserDetailedInOut> getAdmin(@PathVariable Integer id){
+    public ResponseEntity<UserDetailedInOut> getAdmin(@PathVariable @NotNull @Positive Integer id){
         return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(adminService.get(id)), HttpStatus.OK);
     }
 
@@ -37,7 +40,8 @@ public class AdminController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserDetailedInOut> updateAdmin(@RequestBody UserDetailedIn updatedAdminDTO, @PathVariable Integer id){
+    public ResponseEntity<UserDetailedInOut> updateAdmin(@RequestBody @Valid UserDetailedIn updatedAdminDTO,
+                                                         @PathVariable @NotNull @Positive Integer id){
         Admin adminUpdate = new Admin(updatedAdminDTO);
         adminUpdate.setId(id);
         Admin updatedAdmin = adminService.update(adminUpdate);

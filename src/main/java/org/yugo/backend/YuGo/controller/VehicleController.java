@@ -1,5 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,7 +51,8 @@ public class VehicleController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    public ResponseEntity makeVehicleChangeRequest(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
+    public ResponseEntity makeVehicleChangeRequest(@PathVariable @NotNull @Positive Integer id,
+                                                   @RequestBody @Valid VehicleIn vehicleIn){
         Vehicle vehicle = new Vehicle(vehicleIn);
         vehicleService.insertVehicle(vehicle);
         Driver driver = driverService.getDriver(id);

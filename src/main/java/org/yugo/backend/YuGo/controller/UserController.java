@@ -1,5 +1,6 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -76,7 +77,7 @@ public class UserController {
             value = "/refreshToken",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshIn request) {
+    public ResponseEntity<?> refreshToken(@RequestBody @Valid TokenRefreshIn request) {
         RefreshToken refreshToken = refreshTokenService.findByToken(request.getRefreshToken());
         refreshTokenService.verifyExpiration(refreshToken);
         User user = refreshToken.getUser();
