@@ -120,6 +120,7 @@ public class RideServiceImpl implements RideService {
     }
 
     @Async
+    @Override
     public void searchForDriver(Ride ride, LocalDateTime rideStartTime){
         Location rideDeparture = ride.getLocations().get(0).getDeparture();
         Location rideDestination = ride.getLocations().get(0).getDestination();
@@ -319,6 +320,9 @@ public class RideServiceImpl implements RideService {
         if (ride.getStatus() == RideStatus.PENDING) {
             ride.setStatus(RideStatus.ACCEPTED);
             save(ride);
+            for(Passenger passenger : ride.getPassengers()){
+                webSocketService.notifyPassengerAboutRide(ride.getId(), passenger.getId());
+            }
         }
         else{
             throw new BadRequestException("Cannot accept a ride that is not in status PENDING!");
@@ -345,6 +349,9 @@ public class RideServiceImpl implements RideService {
             Rejection rejection =new Rejection(ride,passengerService.get(user.getId()),reason,LocalDateTime.now());
             ride.setRejection(rejection);
             save(ride);
+            for(Passenger passenger : ride.getPassengers()){
+                webSocketService.notifyPassengerAboutRide(ride.getId(), passenger.getId());
+            }
         }
         else{
             throw new BadRequestException("Cannot accept a ride that is not in status PENDING!");

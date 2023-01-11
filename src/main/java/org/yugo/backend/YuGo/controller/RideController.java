@@ -54,7 +54,7 @@ public class RideController {
         Ride ride = rideService.createRide(rideIn);
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime rideStart = LocalDateTime.parse(rideIn.getDateTime(), formatter);
-        rideService.searchForDriver(ride, rideStart);
+        rideService.searchForDriver(new Ride(ride), rideStart);
         return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
     }
 
@@ -80,7 +80,7 @@ public class RideController {
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasRole('PASSENGER')")
+    @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
     public ResponseEntity<RideDetailedOut> getRideById(@PathVariable Integer id){
         return new ResponseEntity<>(new RideDetailedOut(rideService.get(id)), HttpStatus.OK);
     }
@@ -108,9 +108,9 @@ public class RideController {
             value = "/{id}/accept",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasRole('PASSENGER')")
+    @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
     public ResponseEntity<RideDetailedOut> acceptRide(@PathVariable Integer id){
-
+        System.out.println("ride accepted");
         return new ResponseEntity<>(new RideDetailedOut(rideService.acceptRide(id)), HttpStatus.OK);
     }
 
@@ -146,7 +146,7 @@ public class RideController {
 
     @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<RideDetailedOut> rejectRide(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
-
+        System.out.println("Ride rejected");
         return new ResponseEntity<>(new RideDetailedOut(rideService.rejectRide(id,reasonIn.getReason())), HttpStatus.OK);
 
     }
