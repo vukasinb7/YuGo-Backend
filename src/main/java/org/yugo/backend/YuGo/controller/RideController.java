@@ -146,10 +146,10 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<PanicOut> addPanic(@RequestBody @Valid ReasonIn reasonIn,
-                                             @NotNull(message = "Field (id) is required")
+    public ResponseEntity<PanicOut> addPanic(@NotNull(message = "Field (id) is required")
                                              @Positive(message = "Id must be positive")
-                                             @PathVariable(value="id") Integer id){
+                                             @PathVariable(value="id") Integer id,
+                                             @RequestBody @Valid ReasonIn reasonIn){
         Ride ride= rideService.get(id);
         Panic panic= new Panic(passengerService.get(1),ride, LocalDateTime.now(), reasonIn.getReason());
         ride.setIsPanicPressed(true);
@@ -165,10 +165,10 @@ public class RideController {
     )
 
     @PreAuthorize("hasRole('DRIVER')")
-    public ResponseEntity<RideDetailedOut> rejectRide(@RequestBody @Valid ReasonIn reasonIn,
-                                                      @NotNull(message = "Field (id) is required")
+    public ResponseEntity<RideDetailedOut> rejectRide(@NotNull(message = "Field (id) is required")
                                                       @Positive(message = "Id must be positive")
-                                                      @PathVariable(value="id") Integer id){
+                                                      @PathVariable(value="id") Integer id,
+                                                      @RequestBody @Valid ReasonIn reasonIn){
 
         return new ResponseEntity<>(new RideDetailedOut(rideService.rejectRide(id,reasonIn.getReason())), HttpStatus.OK);
 

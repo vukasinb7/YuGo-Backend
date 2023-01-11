@@ -1,4 +1,5 @@
 package org.yugo.backend.YuGo.annotation;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -13,19 +14,19 @@ import org.yugo.backend.YuGo.model.User;
 
 @Aspect
 @Component
-public class AuthorizeSelfAspect {
-    @Before("@annotation(authorizeSelf)")
-    public void authorize(JoinPoint joinPoint, AuthorizeSelf authorizeSelf) {
+public class AuthorizeSelfAndAdminAspect {
+    @Before("@annotation(authorizeSelfAndAdmin)")
+    public void authorize(JoinPoint joinPoint, AuthorizeSelfAndAdmin authorizeSelfAndAdmin) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
         Object[] args = joinPoint.getArgs();
         ExpressionParser elParser = new SpelExpressionParser();
-        Expression expression = elParser.parseExpression(authorizeSelf.pathToUserId());
+        Expression expression = elParser.parseExpression(authorizeSelfAndAdmin.pathToUserId());
         Integer userId = (Integer) expression.getValue(args);
 
-        if (!user.getId().equals(userId)){
-            throw new NotFoundException(authorizeSelf.message());
+        if (!user.getId().equals(userId) && !user.getRole().equals("ADMIN")){
+            throw new NotFoundException(authorizeSelfAndAdmin.message());
         }
     }
 }

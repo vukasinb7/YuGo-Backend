@@ -164,7 +164,7 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<AllUsersOut> getDrivers(@Min(value=0, message = "Page must be positive")
+    ResponseEntity<AllUsersOut> getDrivers(@Min(value=0, message = "Page must be 0 or greater")
                                            @NotNull(message = "Field (page) is required")
                                            @RequestParam int page,
                                            @Positive(message = "Size must be positive")
@@ -218,7 +218,7 @@ public class DriverController {
     ResponseEntity<AllWorkTimeOut> getWorkingTimes(@NotNull(message = "Field (id) is required")
                                                    @Positive(message = "Id must be positive")
                                                    @PathVariable(value="id") Integer id,
-                                                   @Min(value=0, message = "Page must be positive")
+                                                   @Min(value=0, message = "Page must be 0 or greater")
                                                    @NotNull(message = "Field (page) is required")
                                                    @RequestParam(name="page") int page,
                                                    @Positive(message = "Size must be positive")
@@ -277,7 +277,7 @@ public class DriverController {
     ResponseEntity<AllRidesOut> getRidesForDriver(@NotNull(message = "Field (id) is required")
                                                   @Positive(message = "Id must be positive")
                                                   @PathVariable(value="id") Integer id,
-                                                  @Min(value=0, message = "Page must be positive")
+                                                  @Min(value=0, message = "Page must be 0 or greater")
                                                   @NotNull(message = "Field (page) is required")
                                                   @RequestParam(name="page") int page,
                                                   @Positive(message = "Size must be positive")

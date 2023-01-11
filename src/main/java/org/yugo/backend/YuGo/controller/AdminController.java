@@ -42,10 +42,10 @@ public class AdminController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserDetailedInOut> updateAdmin(@RequestBody @Valid UserDetailedIn updatedAdminDTO,
-                                                         @NotNull(message = "Field (id) is required")
+    public ResponseEntity<UserDetailedInOut> updateAdmin(@NotNull(message = "Field (id) is required")
                                                          @Positive(message = "Id must be positive")
-                                                         @PathVariable(value="id") Integer id){
+                                                         @PathVariable(value="id") Integer id,
+                                                         @RequestBody @Valid UserDetailedIn updatedAdminDTO){
         Admin adminUpdate = new Admin(updatedAdminDTO);
         adminUpdate.setId(id);
         Admin updatedAdmin = adminService.update(adminUpdate);

@@ -164,7 +164,7 @@ public class UserController {
     ResponseEntity<AllRidesOut> getUserRides(@NotNull(message = "Field (id) is required")
                                              @Positive(message = "Id must be positive")
                                              @PathVariable(value="id") Integer id,
-                                             @Min(value=0, message = "Page must be positive")
+                                             @Min(value=0, message = "Page must be greater than 0")
                                              @NotNull(message = "Field (page) is required")
                                              @RequestParam(name="page") int page,
                                              @Positive(message = "size must be positive")
@@ -189,8 +189,8 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    @AuthorizeSelf
-    public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam(name="page") int page,
+    public ResponseEntity<AllUsersOut> getAllUsers(@Min(value=0, message = "Page must be greater than 0")
+                                                   @RequestParam(name="page") int page,
                                                    @Positive(message = "size must be positive")
                                                    @NotNull(message = "Field (size) is required")
                                                    @RequestParam(name="size") int size){
@@ -288,7 +288,9 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AllNotesOut> getUserNotes(@PathVariable @NotNull @Positive Integer id,
+    public ResponseEntity<AllNotesOut> getUserNotes(@NotNull(message = "Field (id) is required")
+                                                    @Positive(message = "Id must be positive")
+                                                    @PathVariable Integer id,
                                                     @RequestParam(name="page") int page,
                                                     @Positive(message = "size must be positive")
                                                     @NotNull(message = "Field (size) is required")

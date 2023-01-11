@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelf;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.dto.AllPassengersOut;
 import org.yugo.backend.YuGo.dto.AllRidesOut;
 import org.yugo.backend.YuGo.dto.UserDetailedIn;
@@ -37,7 +39,6 @@ public class PassengerController {
     private final PassengerService passengerService;
     private final RideService rideService;
     private final UserActivationService userActivationService;
-
     @Autowired
     public PassengerController(PassengerService passengerService, RideService rideService,
                                UserActivationService userActivationService){
@@ -61,7 +62,7 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AllPassengersOut> getAllPassengers(@Min(value=0, message = "Page must be positive")
+    public ResponseEntity<AllPassengersOut> getAllPassengers(@Min(value=0, message = "Page must be 0 or greater")
                                                              @NotNull(message = "Field (page) is required")
                                                              @RequestParam int page,
                                                              @Positive(message = "Size must be positive")
@@ -77,7 +78,7 @@ public class PassengerController {
     )
     public ResponseEntity<?> activatePassenger(@NotNull(message = "Field (id) is required")
                                                @Positive(message = "Id must be positive")
-                                               @PathVariable(value="id") Integer activationId){
+                                               @PathVariable(value="activationId") Integer activationId){
         userActivationService.activateUser(activationId);
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Successful account activation!");
@@ -100,10 +101,10 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody @Valid UserDetailedIn updatedUserDTO,
-                                                             @NotNull(message = "Field (id) is required")
+    public ResponseEntity<UserDetailedInOut> updatePassenger(@NotNull(message = "Field (id) is required")
                                                              @Positive(message = "Id must be positive")
-                                                             @PathVariable(value="id") Integer id){
+                                                             @PathVariable(value="id") Integer id,
+                                                             @RequestBody @Valid UserDetailedIn updatedUserDTO){
         Passenger passengerUpdate = new Passenger(updatedUserDTO);
         passengerUpdate.setId(id);
         Passenger updatedPassenger = passengerService.update(passengerUpdate);
@@ -115,10 +116,11 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     ResponseEntity<AllRidesOut> getPassengerRides(@NotNull(message = "Field (id) is required")
                                                   @Positive(message = "Id must be positive")
                                                   @PathVariable(value="id") Integer id,
-                                                  @Min(value=0, message = "Page must be positive")
+                                                  @Min(value=0, message = "Page must be 0 or greater")
                                                   @NotNull(message = "Field (page) is required")
                                                   @RequestParam(name="page") int page,
                                                   @Positive(message = "Size must be positive")
