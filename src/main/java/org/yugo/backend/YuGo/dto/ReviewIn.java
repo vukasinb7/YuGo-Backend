@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Range;
 @Getter @Setter
 @NoArgsConstructor
 public class ReviewIn {
-    @NotNull(message = "Field rating cannot be null")
+    @NotNull(message = "Field (rating) cannot be null")
     @Range(min=1, max=5,message = "Field rating must have value between 1 and 5")
     private int rating;
     private String comment;

@@ -1,24 +1,21 @@
-package org.yugo.backend.YuGo.exceptions;
+package org.yugo.backend.YuGo.exception;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,14 +55,12 @@ public class ExceptionResolver {
             msg = jpe.getOriginalMessage();
         }
 
-        // special case of JsonMappingException below, too much class detail in error messages
         else if (cause instanceof MismatchedInputException) {
             MismatchedInputException mie = (MismatchedInputException) cause;
             if (mie.getPath() != null && mie.getPath().size() > 0) {
                 msg = "Field " + mie.getPath().get(0).getFieldName()+" format is not valid";
             }
 
-            // just in case, haven't seen this condition
             else {
                 msg = "Invalid request message";
             }
@@ -98,8 +93,16 @@ public class ExceptionResolver {
             FieldError fe = (FieldError) error;
             sb.append(error.getDefaultMessage());
         }
-
         return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    protected ResponseEntity<String> illegalArgument(IllegalArgumentException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler({DateTimeParseException.class})
+    protected ResponseEntity<String> dateTimeParse(DateTimeParseException exception) {
+        return new ResponseEntity<>("Value " + exception.getParsedString() + " is not valid DateTime format", HttpStatus.BAD_REQUEST);
     }
 
 }

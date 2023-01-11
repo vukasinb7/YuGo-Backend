@@ -7,8 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
-import org.yugo.backend.YuGo.exceptions.NotFoundException;
+import org.yugo.backend.YuGo.exception.BadRequestException;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.repository.*;
 
@@ -19,6 +19,7 @@ import java.util.Optional;
 
 @Service
 public class DriverServiceImpl implements DriverService {
+    private final UserService userService;
     private final UserRepository userRepository;
     private final WorkTimeRepository workTimeRepository;
     private final VehicleRepository vehicleRepository;
@@ -28,12 +29,13 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     public DriverServiceImpl(UserRepository userRepository, WorkTimeRepository workTimeRepository,
                              VehicleRepository vehicleRepository, RoleService roleService,
-                             BCryptPasswordEncoder passwordEncoder){
+                             BCryptPasswordEncoder passwordEncoder, UserService userService){
         this.userRepository = userRepository;
         this.workTimeRepository = workTimeRepository;
         this.vehicleRepository = vehicleRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
     @Override
@@ -144,12 +146,13 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public Driver updateDriver(Driver driverUpdate){
         Driver driver = getDriver(driverUpdate.getId());
-        if(!driver.getTelephoneNumber().matches("^(\\+\\d{1,2}\\s?)?1?\\-?\\.?\\s?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$")){
-            throw new BadRequestException("Invalid phone number");
+        try{
+            User foundUser = userService.getUserByEmail(driverUpdate.getEmail());
+            if (!foundUser.getEmail().equals(driver.getEmail())){
+                throw new BadRequestException("User with that email already exists");
+            }
         }
-        if(!driver.getEmail().matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\\\.[A-Za-z0-9-]+)*(\\\\.[A-Za-z]{2,})$")){
-            throw new BadRequestException("Invalid email address");
-        }
+        catch (NotFoundException ignored){}
         driver.setName(driverUpdate.getName());
         driver.setSurname(driverUpdate.getSurname());
         driver.setProfilePicture(driverUpdate.getProfilePicture());

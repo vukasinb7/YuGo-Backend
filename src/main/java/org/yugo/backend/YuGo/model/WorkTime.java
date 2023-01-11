@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class WorkTime {
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private LocalDateTime endTime;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id")

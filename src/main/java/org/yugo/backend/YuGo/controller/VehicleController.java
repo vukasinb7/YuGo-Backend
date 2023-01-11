@@ -1,5 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelf;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.dto.AllVehicleChangeRequestsOut;
 import org.yugo.backend.YuGo.dto.LocationInOut;
 import org.yugo.backend.YuGo.dto.VehicleIn;
@@ -37,7 +42,10 @@ public class VehicleController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<Void> changeLocation(@RequestBody LocationInOut locationInOut, @PathVariable Integer id){
+    public ResponseEntity<Void> changeLocation(@RequestBody @Valid LocationInOut locationInOut,
+                                               @NotNull(message = "Field (id) is required")
+                                               @Positive(message = "Id must be positive")
+                                               @PathVariable(value="id") Integer id){
         Vehicle vehicle=vehicleService.getVehicle(id);
         vehicle.setCurrentLocation(LocationMapper.fromDTOtoLocation(locationInOut));
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -48,7 +56,9 @@ public class VehicleController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    public ResponseEntity makeVehicleChangeRequest(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
+    public ResponseEntity makeVehicleChangeRequest(@PathVariable @NotNull @Positive Integer id,
+                                                   @RequestBody @Valid VehicleIn vehicleIn){
         Vehicle vehicle = new Vehicle(vehicleIn);
         vehicleService.insertVehicle(vehicle);
         Driver driver = driverService.getDriver(id);
