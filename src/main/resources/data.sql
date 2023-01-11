@@ -95,6 +95,11 @@ INSERT INTO PATHS (starting_point, destination) VALUES ('1', '3');
 INSERT INTO PATHS (starting_point, destination) VALUES ('2', '1');
 
 INSERT INTO RIDES_LOCATIONS (ride_id, locations_id) VALUES  (1, 1);
+INSERT INTO RIDES_LOCATIONS (ride_id, locations_id) VALUES  (2, 2);
+INSERT INTO RIDES_LOCATIONS (ride_id, locations_id) VALUES  (3, 3);
+INSERT INTO RIDES_LOCATIONS (ride_id, locations_id) VALUES  (4, 4);
+INSERT INTO RIDES_LOCATIONS (ride_id, locations_id) VALUES  (5, 5);
+INSERT INTO RIDES_LOCATIONS (ride_id, locations_id) VALUES  (6, 6);
 
 INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
 VALUES ('1','1');

@@ -9,6 +9,7 @@ import org.yugo.backend.YuGo.model.DocumentType;
 @Getter @Setter
 @NoArgsConstructor
 public class DocumentIn {
+
     private String name;
     private String documentImage;
     private DocumentType documentType;
