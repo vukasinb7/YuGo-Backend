@@ -18,6 +18,7 @@ import org.yugo.backend.YuGo.dto.AcumulatedReviewsOut;
 import org.yugo.backend.YuGo.dto.AllRideReviewsOut;
 import org.yugo.backend.YuGo.dto.ReviewIn;
 import org.yugo.backend.YuGo.dto.ReviewOut;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.PassengerService;
 import org.yugo.backend.YuGo.service.ReviewService;
@@ -50,8 +51,11 @@ public class ReviewController {
                                                       @Positive(message = "Id must be positive")
                                                       @PathVariable(value="rideId") Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
-        RideReview vehicleReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(user.getId()),ReviewType.VEHICLE);
+        Passenger passenger = (Passenger) auth.getPrincipal();
+        if (!rideService.get(rideId).getPassengers().contains(passenger)){
+            throw new NotFoundException("Vehicle does not exist!");
+        }
+        RideReview vehicleReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(passenger.getId()),ReviewType.VEHICLE);
         reviewService.insertRideReview(vehicleReview);
         return new ResponseEntity<>(new ReviewOut(vehicleReview), HttpStatus.OK);
     }
@@ -67,8 +71,11 @@ public class ReviewController {
                                                    @Positive(message = "RideId must be positive")
                                                    @PathVariable(value="rideId") Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
-        RideReview rideReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(user.getId()),ReviewType.DRIVER);
+        Passenger passenger = (Passenger) auth.getPrincipal();
+        if (!rideService.get(rideId).getPassengers().contains(passenger)){
+            throw new NotFoundException("Vehicle does not exist!");
+        }
+        RideReview rideReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(passenger.getId()),ReviewType.DRIVER);
         reviewService.insertRideReview(rideReview);
         return new ResponseEntity<>(new ReviewOut(rideReview), HttpStatus.OK);
     }
@@ -104,6 +111,19 @@ public class ReviewController {
     public ResponseEntity<List<AcumulatedReviewsOut>> getAllRideReviews(@NotNull(message = "Field (id) is required")
                                                                         @Positive(message = "Id must be positive")
                                                                         @PathVariable(value="id") Integer id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        if (user.getRole().equals("DRIVER")){
+            if (!rideService.get(id).getDriver().equals(user)){
+                throw new NotFoundException("Ride does not exist!");
+            }
+        }
+        else if (user.getRole().equals("PASSENGER")){
+            if (!rideService.get(id).getPassengers().contains((Passenger) user)){
+                throw new NotFoundException("Ride does not exist!");
+            }
+        }
+
         List<AcumulatedReviewsOut> result= new ArrayList<>();
         for (Passenger passenger:rideService.get(id).getPassengers()) {
             RideReview vehicleReviews = reviewService.getVehicleReviewsByRideByPassenger(id,passenger.getId());
@@ -119,9 +139,4 @@ public class ReviewController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
-
-
-
-
 }
