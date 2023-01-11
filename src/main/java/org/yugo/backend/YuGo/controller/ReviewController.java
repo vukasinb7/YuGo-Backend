@@ -3,6 +3,7 @@ package org.yugo.backend.YuGo.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,7 +45,7 @@ public class ReviewController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<ReviewOut> addVehicleReview(@RequestBody @Valid ReviewIn reviewIn, @PathVariable @NotNull Integer rideId){
+    public ResponseEntity<ReviewOut> addVehicleReview(@RequestBody @Valid ReviewIn reviewIn, @PathVariable @NotNull @Positive Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         RideReview vehicleReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(user.getId()),ReviewType.VEHICLE);
@@ -58,7 +59,7 @@ public class ReviewController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<ReviewOut> addRideReview(@RequestBody ReviewIn reviewIn, @PathVariable Integer rideId){
+    public ResponseEntity<ReviewOut> addRideReview(@RequestBody @Valid ReviewIn reviewIn, @PathVariable @NotNull @Positive Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         RideReview rideReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(user.getId()),ReviewType.DRIVER);

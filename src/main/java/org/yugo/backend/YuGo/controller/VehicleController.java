@@ -40,7 +40,7 @@ public class VehicleController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<Void> changeLocation(@RequestBody LocationInOut locationInOut, @PathVariable Integer id){
+    public ResponseEntity<Void> changeLocation(@RequestBody @Valid LocationInOut locationInOut, @PathVariable @NotNull Integer id){
         Vehicle vehicle=vehicleService.getVehicle(id);
         vehicle.setCurrentLocation(LocationMapper.fromDTOtoLocation(locationInOut));
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

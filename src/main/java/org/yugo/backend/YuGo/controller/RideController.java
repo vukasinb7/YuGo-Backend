@@ -1,6 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -130,7 +132,7 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<PanicOut> addPanic(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
+    public ResponseEntity<PanicOut> addPanic(@RequestBody @Valid ReasonIn reasonIn, @PathVariable @NotNull @Positive Integer id){
         Ride ride= rideService.get(id);
         Panic panic= new Panic(passengerService.get(1),ride, LocalDateTime.now(), reasonIn.getReason());
         ride.setIsPanicPressed(true);
@@ -146,7 +148,7 @@ public class RideController {
     )
 
     @PreAuthorize("hasRole('DRIVER')")
-    public ResponseEntity<RideDetailedOut> rejectRide(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
+    public ResponseEntity<RideDetailedOut> rejectRide(@RequestBody @Valid ReasonIn reasonIn, @PathVariable @NotNull @Positive Integer id){
 
         return new ResponseEntity<>(new RideDetailedOut(rideService.rejectRide(id,reasonIn.getReason())), HttpStatus.OK);
 
@@ -157,7 +159,7 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    public ResponseEntity<FavoritePathOut> addFavoritePath(@RequestBody FavoritePathIn favoritePathIn){
+    public ResponseEntity<FavoritePathOut> addFavoritePath(@RequestBody @Valid FavoritePathIn favoritePathIn){
         Set<Passenger> passengers=new HashSet<>();
         for (UserSimplifiedOut user:favoritePathIn.getPassengers()) {
             passengers.add(passengerService.get(user.getId()));

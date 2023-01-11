@@ -1,6 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -59,7 +61,7 @@ public class UserController {
             value = "/login",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<TokenStateOut> createAuthenticationToken(@RequestBody JwtAuthenticationIn authenticationRequest) {
+    public ResponseEntity<TokenStateOut> createAuthenticationToken(@RequestBody @Valid JwtAuthenticationIn authenticationRequest) {
         try{
             Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -103,7 +105,7 @@ public class UserController {
             produces = MediaType.TEXT_PLAIN_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<?> changePassword(@PathVariable Integer id, @RequestBody PasswordChangeIn passwordChangeIn) {
+    public ResponseEntity<?> changePassword(@PathVariable @NotNull @Positive Integer id, @RequestBody @Valid PasswordChangeIn passwordChangeIn) {
         userService.changePassword(id, passwordChangeIn.getOldPassword(), passwordChangeIn.getNewPassword());
         return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
     }
@@ -130,7 +132,7 @@ public class UserController {
             value = "/{id}/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity<String> resetPasswordWithCode(@PathVariable Integer id, @RequestBody PasswordResetIn passwordResetIn) {
+    public ResponseEntity<String> resetPasswordWithCode(@PathVariable @NotNull @Positive Integer id, @RequestBody @Valid PasswordResetIn passwordResetIn) {
         userService.resetPassword(id, passwordResetIn.getNewPassword(), passwordResetIn.getCode());
         return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
     }
@@ -139,7 +141,7 @@ public class UserController {
             value = "/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity<String> resetPasswordWithCodeEfficient(@RequestBody PasswordResetIn passwordResetIn) {
+    public ResponseEntity<String> resetPasswordWithCodeEfficient(@RequestBody @Valid PasswordResetIn passwordResetIn) {
         userService.resetPasswordEfficient(passwordResetIn.getCode(), passwordResetIn.getNewPassword());
         return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
     }
@@ -196,7 +198,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestBody MessageIn messageIn){
+    public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable @NotNull @Positive Integer id, @RequestBody @Valid MessageIn messageIn){
         User sender = userService.getUser(id);
         User receiver = userService.getUser(messageIn.getReceiverId());
         Ride ride = rideService.get(messageIn.getRideId());
@@ -236,7 +238,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<NoteOut> createNote(@PathVariable Integer id, @RequestBody NoteIn noteIn){
+    public ResponseEntity<NoteOut> createNote(@PathVariable @NotNull @Positive Integer id, @RequestBody @Valid NoteIn noteIn){
         User user = userService.getUser(id);
         Note note = new Note(user, noteIn.getMessage(), LocalDateTime.now());
         noteService.insert(note);

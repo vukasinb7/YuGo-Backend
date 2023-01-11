@@ -100,7 +100,7 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')") // NE KORISTITI OVO, KORISTI uploadDocument
-    public ResponseEntity<DocumentOut> createDocument(@PathVariable Integer id, @RequestBody DocumentIn documentIn) throws IOException {
+    public ResponseEntity<DocumentOut> createDocument(@PathVariable @NotNull @Positive Integer id, @RequestBody @Valid DocumentIn documentIn) throws IOException {
         Driver driver = driverService.getDriver(id);
         Document document = new Document(documentIn.getName(), documentIn.getDocumentImage(), driver,DocumentType.DRIVING_LICENCE);
         documentService.insert(document);
@@ -256,7 +256,7 @@ public class DriverController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<WorkTimeOut> updateWorkTime(@PathVariable(value = "working-hour-id") Integer id, @RequestBody EndWorkTimeIn workTimeIn){
+    ResponseEntity<WorkTimeOut> updateWorkTime(@PathVariable(value = "working-hour-id") @NotNull @Positive Integer id, @RequestBody @Valid EndWorkTimeIn workTimeIn){
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime endTime = LocalDateTime.parse(workTimeIn.getEnd(), formatter);
