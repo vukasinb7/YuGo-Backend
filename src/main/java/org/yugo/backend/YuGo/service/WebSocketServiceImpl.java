@@ -13,14 +13,20 @@ public class WebSocketServiceImpl implements WebSocketService {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
-    private class DriverRequest{
+    private class RideDTO{
         public Integer rideID;
     }
     @Override
     public void sendRideRequestToDriver(Integer driverID, Integer rideID){
-        DriverRequest output = new DriverRequest();
+        RideDTO output = new RideDTO();
         output.rideID = rideID;
         simpMessagingTemplate.convertAndSend("/ride-topic/driver-request/" + driverID, output);
+    }
+    @Override
+    public void notifyPassengerAboutRide(Integer rideID, Integer passengerID){
+        RideDTO output = new RideDTO();
+        output.rideID = rideID;
+        simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger/" + passengerID, output);
     }
 
 }

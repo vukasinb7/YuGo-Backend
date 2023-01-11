@@ -28,16 +28,25 @@ public class RideDetailedOut {
 
     public RideDetailedOut(Ride ride) {
         this.id= ride.getId();
-        this.startTime = ride.getStartTime().toString();
-        if (ride.getEndTime()!=null)
+        if(ride.getStartTime() != null){
+            this.startTime = ride.getStartTime().toString();
+        }else{
+            this.startTime = null;
+        }
+        if(ride.getEndTime() != null){
             this.endTime = ride.getEndTime().toString();
-        else
-            this.endTime=null;
+        }else{
+            this.endTime = null;
+        }
         this.totalCost = ride.getTotalCost();
-        this.driver = UserSimplifiedMapper.fromUsertoDTO(ride.getDriver());
+        if(driver != null){
+            this.driver = UserSimplifiedMapper.fromUsertoDTO(ride.getDriver());
+        }else{
+            this.driver = null;
+        }
         this.passengers = ride.getPassengers().stream().map(UserSimplifiedMapper::fromUsertoDTO).toList();
         this.estimatedTimeInMinutes = ride.getEstimatedTimeInMinutes();
-        this.vehicleType = ride.getDriver().getVehicle().getVehicleType().toString();
+        this.vehicleType = ride.getVehicleTypePrice().getVehicleType().toString();
         this.babyTransport = ride.getBabyTransport();
         this.petTransport = ride.getPetTransport();
         this.locations = ride.getLocations().stream().map(PathMapper::fromPathtoDTO).toList();

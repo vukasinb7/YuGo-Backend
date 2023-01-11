@@ -69,4 +69,22 @@ public class Ride {
         this.petTransport = includesPets;
         this.vehicleTypePrice = vehicleTypePrice;
     }
+
+    public Ride(Ride other) {
+        this.id = other.id;
+        this.startTime = other.startTime;
+        this.endTime = other.endTime;
+        this.totalCost = other.totalCost;
+        this.driver = other.driver;
+        this.passengers = other.passengers;
+        this.locations = other.locations;
+        this.estimatedTimeInMinutes = other.estimatedTimeInMinutes;
+        this.rideReviews = other.rideReviews;
+        this.status = other.status;
+        this.rejection = other.rejection;
+        this.isPanicPressed = other.isPanicPressed;
+        this.babyTransport = other.babyTransport;
+        this.petTransport = other.petTransport;
+        this.vehicleTypePrice = other.vehicleTypePrice;
+    }
 }

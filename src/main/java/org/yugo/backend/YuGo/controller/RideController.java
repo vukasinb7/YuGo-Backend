@@ -60,7 +60,7 @@ public class RideController {
         Ride ride = rideService.createRide(rideIn);
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime rideStart = LocalDateTime.parse(rideIn.getDateTime(), formatter);
-        rideService.searchForDriver(ride, rideStart);
+        rideService.searchForDriver(new Ride(ride), rideStart);
         return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
     }
 
@@ -92,7 +92,7 @@ public class RideController {
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAnyRole('ADMIN','PASSENGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','PASSENGER', 'DRIVER')")
     public ResponseEntity<RideDetailedOut> getRideById(@NotNull(message = "Field (id) is required")
                                                        @Positive(message = "Id must be positive")
                                                        @PathVariable(value="id") Integer id){

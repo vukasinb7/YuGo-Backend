@@ -84,6 +84,7 @@ public class WebSecurityConfig {
                 requestMatchers(HttpMethod.POST,"/api/unregisteredUser").permitAll().
                 requestMatchers("/api/image/**").permitAll().
                 requestMatchers("/api/vehicleType").permitAll().
+                requestMatchers("/api/socket/**").permitAll().
                 requestMatchers(toH2Console()).permitAll().
                 anyRequest().authenticated().and()
                 .exceptionHandling().accessDeniedHandler(this.restAccessDeniedHandler).and()
