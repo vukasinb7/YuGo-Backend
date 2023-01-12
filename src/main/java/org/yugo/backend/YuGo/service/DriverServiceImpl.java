@@ -145,21 +145,18 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Driver updateDriver(Driver driverUpdate){
-        Driver driver = getDriver(driverUpdate.getId());
         try{
-            User foundUser = userService.getUserByEmail(driverUpdate.getEmail());
-            if (!foundUser.getEmail().equals(driver.getEmail())){
-                throw new BadRequestException("User with that email already exists");
-            }
+            Driver driver = getDriver(driverUpdate.getId());
+            driver.setName(driverUpdate.getName());
+            driver.setSurname(driverUpdate.getSurname());
+            driver.setProfilePicture(driverUpdate.getProfilePicture());
+            driver.setTelephoneNumber(driverUpdate.getTelephoneNumber());
+            driver.setEmail(driverUpdate.getEmail());
+            driver.setAddress(driverUpdate.getAddress());
+            return userRepository.save(driver);
+        }catch (DataIntegrityViolationException e){
+            throw new BadRequestException("Email is already being used by another user!");
         }
-        catch (NotFoundException ignored){}
-        driver.setName(driverUpdate.getName());
-        driver.setSurname(driverUpdate.getSurname());
-        driver.setProfilePicture(driverUpdate.getProfilePicture());
-        driver.setTelephoneNumber(driverUpdate.getTelephoneNumber());
-        driver.setEmail(driverUpdate.getEmail());
-        driver.setAddress(driverUpdate.getAddress());
-        return userRepository.save(driver);
     }
 
     @Override

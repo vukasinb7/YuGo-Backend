@@ -63,21 +63,18 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     public Passenger update(Passenger passengerUpdate){
-        Passenger passenger = get(passengerUpdate.getId());
         try{
-            User foundUser = userService.getUserByEmail(passengerUpdate.getEmail());
-            if (!foundUser.getEmail().equals(passenger.getEmail())){
-                throw new BadRequestException("User with that email already exists");
-            }
+            Passenger passenger = get(passengerUpdate.getId());
+            passenger.setName(passengerUpdate.getName());
+            passenger.setSurname(passengerUpdate.getSurname());
+            passenger.setProfilePicture(passengerUpdate.getProfilePicture());
+            passenger.setTelephoneNumber(passengerUpdate.getTelephoneNumber());
+            passenger.setEmail(passengerUpdate.getEmail());
+            passenger.setAddress(passengerUpdate.getAddress());
+            return passengerRepository.save(passenger);
+        }catch (DataIntegrityViolationException e){
+            throw new BadRequestException("Email is already being used by another user!");
         }
-        catch (NotFoundException ignored){}
-        passenger.setName(passengerUpdate.getName());
-        passenger.setSurname(passengerUpdate.getSurname());
-        passenger.setProfilePicture(passengerUpdate.getProfilePicture());
-        passenger.setTelephoneNumber(passengerUpdate.getTelephoneNumber());
-        passenger.setEmail(passengerUpdate.getEmail());
-        passenger.setAddress(passengerUpdate.getAddress());
-        return passengerRepository.save(passenger);
     }
 
     @Override

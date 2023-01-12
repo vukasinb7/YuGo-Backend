@@ -25,7 +25,6 @@ public class UserDetailedIn {
     @NotBlank(message = "Field (address) is required!")
     @Size(max = 100, message = "Field (address) cannot be longer than 50 characters!")
     private String address;
-    @NotBlank(message = "Field (password) is required!")
     @Size(min=6, max = 30, message = "Field (password) cannot be less than 6 characters and more than 30 characters!")
     private String password;
 
