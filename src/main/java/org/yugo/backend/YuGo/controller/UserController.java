@@ -1,5 +1,7 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,8 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelf;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.dto.*;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
+import org.yugo.backend.YuGo.exception.BadRequestException;
 import org.yugo.backend.YuGo.mapper.MessageMapper;
 import org.yugo.backend.YuGo.mapper.NoteMapper;
 import org.yugo.backend.YuGo.model.*;
@@ -58,7 +62,7 @@ public class UserController {
             value = "/login",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<TokenStateOut> createAuthenticationToken(@RequestBody JwtAuthenticationIn authenticationRequest) {
+    public ResponseEntity<TokenStateOut> createAuthenticationToken(@RequestBody @Valid JwtAuthenticationIn authenticationRequest) {
         try{
             Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -76,7 +80,7 @@ public class UserController {
             value = "/refreshToken",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshIn request) {
+    public ResponseEntity<?> refreshToken(@RequestBody @Valid TokenRefreshIn request) {
         RefreshToken refreshToken = refreshTokenService.findByToken(request.getRefreshToken());
         refreshTokenService.verifyExpiration(refreshToken);
         User user = refreshToken.getUser();
@@ -102,7 +106,11 @@ public class UserController {
             produces = MediaType.TEXT_PLAIN_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<?> changePassword(@PathVariable Integer id, @RequestBody PasswordChangeIn passwordChangeIn) {
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
+    public ResponseEntity<?> changePassword(@NotNull(message = "Field (id) is required")
+                                            @Positive(message = "Id must be positive")
+                                            @PathVariable(value="id") Integer id,
+                                            @RequestBody @Valid PasswordChangeIn passwordChangeIn) {
         userService.changePassword(id, passwordChangeIn.getOldPassword(), passwordChangeIn.getNewPassword());
         return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
     }
@@ -111,7 +119,9 @@ public class UserController {
             value = "/{id}/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity<String> sendResetPasswordCode(@PathVariable Integer id) {
+    public ResponseEntity<String> sendResetPasswordCode(@NotNull(message = "Field (id) is required")
+                                                        @Positive(message = "Id must be positive")
+                                                        @PathVariable(value="id") Integer id) {
         userService.sendPasswordResetCode(id);
         return new ResponseEntity<>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
     }
@@ -120,7 +130,9 @@ public class UserController {
             value = "/{email}/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity<String> sendResetPasswordCodeEfficient(@PathVariable String email) {
+    public ResponseEntity<String> sendResetPasswordCodeEfficient(@NotBlank(message = "Field (email) is required")
+                                                                 @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
+                                                                 @PathVariable String email) {
         userService.sendPasswordResetCodeEfficient(email);
         return new ResponseEntity<>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
     }
@@ -129,7 +141,10 @@ public class UserController {
             value = "/{id}/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity<String> resetPasswordWithCode(@PathVariable Integer id, @RequestBody PasswordResetIn passwordResetIn) {
+    public ResponseEntity<String> resetPasswordWithCode(@NotNull(message = "Field (id) is required")
+                                                        @Positive(message = "Id must be positive")
+                                                        @PathVariable(value="id") Integer id,
+                                                        @RequestBody @Valid PasswordResetIn passwordResetIn) {
         userService.resetPassword(id, passwordResetIn.getNewPassword(), passwordResetIn.getCode());
         return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
     }
@@ -138,7 +153,7 @@ public class UserController {
             value = "/resetPassword",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
-    public ResponseEntity<String> resetPasswordWithCodeEfficient(@RequestBody PasswordResetIn passwordResetIn) {
+    public ResponseEntity<String> resetPasswordWithCodeEfficient(@RequestBody @Valid PasswordResetIn passwordResetIn) {
         userService.resetPasswordEfficient(passwordResetIn.getCode(), passwordResetIn.getNewPassword());
         return new ResponseEntity<>("Password successfully changed!", HttpStatus.NO_CONTENT);
     }
@@ -148,10 +163,20 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<AllRidesOut> getUserRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
-                                             @RequestParam(name = "size") int size, @RequestParam(name = "sort") String sort,
+    ResponseEntity<AllRidesOut> getUserRides(@NotNull(message = "Field (id) is required")
+                                             @Positive(message = "Id must be positive")
+                                             @PathVariable(value="id") Integer id,
+                                             @Min(value=0, message = "Page must be greater than 0")
+                                             @NotNull(message = "Field (page) is required")
+                                             @RequestParam(name="page") int page,
+                                             @Positive(message = "size must be positive")
+                                             @NotNull(message = "Field (size) is required")
+                                             @RequestParam(name="size") int size,
+                                             @NotBlank(message = "Field (from) is required")
                                              @RequestParam(name = "from") String from,
-                                             @RequestParam(name = "to") String to){
+                                             @NotBlank(message = "Field (to) is required")
+                                             @RequestParam(name = "to") String to,
+                                             @RequestParam(name = "sort", required = false) String sort){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime fromTime = LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
         LocalDateTime toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
@@ -166,7 +191,11 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AllUsersOut> getAllUsers(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size){
+    public ResponseEntity<AllUsersOut> getAllUsers(@Min(value=0, message = "Page must be greater than 0")
+                                                   @RequestParam(name="page") int page,
+                                                   @Positive(message = "size must be positive")
+                                                   @NotNull(message = "Field (size) is required")
+                                                   @RequestParam(name="size") int size){
         Page<User> users = userService.getUsersPage(PageRequest.of(page, size));
         Authentication a = SecurityContextHolder.getContext().getAuthentication();
         return new ResponseEntity<>(new AllUsersOut(users), HttpStatus.OK);
@@ -176,7 +205,10 @@ public class UserController {
             value = "{email}/email",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserSimplifiedOut> getUserByEmail(@PathVariable String email){
+
+    public ResponseEntity<UserSimplifiedOut> getUserByEmail(@NotBlank(message = "Field (email) is required")
+                                                            @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",message = "Field Email format invalid")
+                                                            @PathVariable String email){
         UserSimplifiedOut user =new UserSimplifiedOut(userService.getUserByEmail(email));
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -186,7 +218,10 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<AllUserMessagesOut> getUserMessages(@PathVariable Integer id){
+    @AuthorizeSelf(pathToUserId = "[0]", message = "User not found!")
+    public ResponseEntity<AllUserMessagesOut> getUserMessages(@NotNull(message = "Field (id) is required")
+                                                              @Positive(message = "Id must be positive")
+                                                              @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(new AllUserMessagesOut(messageService.getUserMessages(id)), HttpStatus.OK);
     }
 
@@ -195,9 +230,14 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<MessageOut> sendMessageToUser(@PathVariable Integer id, @RequestBody MessageIn messageIn){
-        User sender = userService.getUser(id);
-        User receiver = userService.getUser(messageIn.getReceiverId());
+    public ResponseEntity<MessageOut> sendMessageToUser(@NotNull(message = "Field (id) is required")
+                                                        @Positive(message = "Id must be positive")
+                                                        @PathVariable(value="id") Integer id,
+                                                        @RequestBody @Valid MessageIn messageIn){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userFromToken = (User) auth.getPrincipal();
+        User sender = userService.getUser(userFromToken.getId());
+        User receiver = userService.getUser(id);
         Ride ride = rideService.get(messageIn.getRideId());
         Message msg = new Message(sender, receiver,
                 messageIn.getMessage(), LocalDateTime.now(), messageIn.getType(),
@@ -211,7 +251,9 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> blockUser(@PathVariable Integer id){
+    public ResponseEntity<?> blockUser(@NotNull(message = "Field (id) is required")
+                                       @Positive(message = "Id must be positive")
+                                       @PathVariable(value="id") Integer id){
         userService.blockUser(id);
         HashMap<String, String> response = new HashMap<>();
         response.put("message","User is successfully blocked!");
@@ -223,7 +265,9 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> unblockUser(@PathVariable Integer id){
+    public ResponseEntity<?> unblockUser(@NotNull(message = "Field (id) is required")
+                                         @Positive(message = "Id must be positive")
+                                         @PathVariable(value="id") Integer id){
         userService.unblockUser(id);
         HashMap<String, String> response = new HashMap<>();
         response.put("message","User is successfully unblocked!");
@@ -235,7 +279,10 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<NoteOut> createNote(@PathVariable Integer id, @RequestBody NoteIn noteIn){
+    public ResponseEntity<NoteOut> createNote(@NotNull(message = "Field (id) is required")
+                                              @Positive(message = "Id must be positive")
+                                              @PathVariable(value="id") Integer id,
+                                              @RequestBody @Valid NoteIn noteIn){
         User user = userService.getUser(id);
         Note note = new Note(user, noteIn.getMessage(), LocalDateTime.now());
         noteService.insert(note);
@@ -247,8 +294,13 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AllNotesOut> getUserNotes(@PathVariable Integer id, @RequestParam(name = "page") int page,
-                                                    @RequestParam(name = "size") int size){
+    public ResponseEntity<AllNotesOut> getUserNotes(@NotNull(message = "Field (id) is required")
+                                                    @Positive(message = "Id must be positive")
+                                                    @PathVariable Integer id,
+                                                    @RequestParam(name="page") int page,
+                                                    @Positive(message = "size must be positive")
+                                                    @NotNull(message = "Field (size) is required")
+                                                    @RequestParam(name="size") int size){
         Page<Note> notes = noteService.getUserNotes(id, PageRequest.of(page, size));
         return new ResponseEntity<>(new AllNotesOut(notes), HttpStatus.OK);
     }

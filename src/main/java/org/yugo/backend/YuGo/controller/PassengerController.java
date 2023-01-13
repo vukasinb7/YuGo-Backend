@@ -1,5 +1,10 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.dto.AllPassengersOut;
 import org.yugo.backend.YuGo.dto.AllRidesOut;
 import org.yugo.backend.YuGo.dto.UserDetailedIn;
@@ -32,7 +38,6 @@ public class PassengerController {
     private final PassengerService passengerService;
     private final RideService rideService;
     private final UserActivationService userActivationService;
-
     @Autowired
     public PassengerController(PassengerService passengerService, RideService rideService,
                                UserActivationService userActivationService){
@@ -45,7 +50,7 @@ public class PassengerController {
             value = "",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserDetailedInOut> createPassenger(@RequestBody UserDetailedIn user){
+    public ResponseEntity<UserDetailedInOut> createPassenger(@RequestBody @Valid UserDetailedIn user){
         Passenger passenger = new Passenger(user);
         passengerService.insert(passenger);
         return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passenger), HttpStatus.OK);
@@ -56,7 +61,12 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AllPassengersOut> getAllPassengers(@RequestParam int page, @RequestParam int size){
+    public ResponseEntity<AllPassengersOut> getAllPassengers(@Min(value=0, message = "Page must be 0 or greater")
+                                                             @NotNull(message = "Field (page) is required")
+                                                             @RequestParam int page,
+                                                             @Positive(message = "Size must be positive")
+                                                             @NotNull(message = "Field (size) is required")
+                                                             @RequestParam int size){
         Page<Passenger> passengers = passengerService.getPassengersPage(PageRequest.of(page, size));
         return new ResponseEntity<>(new AllPassengersOut(passengers), HttpStatus.OK);
     }
@@ -65,7 +75,9 @@ public class PassengerController {
             value = "/activate/{activationId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> activatePassenger(@PathVariable Integer activationId){
+    public ResponseEntity<?> activatePassenger(@NotNull(message = "Field (id) is required")
+                                               @Positive(message = "Id must be positive")
+                                               @PathVariable(value="activationId") Integer activationId){
         userActivationService.activateUser(activationId);
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Successful account activation!");
@@ -77,7 +89,9 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER','DRIVER')")
-    public ResponseEntity<UserDetailedInOut> getPassenger(@PathVariable Integer id){
+    public ResponseEntity<UserDetailedInOut> getPassenger(@NotNull(message = "Field (id) is required")
+                                                          @Positive(message = "Id must be positive")
+                                                          @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(passengerService.get(id)), HttpStatus.OK);
     }
 
@@ -86,8 +100,11 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    public ResponseEntity<UserDetailedInOut> updatePassenger(@RequestBody UserDetailedIn updatedUserDTO,
-                                                             @PathVariable Integer id){
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
+    public ResponseEntity<UserDetailedInOut> updatePassenger(@NotNull(message = "Field (id) is required")
+                                                             @Positive(message = "Id must be positive")
+                                                             @PathVariable(value="id") Integer id,
+                                                             @RequestBody @Valid UserDetailedIn updatedUserDTO){
         Passenger passengerUpdate = new Passenger(updatedUserDTO);
         passengerUpdate.setId(id);
         Passenger updatedPassenger = passengerService.update(passengerUpdate);
@@ -99,10 +116,20 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    ResponseEntity<AllRidesOut> getPassengerRides(@PathVariable Integer id, @RequestParam(name = "page") int page,
-                                                  @RequestParam(name = "size") int size,
-                                                  @RequestParam(name = "sort") String sort,
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
+    ResponseEntity<AllRidesOut> getPassengerRides(@NotNull(message = "Field (id) is required")
+                                                  @Positive(message = "Id must be positive")
+                                                  @PathVariable(value="id") Integer id,
+                                                  @Min(value=0, message = "Page must be 0 or greater")
+                                                  @NotNull(message = "Field (page) is required")
+                                                  @RequestParam(name="page") int page,
+                                                  @Positive(message = "Size must be positive")
+                                                  @NotNull(message = "Field (size) is required")
+                                                  @RequestParam(name="size") int size,
+                                                  @RequestParam(name = "sort", required = false) String sort,
+                                                  @NotBlank(message = "Field (from) is required")
                                                   @RequestParam(name = "from") String from,
+                                                  @NotBlank(message = "Field (to) is required")
                                                   @RequestParam(name = "to") String to) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime fromTime = LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);

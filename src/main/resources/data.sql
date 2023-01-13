@@ -62,24 +62,23 @@ INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Matije Hudji 50', 
 INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Radnicka 54', '44.979348', '19.582567');
 
 INSERT INTO RIDES (includes_babies,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
-VALUES ('0','10','0','1','2023-01-08 19:15:33.172279','FINISHED','100.0','6',null,null);
-
+VALUES ('0','10','0','1','2023-01-08 19:15:33.172279','ACTIVE','100.0','6',null,'1');
 
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
-VALUES ('0','2022-12-06 23:35:33.172279','15','0','1','2022-12-06 23:35:33.172279','FINISHED','13.0','6',null,null);
+VALUES ('0','2022-12-06 23:35:33.172279','15','0','1','2022-12-06 23:35:33.172279','FINISHED','13.0','6',null,'1');
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
-VALUES ('0','2022-12-07 23:35:33.172279','15','0','1','2022-12-07 23:35:33.172279','FINISHED','90.0','6',null,null);
+VALUES ('0','2022-12-07 23:35:33.172279','15','0','1','2022-12-07 23:35:33.172279','FINISHED','90.0','6',null,'1');
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
-VALUES ('0','2022-12-08 23:35:33.172279','15','0','1','2022-12-08 23:35:33.172279','FINISHED','50.0','6',null,null);
+VALUES ('0','2022-12-08 23:35:33.172279','15','0','1','2022-12-08 23:35:33.172279','FINISHED','50.0','6',null,'1');
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
-VALUES ('0','2022-12-26 23:35:33.172279','15','0','1','2022-12-26 23:35:33.172279','FINISHED','10.0','6',null,null);
+VALUES ('0','2022-12-26 23:35:33.172279','15','0','1','2022-12-26 23:35:33.172279','FINISHED','10.0','6',null,'1');
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
-VALUES ('0','2022-12-10 23:35:33.172279','15','0','1','2022-12-10 23:35:33.172279','FINISHED','150.0','6',null,null);
+VALUES ('0','2022-12-10 23:35:33.172279','15','0','1','2022-12-10 23:35:33.172279','FINISHED','150.0','6',null,'1');
 
 INSERT INTO PATHS (starting_point, destination) VALUES ('1', '2');
 INSERT INTO PATHS (starting_point, destination) VALUES ('2', '3');

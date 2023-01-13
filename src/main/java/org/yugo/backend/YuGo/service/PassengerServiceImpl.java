@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
-import org.yugo.backend.YuGo.exceptions.NotFoundException;
+import org.yugo.backend.YuGo.exception.BadRequestException;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.Role;
+import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.repository.PassengerRepository;
 
 import java.util.ArrayList;
@@ -20,16 +22,19 @@ import java.util.Optional;
 public class PassengerServiceImpl implements PassengerService {
     private final PassengerRepository passengerRepository;
     private final RoleService roleService;
+    private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final MailService mailService;
 
     @Autowired
     public PassengerServiceImpl(PassengerRepository passengerRepository, RoleService roleService,
-                                BCryptPasswordEncoder passwordEncoder, MailService mailService){
+                                BCryptPasswordEncoder passwordEncoder, MailService mailService,
+                                UserService userService){
         this.passengerRepository = passengerRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
         this.mailService = mailService;
+        this.userService = userService;
     }
 
     @Override
@@ -58,14 +63,18 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     public Passenger update(Passenger passengerUpdate){
-        Passenger passenger = get(passengerUpdate.getId());
-        passenger.setName(passengerUpdate.getName());
-        passenger.setSurname(passengerUpdate.getSurname());
-        passenger.setProfilePicture(passengerUpdate.getProfilePicture());
-        passenger.setTelephoneNumber(passengerUpdate.getTelephoneNumber());
-        passenger.setEmail(passengerUpdate.getEmail());
-        passenger.setAddress(passengerUpdate.getAddress());
-        return passengerRepository.save(passenger);
+        try{
+            Passenger passenger = get(passengerUpdate.getId());
+            passenger.setName(passengerUpdate.getName());
+            passenger.setSurname(passengerUpdate.getSurname());
+            passenger.setProfilePicture(passengerUpdate.getProfilePicture());
+            passenger.setTelephoneNumber(passengerUpdate.getTelephoneNumber());
+            passenger.setEmail(passengerUpdate.getEmail());
+            passenger.setAddress(passengerUpdate.getAddress());
+            return passengerRepository.save(passenger);
+        }catch (DataIntegrityViolationException e){
+            throw new BadRequestException("Email is already being used by another user!");
+        }
     }
 
     @Override

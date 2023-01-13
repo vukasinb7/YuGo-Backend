@@ -1,5 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -7,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.service.DocumentService;
 import org.yugo.backend.YuGo.service.UserService;
@@ -31,7 +35,8 @@ public class ImageController {
     @GetMapping(
             value = "/{name}"
     )
-    ResponseEntity<byte[]> getImage(@PathVariable String name){
+    ResponseEntity<byte[]> getImage(@NotBlank(message = "Field (name) is required")
+                                    @PathVariable String name){
 
         if(name == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -57,7 +62,12 @@ public class ImageController {
     @PostMapping(value = "/{id}/profilePicture",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity uploadProfilePicture(@PathVariable Integer id, @RequestParam("image") MultipartFile file)
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
+    public ResponseEntity uploadProfilePicture(@NotNull(message = "Field (id) is required")
+                                               @Positive(message = "Id must be positive")
+                                               @PathVariable(value="id") Integer id,
+                                               @NotNull(message = "Field (file) is required")
+                                               @RequestParam("image") MultipartFile file)
             throws IOException {
         String pictureName = id+"_PROFILE_PICTURE"+".jpg";
         String path="src\\main\\resources\\img\\" + pictureName;

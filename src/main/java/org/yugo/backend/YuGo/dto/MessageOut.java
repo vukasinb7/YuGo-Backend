@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class MessageOut {
     private Integer id;
-    private LocalDateTime timeOfSending;
+    private String timeOfSending;
     private Integer senderId;
     private Integer receiverId;
     private String message;
@@ -19,7 +19,7 @@ public class MessageOut {
 
     public MessageOut(Integer id, LocalDateTime timeOfSending, Integer senderId, Integer receiverId, String message, String type, Integer rideId) {
         this.id = id;
-        this.timeOfSending = timeOfSending;
+        this.timeOfSending = timeOfSending.toString();
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.message = message;

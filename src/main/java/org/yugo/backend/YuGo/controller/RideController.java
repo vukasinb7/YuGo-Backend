@@ -1,5 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -8,8 +11,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelf;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.dto.*;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
+import org.yugo.backend.YuGo.exception.BadRequestException;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.mapper.FavoritePathMapper;
 import org.yugo.backend.YuGo.mapper.PathMapper;
 import org.yugo.backend.YuGo.mapper.RideMapper;
@@ -50,7 +56,7 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> addRide(@RequestBody RideIn rideIn) throws Exception {
+    public ResponseEntity<RideDetailedOut> addRide(@RequestBody @Valid RideIn rideIn) throws Exception {
         Ride ride = rideService.createRide(rideIn);
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime rideStart = LocalDateTime.parse(rideIn.getDateTime(), formatter);
@@ -63,7 +69,10 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('DRIVER')")
-    public ResponseEntity<RideDetailedOut> getActiveRidesByDriver(@PathVariable Integer id){
+    @AuthorizeSelf(pathToUserId = "[0]", message = "Active ride does not exist!")
+    public ResponseEntity<RideDetailedOut> getActiveRideByDriver(@NotNull(message = "Field (id) is required")
+                                                                  @Positive(message = "Id must be positive")
+                                                                  @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(new RideDetailedOut(rideService.getActiveRideByDriver(id)), HttpStatus.OK);
     }
 
@@ -72,7 +81,10 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> getActiveRidesByPassenger(@PathVariable Integer id){
+    @AuthorizeSelf(pathToUserId = "[0]", message = "Active ride does not exist!")
+    public ResponseEntity<RideDetailedOut> getActiveRideByPassenger(@NotNull(message = "Field (id) is required")
+                                                                     @Positive(message = "Id must be positive")
+                                                                     @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(new RideDetailedOut(rideService.getActiveRideByPassenger(id)), HttpStatus.OK);
     }
 
@@ -80,8 +92,10 @@ public class RideController {
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
-    public ResponseEntity<RideDetailedOut> getRideById(@PathVariable Integer id){
+    @PreAuthorize("hasAnyRole('ADMIN','PASSENGER', 'DRIVER')")
+    public ResponseEntity<RideDetailedOut> getRideById(@NotNull(message = "Field (id) is required")
+                                                       @Positive(message = "Id must be positive")
+                                                       @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(new RideDetailedOut(rideService.get(id)), HttpStatus.OK);
     }
 
@@ -90,17 +104,29 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> cancelRide(@PathVariable Integer id){
-
+    public ResponseEntity<RideDetailedOut> cancelRide(@NotNull(message = "Field (id) is required")
+                                                      @Positive(message = "Id must be positive")
+                                                      @PathVariable(value="id") Integer id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Passenger passenger = (Passenger) auth.getPrincipal();
+        if (!rideService.get(id).getPassengers().contains(passenger)){
+            throw new NotFoundException("Ride does not exist!");
+        }
         return new ResponseEntity<>(new RideDetailedOut(rideService.cancelRide(id)), HttpStatus.OK);
     }
     @PutMapping(
             value = "/{id}/start",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> startRide(@PathVariable Integer id){
-
+    @PreAuthorize("hasRole('DRIVER')")
+    public ResponseEntity<RideDetailedOut> startRide(@NotNull(message = "Field (id) is required")
+                                                     @Positive(message = "Id must be positive")
+                                                     @PathVariable(value="id") Integer id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Driver driver = (Driver) auth.getPrincipal();
+        if (!rideService.get(id).getDriver().equals(driver)){
+            throw new NotFoundException("Ride does not exist!");
+        }
         return new ResponseEntity<>(new RideDetailedOut(rideService.startRide(id)), HttpStatus.OK);
     }
 
@@ -108,8 +134,15 @@ public class RideController {
             value = "/{id}/accept",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAnyRole('PASSENGER', 'DRIVER')")
-    public ResponseEntity<RideDetailedOut> acceptRide(@PathVariable Integer id){
+    @PreAuthorize("hasRole('DRIVER')")
+    public ResponseEntity<RideDetailedOut> acceptRide(@NotNull(message = "Field (id) is required")
+                                                      @Positive(message = "Id must be positive")
+                                                      @PathVariable(value="id") Integer id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Driver driver = (Driver) auth.getPrincipal();
+        if (!rideService.get(id).getDriver().equals(driver)){
+            throw new NotFoundException("Ride does not exist!");
+        }
         return new ResponseEntity<>(new RideDetailedOut(rideService.acceptRide(id)), HttpStatus.OK);
     }
 
@@ -117,9 +150,15 @@ public class RideController {
             value = "/{id}/end",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideDetailedOut> endRide(@PathVariable Integer id){
-
+    @PreAuthorize("hasRole('DRIVER')")
+    public ResponseEntity<RideDetailedOut> endRide(@NotNull(message = "Field (id) is required")
+                                                   @Positive(message = "Id must be positive")
+                                                   @PathVariable(value="id") Integer id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Driver driver = (Driver) auth.getPrincipal();
+        if (!rideService.get(id).getDriver().equals(driver)){
+            throw new NotFoundException("Ride does not exist!");
+        }
         return new ResponseEntity<>(new RideDetailedOut(rideService.endRide(id)), HttpStatus.OK);
     }
 
@@ -127,8 +166,24 @@ public class RideController {
             value = "/{id}/panic",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<PanicOut> addPanic(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
+    @PreAuthorize("hasAnyRole('DRIVER', 'PASSENGER')")
+    public ResponseEntity<PanicOut> addPanic(@NotNull(message = "Field (id) is required")
+                                             @Positive(message = "Id must be positive")
+                                             @PathVariable(value="id") Integer id,
+                                             @RequestBody @Valid ReasonIn reasonIn){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        if (user.getRole().equals("DRIVER")){
+            if (!rideService.get(id).getDriver().equals(user)){
+                throw new NotFoundException("Ride does not exist!");
+            }
+        }
+        else if (user.getRole().equals("PASSENGER")){
+            if (!rideService.get(id).getPassengers().contains((Passenger) user)){
+                throw new NotFoundException("Ride does not exist!");
+            }
+        }
+
         Ride ride= rideService.get(id);
         Panic panic= new Panic(passengerService.get(1),ride, LocalDateTime.now(), reasonIn.getReason());
         ride.setIsPanicPressed(true);
@@ -144,7 +199,15 @@ public class RideController {
     )
 
     @PreAuthorize("hasRole('DRIVER')")
-    public ResponseEntity<RideDetailedOut> rejectRide(@RequestBody ReasonIn reasonIn, @PathVariable Integer id){
+    public ResponseEntity<RideDetailedOut> rejectRide(@NotNull(message = "Field (id) is required")
+                                                      @Positive(message = "Id must be positive")
+                                                      @PathVariable(value="id") Integer id,
+                                                      @RequestBody @Valid ReasonIn reasonIn){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Driver driver = (Driver) auth.getPrincipal();
+        if (!rideService.get(id).getDriver().equals(driver)){
+            throw new NotFoundException("Ride does not exist!");
+        }
         return new ResponseEntity<>(new RideDetailedOut(rideService.rejectRide(id,reasonIn.getReason())), HttpStatus.OK);
 
     }
@@ -154,7 +217,7 @@ public class RideController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    public ResponseEntity<FavoritePathOut> addFavoritePath(@RequestBody FavoritePathIn favoritePathIn){
+    public ResponseEntity<FavoritePathOut> addFavoritePath(@RequestBody @Valid FavoritePathIn favoritePathIn){
         Set<Passenger> passengers=new HashSet<>();
         for (UserSimplifiedOut user:favoritePathIn.getPassengers()) {
             passengers.add(passengerService.get(user.getId()));
@@ -188,8 +251,15 @@ public class RideController {
             value = "/favorites/{id}"
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    ResponseEntity<Void> deleteFavoritePath(@PathVariable(name = "id") Integer favoritePathId){
-        favoritePathService.delete(favoritePathId);
+    ResponseEntity<Void> deleteFavoritePath(@NotNull(message = "Field (id) is required")
+                                            @Positive(message = "Id must be positive")
+                                            @PathVariable(value="id") Integer id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Passenger passenger = (Passenger) auth.getPrincipal();
+        if (!favoritePathService.get(id).getOwner().equals(passenger)){
+            throw new NotFoundException("Favorite path does not exist!");
+        }
+        favoritePathService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

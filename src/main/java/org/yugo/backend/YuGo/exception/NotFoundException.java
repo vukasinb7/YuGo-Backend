@@ -1,4 +1,4 @@
-package org.yugo.backend.YuGo.exceptions;
+package org.yugo.backend.YuGo.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {

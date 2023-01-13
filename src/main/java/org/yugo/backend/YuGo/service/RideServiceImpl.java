@@ -15,8 +15,8 @@ import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.model.VehicleType;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
-import org.yugo.backend.YuGo.exceptions.NotFoundException;
+import org.yugo.backend.YuGo.exception.BadRequestException;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.repository.RideRepository;
 import org.yugo.backend.YuGo.repository.WorkTimeRepository;
@@ -73,7 +73,7 @@ public class RideServiceImpl implements RideService {
         Ride ride;
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-        LocalDateTime rideDateTime = LocalDateTime.parse(rideIn.getDateTime(), formatter);
+        LocalDateTime rideDateTime= LocalDateTime.parse(rideIn.getDateTime(), formatter);
         LocalDateTime now = LocalDateTime.now();
 
         VehicleTypePrice vehicleTypePrice = vehicleService.getVehicleTypeByName(rideIn.getVehicleType());
