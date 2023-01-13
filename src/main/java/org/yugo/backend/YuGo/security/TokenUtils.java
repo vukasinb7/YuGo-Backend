@@ -42,7 +42,7 @@ public class TokenUtils {
     private static final String AUDIENCE_WEB = "web";
 
     // Algoritam za potpisivanje JWT
-    private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
+    private final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
 
     // ============= Funkcije za generisanje JWT tokena =============

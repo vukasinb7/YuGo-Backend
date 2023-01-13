@@ -70,7 +70,7 @@ public class RideController {
     )
     @PreAuthorize("hasRole('DRIVER')")
     @AuthorizeSelf(pathToUserId = "[0]", message = "Active ride does not exist!")
-    public ResponseEntity<RideDetailedOut> getActiveRidesByDriver(@NotNull(message = "Field (id) is required")
+    public ResponseEntity<RideDetailedOut> getActiveRideByDriver(@NotNull(message = "Field (id) is required")
                                                                   @Positive(message = "Id must be positive")
                                                                   @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(new RideDetailedOut(rideService.getActiveRideByDriver(id)), HttpStatus.OK);
@@ -82,7 +82,7 @@ public class RideController {
     )
     @PreAuthorize("hasRole('PASSENGER')")
     @AuthorizeSelf(pathToUserId = "[0]", message = "Active ride does not exist!")
-    public ResponseEntity<RideDetailedOut> getActiveRidesByPassenger(@NotNull(message = "Field (id) is required")
+    public ResponseEntity<RideDetailedOut> getActiveRideByPassenger(@NotNull(message = "Field (id) is required")
                                                                      @Positive(message = "Id must be positive")
                                                                      @PathVariable(value="id") Integer id){
         return new ResponseEntity<>(new RideDetailedOut(rideService.getActiveRideByPassenger(id)), HttpStatus.OK);
