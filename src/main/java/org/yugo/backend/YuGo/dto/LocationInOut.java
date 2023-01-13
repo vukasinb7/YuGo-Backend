@@ -11,7 +11,7 @@ import org.yugo.backend.YuGo.model.Location;
 @NoArgsConstructor
 public class LocationInOut {
     @NotBlank(message = "Field (address) is required")
-    @Size(max = 100,message = "address cannot be longer than 100 characters")
+    @Size(max = 300,message = "address cannot be longer than 100 characters")
     private String address;
     @NotNull(message = "Field (latitude) is required")
     private double latitude;

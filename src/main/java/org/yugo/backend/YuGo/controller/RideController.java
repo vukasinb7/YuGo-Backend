@@ -138,11 +138,6 @@ public class RideController {
     public ResponseEntity<RideDetailedOut> acceptRide(@NotNull(message = "Field (id) is required")
                                                       @Positive(message = "Id must be positive")
                                                       @PathVariable(value="id") Integer id){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Driver driver = (Driver) auth.getPrincipal();
-        if (!rideService.get(id).getDriver().equals(driver)){
-            throw new NotFoundException("Ride does not exist!");
-        }
         return new ResponseEntity<>(new RideDetailedOut(rideService.acceptRide(id)), HttpStatus.OK);
     }
 
@@ -203,11 +198,6 @@ public class RideController {
                                                       @Positive(message = "Id must be positive")
                                                       @PathVariable(value="id") Integer id,
                                                       @RequestBody @Valid ReasonIn reasonIn){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Driver driver = (Driver) auth.getPrincipal();
-        if (!rideService.get(id).getDriver().equals(driver)){
-            throw new NotFoundException("Ride does not exist!");
-        }
         return new ResponseEntity<>(new RideDetailedOut(rideService.rejectRide(id,reasonIn.getReason())), HttpStatus.OK);
 
     }
