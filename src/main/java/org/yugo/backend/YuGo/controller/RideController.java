@@ -85,7 +85,8 @@ public class RideController {
     public ResponseEntity<RideDetailedOut> getActiveRideByPassenger(@NotNull(message = "Field (id) is required")
                                                                      @Positive(message = "Id must be positive")
                                                                      @PathVariable(value="id") Integer id){
-        return new ResponseEntity<>(new RideDetailedOut(rideService.getActiveRideByPassenger(id)), HttpStatus.OK);
+        RideDetailedOut a= new RideDetailedOut(rideService.getActiveRideByPassenger(id));
+        return new ResponseEntity<>(a, HttpStatus.OK);
     }
 
     @GetMapping(

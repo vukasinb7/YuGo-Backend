@@ -39,7 +39,7 @@ public class RideDetailedOut {
             this.endTime = null;
         }
         this.totalCost = ride.getTotalCost();
-        if(driver != null){
+        if(ride.getDriver() != null){
             this.driver = UserSimplifiedMapper.fromUsertoDTO(ride.getDriver());
         }else{
             this.driver = null;
