@@ -181,7 +181,7 @@ public class RideController {
         }
 
         Ride ride= rideService.get(id);
-        Panic panic= new Panic(passengerService.get(1),ride, LocalDateTime.now(), reasonIn.getReason());
+        Panic panic= new Panic(user,ride, LocalDateTime.now(), reasonIn.getReason());
         ride.setIsPanicPressed(true);
         rideService.insert(ride);
         panicService.insert(panic);
