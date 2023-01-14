@@ -101,8 +101,8 @@ public class RideServiceImpl implements RideService {
                 rideIn.isPetTransport(),
                 rideDestination,
                 rideDeparture,
-                    vehicleTypePrice,
-                    passengers,
+                vehicleTypePrice,
+                passengers,
                 RideStatus.SCHEDULED);
         }else{
             ride = assembleRide(
@@ -207,7 +207,12 @@ public class RideServiceImpl implements RideService {
             if(currentRide.isPresent()){
                 Location currentRideDestination = (Location) Hibernate.unproxy(currentRide.get().getLocations().get(0).getDestination());
                 RouteProperties routeProperties = routingService.getRouteProperties(currentRideDestination.getLatitude(),currentRideDestination.getLongitude(), rideDeparture.getLatitude(), rideDeparture.getLongitude());
-                obj.earliestAvailableTime = currentRide.get().getStartTime().plusMinutes(currentRide.get().getEstimatedTimeInMinutes()).plusMinutes((long) ((routeProperties.getDuration() / 60) + 5));
+                LocalDateTime earliestAvailableTime = currentRide.get().getStartTime().plusMinutes(currentRide.get().getEstimatedTimeInMinutes()).plusMinutes((long) ((routeProperties.getDuration() / 60) + 5));
+                if(earliestAvailableTime.isBefore(LocalDateTime.now())){
+                    obj.earliestAvailableTime = LocalDateTime.now().plusMinutes(currentRide.get().getEstimatedTimeInMinutes()).plusMinutes((long) ((routeProperties.getDuration() / 60) + 5));
+                }else{
+                    obj.earliestAvailableTime = earliestAvailableTime;
+                }
             }else{
                 Location currentDriverLocation = (Location) Hibernate.unproxy(driver.getVehicle().getCurrentLocation());
                 RouteProperties routeProperties = routingService.getRouteProperties(currentDriverLocation.getLatitude(), currentDriverLocation.getLongitude(), rideDeparture.getLatitude(), rideDeparture.getLongitude());
@@ -216,7 +221,11 @@ public class RideServiceImpl implements RideService {
             Optional<Ride> rideOpt = rideRepository.getNextRide(driver.getId());
             if(rideOpt.isPresent()){
                 RouteProperties routeProperties = routingService.getRouteProperties(rideDestination.getLatitude(), rideDestination.getLongitude(), rideOpt.get().getLocations().get(0).getDeparture().getLatitude(), rideOpt.get().getLocations().get(0).getDeparture().getLongitude());
-                obj.newRideEndEstTime = obj.earliestAvailableTime.plusMinutes((long) (routeProperties.getDuration() / 60) + 5);   //adding 5 minutes as extra time
+                if(obj.earliestAvailableTime.isBefore(rideStartDateTime)){
+                    obj.newRideEndEstTime = rideStartDateTime.plusMinutes((long) (routeProperties.getDuration() / 60 + 5 + rideEstTime));   //adding 5 minutes as extra time
+                }else{
+                    obj.newRideEndEstTime = obj.earliestAvailableTime.plusMinutes((long) (routeProperties.getDuration() / 60 + 5 + rideEstTime));
+                }
             }
             obj.nextRideTime = rideOpt.map(Ride::getStartTime).orElse(null);
             obj.index = i;
@@ -318,7 +327,7 @@ public class RideServiceImpl implements RideService {
         return ride;
     }
     public Ride acceptRide(Integer id){
-        Ride ride =get(id);
+        Ride ride = get(id);
         if (ride.getStatus() == RideStatus.PENDING) {
             ride.setStatus(RideStatus.ACCEPTED);
             save(ride);
@@ -343,12 +352,12 @@ public class RideServiceImpl implements RideService {
         return ride;
     }
     public Ride rejectRide(Integer id,String reason){
-        Ride ride =get(id);
+        Ride ride = get(id);
         if (ride.getStatus() == RideStatus.PENDING) {
             ride.setStatus(RideStatus.REJECTED);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             User user = (User) auth.getPrincipal();
-            Rejection rejection =new Rejection(ride,passengerService.get(user.getId()),reason,LocalDateTime.now());
+            Rejection rejection = new Rejection(ride,user,reason,LocalDateTime.now());
             ride.setRejection(rejection);
             save(ride);
             for(Passenger passenger : ride.getPassengers()){
