@@ -5,7 +5,7 @@ INSERT INTO ROLES (name) VALUES('ROLE_PASSENGER');
 INSERT INTO ROLES (name) VALUES('ROLE_DRIVER');
 
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
-VALUES ('Pera', 'Perić', 'DEFAULT_PROFILE_PICTURE.jpg', '+12312321314', 'pera.peric@email.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
+VALUES ('Pera', 'Perić', '1_PROFILE_PICTURE.jpg', '+12312321314', 'pera.peric@email.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
 
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, user_type)
 VALUES ('Marko', 'Markovic', 'DEFAULT_PROFILE_PICTURE.jpg', '+12312321314', 'marko.markovic@email.com', 'Bulevar Oslobodjenja 75', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'ADMIN');
@@ -20,7 +20,7 @@ INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, addr
 VALUES ('Perica', 'Petkovic', 'DEFAULT_PROFILE_PICTURE.jpg', '+12312321314', 'parica.petkovic@email.com', 'Bulevar Oslobodjenja 78', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, 'PASSENGER');
 
 INSERT INTO USERS (name, surname, profile_picture, telephone_number, email, address, password, is_blocked, is_active, is_online, user_type)
-VALUES ('Perislav', 'Perić', 'DEFAULT_PROFILE_PICTURE.jpg', '+12312321314', 'perislav.peric@email.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, true, 'DRIVER');
+VALUES ('Perislav', 'Perić', '6_PROFILE_PICTURE.jpg', '+12312321314', 'perislav.peric@email.com', 'Bulevar Oslobodjenja 74', '$2a$12$T1i/9on6Eq.PW6FlDo1HUOqV9GNmJ1Sp24LbE0J5OrLg.f06BcapG', false, true, true, 'DRIVER');
 
 INSERT INTO USER_ROLE (user_id, role_id) VALUES (2, 1);
 
