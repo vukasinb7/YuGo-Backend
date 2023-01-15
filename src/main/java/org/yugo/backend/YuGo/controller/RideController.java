@@ -151,8 +151,8 @@ public class RideController {
                                                    @Positive(message = "Id must be positive")
                                                    @PathVariable(value="id") Integer id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Driver driver = (Driver) auth.getPrincipal();
-        if (!rideService.get(id).getDriver().equals(driver)){
+        User driver =(User) auth.getPrincipal();
+        if (!rideService.get(id).getDriver().getId().equals(driver.getId())){
             throw new NotFoundException("Ride does not exist!");
         }
         return new ResponseEntity<>(new RideDetailedOut(rideService.endRide(id)), HttpStatus.OK);
@@ -170,7 +170,7 @@ public class RideController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         if (user.getRole().equals("DRIVER")){
-            if (!rideService.get(id).getDriver().equals(user)){
+            if (!rideService.get(id).getDriver().getId().equals(user.getId())){
                 throw new NotFoundException("Ride does not exist!");
             }
         }

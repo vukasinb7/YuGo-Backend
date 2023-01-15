@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter @Setter
 @Table(name = "Panics")
 public class Panic {
-    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
     @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
