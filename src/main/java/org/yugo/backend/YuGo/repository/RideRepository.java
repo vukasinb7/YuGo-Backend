@@ -12,11 +12,12 @@ import org.yugo.backend.YuGo.model.WorkTime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface RideRepository extends JpaRepository<Ride,Integer> {
 
-    @Query(value = "SELECT * FROM RIDES WHERE driver_id = :driver_id AND start_time = (SELECT MIN(start_time) FROM RIDES WHERE start_time > CURRENT_TIMESTAMP())",
+    @Query(value = "SELECT * FROM RIDES WHERE driver_id = :driver_id AND start_time = (SELECT MIN(start_time) FROM RIDES WHERE start_time > CURRENT_TIMESTAMP AND status = 'ACEPTED')",
             nativeQuery = true)
     Optional<Ride> getNextRide(@Param("driver_id") Integer driverID);
     @Query(value = "SELECT * FROM RIDES r WHERE r.driver_id = :driver_id and r.status='ACTIVE'",
@@ -42,4 +43,7 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
 
     @Query(value = "SELECT * FROM rides WHERE :userId in (SELECT passenger_id FROM PASSENGER_RIDES where  id=ride_id) AND  status='PENDING'",nativeQuery = true)
     Ride findPendingRidesByUser(@Param("userId") Integer userId);
+
+    @Query(value = "SELECT * FROM rides WHERE status = 'SCHEDULED' AND DATEDIFF(minute, CURRENT_TIMESTAMP, start_time) BETWEEN 0 AND 31", nativeQuery = true)
+    List<Ride> findScheduledRidesInNext30Minutes();
 }

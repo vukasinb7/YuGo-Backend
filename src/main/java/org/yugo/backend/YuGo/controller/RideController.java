@@ -24,6 +24,7 @@ import org.yugo.backend.YuGo.service.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,8 +60,10 @@ public class RideController {
     public ResponseEntity<RideDetailedOut> addRide(@RequestBody @Valid RideIn rideIn) throws Exception {
         Ride ride = rideService.createRide(rideIn);
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-        LocalDateTime rideStart = LocalDateTime.parse(rideIn.getDateTime(), formatter);
-        rideService.searchForDriver(new Ride(ride), rideStart);
+        LocalDateTime rideDateTime = LocalDateTime.parse(rideIn.getDateTime(), formatter);
+        if(LocalDateTime.now().until(rideDateTime, ChronoUnit.MINUTES) <= 30){
+            rideService.searchForDriver(ride.getId());
+        }
         return new ResponseEntity<>(RideMapper.fromRidetoDTO(ride), HttpStatus.OK);
     }
 

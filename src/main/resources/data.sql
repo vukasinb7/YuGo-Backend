@@ -62,7 +62,7 @@ INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Matije Hudji 50', 
 INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Radnicka 54', '44.979348', '19.582567');
 
 INSERT INTO RIDES (includes_babies,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
-VALUES ('0','10','0','1','2023-01-08 19:15:33.172279','ACTIVE','100.0','6',null,'1');
+VALUES ('0','10','0','1','2023-01-08 19:15:33.172279','FINISHED','100.0','6',null,'1');
 
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
