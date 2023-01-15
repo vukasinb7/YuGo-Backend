@@ -8,6 +8,12 @@ import org.yugo.backend.YuGo.model.Message;
 import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message,Integer> {
-    @Query(value = "SELECT * FROM MESSAGES WHERE receiver_id = :userID", nativeQuery = true)
-    List<Message> findMessagesByUser(@Param("userID") Integer userID);
+    @Query(value = "SELECT m FROM Message m WHERE m.receiver.id = :userId OR m.sender.id = :userId ORDER BY m.timeOfSending")
+    List<Message> findMessagesByUser(@Param("userId") Integer userId);
+
+    @Query(value = "SELECT m FROM Message m WHERE (m.receiver.id = :user1Id AND m.sender.id = :user2Id) OR " +
+            "(m.receiver.id = :user2Id AND m.sender.id = :user1Id)ORDER BY m.timeOfSending")
+    List<Message> findMessagesByUsers(@Param("user1Id") Integer user1Id, @Param("user2Id") Integer user2Id);
+
+
 }

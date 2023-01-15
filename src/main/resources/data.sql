@@ -62,7 +62,7 @@ INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Matije Hudji 50', 
 INSERT INTO LOCATIONS (address, latitude, longitude) VALUES ('Radnicka 54', '44.979348', '19.582567');
 
 INSERT INTO RIDES (includes_babies,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
-VALUES ('0','10','0','1','2023-01-08 19:15:33.172279','FINISHED','100.0','6',null,'1');
+VALUES ('0','10','0','1','2023-01-08 19:15:33.172279','ACTIVE','100.0','6',null,'1');
 
 
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
@@ -104,9 +104,6 @@ INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
 VALUES ('1','1');
 
 INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
-VALUES ('3','1');
-
-INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
 VALUES ('1','2');
 
 INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
@@ -124,7 +121,6 @@ VALUES ('1','6');
 
 INSERT INTO PANICS (reason, time_pressed, ride_id, user_id) VALUES ('testtest', '2022-12-05 23:35:33.172279', '1', '1');
 
-INSERT INTO MESSAGES (message_content, message_type, sending_time, receiver_id, ride_id, sender_id) VALUES ('testtest', 'RIDE', '2022-12-05 23:35:33.172279', '1', '1', '6');
 
 INSERT INTO work_times (end_time, start_time, driver_id) VALUES ('2022-12-05 23:35:33.172279', '2022-12-05 23:35:33.172279', '2');
 

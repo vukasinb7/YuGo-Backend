@@ -44,4 +44,11 @@ public class MessageServiceImpl implements MessageService {
         userService.getUser(userId);
         return messageRepository.findMessagesByUser(userId);
     }
+
+    @Override
+    public List<Message> getUsersConversation(Integer user1Id, Integer user2Id){
+        userService.getUser(user1Id);
+        userService.getUser(user2Id);
+        return messageRepository.findMessagesByUsers(user1Id, user2Id);
+    }
 }

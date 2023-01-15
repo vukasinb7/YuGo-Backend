@@ -58,6 +58,18 @@ public class UserController {
         this.refreshTokenService = refreshTokenService;
     }
 
+    @GetMapping(
+            value = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER', 'DRIVER')")
+    public ResponseEntity<UserDetailedInOut> getDriver(@NotNull(message = "Field (id) is required")
+                                                       @Positive(message = "Id must be positive")
+                                                       @PathVariable Integer id){
+        User user = userService.getUser(id);
+        return new ResponseEntity<>(new UserDetailedInOut(user), HttpStatus.OK);
+    }
+
     @PostMapping(
             value = "/login",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -244,6 +256,20 @@ public class UserController {
                 ride);
         messageService.insert(msg);
         return new ResponseEntity<>(MessageMapper.fromMessagetoDTO(msg), HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "/{id}/conversation",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
+    public ResponseEntity<AllUserMessagesOut> getUsersConversation(@NotNull(message = "Field (id) is required")
+                                                        @Positive(message = "Id must be positive")
+                                                        @PathVariable(value="id") Integer id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userFromToken = (User) auth.getPrincipal();
+        return new ResponseEntity<>(new AllUserMessagesOut(messageService.getUsersConversation(userFromToken.getId(),
+                id)), HttpStatus.OK);
     }
 
     @PutMapping(
