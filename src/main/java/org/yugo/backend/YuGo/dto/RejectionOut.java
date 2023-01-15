@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RejectionOut {
     String reason;
-    LocalDateTime timeOfRejection;
+    String timeOfRejection;
 
     public RejectionOut(Rejection rejection){
         this.reason=rejection.getReason();
-        this.timeOfRejection=rejection.getTimeOfRejection();
+        this.timeOfRejection=rejection.getTimeOfRejection().toString();
     }
 }
