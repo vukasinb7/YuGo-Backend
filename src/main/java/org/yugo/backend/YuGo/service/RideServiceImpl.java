@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.yugo.backend.YuGo.dto.RideIn;
 import org.yugo.backend.YuGo.dto.RouteProperties;
 import org.yugo.backend.YuGo.dto.UserSimplifiedOut;
@@ -25,6 +26,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
 @Service
 public class RideServiceImpl implements RideService {
@@ -73,7 +76,7 @@ public class RideServiceImpl implements RideService {
         Ride ride;
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-        LocalDateTime rideDateTime= LocalDateTime.parse(rideIn.getDateTime(), formatter);
+        LocalDateTime rideDateTime = LocalDateTime.parse(rideIn.getDateTime(), formatter);
         LocalDateTime now = LocalDateTime.now();
 
         VehicleTypePrice vehicleTypePrice = vehicleService.getVehicleTypeByName(rideIn.getVehicleType());
@@ -94,6 +97,7 @@ public class RideServiceImpl implements RideService {
         rideDeparture.setLongitude(rideIn.getLocations().get(0).getDeparture().getLongitude());
         rideDeparture.setAddress(routingService.reverseAddressSearch(rideDeparture.getLatitude(), rideDeparture.getLongitude()));
 
+
         if(now.until(rideDateTime, ChronoUnit.MINUTES) > 30){
             ride = assembleRide(
                 routeProperties,
@@ -103,7 +107,8 @@ public class RideServiceImpl implements RideService {
                 rideDeparture,
                 vehicleTypePrice,
                 passengers,
-                RideStatus.SCHEDULED);
+                RideStatus.SCHEDULED,
+                rideDateTime);
         }else{
             ride = assembleRide(
                     routeProperties,
@@ -113,28 +118,34 @@ public class RideServiceImpl implements RideService {
                     rideDeparture,
                     vehicleTypePrice,
                     passengers,
-                    RideStatus.PENDING);
+                    RideStatus.PENDING,
+                    rideDateTime);
         }
 
         return rideRepository.save(ride);
     }
 
     @Async
+    @Transactional(propagation=REQUIRES_NEW)
     @Override
-    public void searchForDriver(Ride ride, LocalDateTime rideStartTime){
+    public void searchForDriver(Integer id){
+        Ride ride = rideRepository.getReferenceById(id);
+        Hibernate.initialize(ride);
         Location rideDeparture = ride.getLocations().get(0).getDeparture();
         Location rideDestination = ride.getLocations().get(0).getDestination();
         List<Driver> availableDrivers = filterDrivers(rideDeparture, ride.getVehicleTypePrice().getVehicleType(), ride.getBabyTransport(), ride.getPetTransport(), ride.getPassengers().size());
-        DriverAvailability driverAvailability = findDriver(availableDrivers, rideStartTime, ride.getEstimatedTimeInMinutes(), rideDeparture, rideDestination);
+        DriverAvailability driverAvailability = findDriver(availableDrivers, ride.getStartTime(), ride.getEstimatedTimeInMinutes(), rideDeparture, rideDestination);
         if(driverAvailability != null){
-            if(driverAvailability.earliestAvailableTime.isBefore(rideStartTime)){
-                ride.setStartTime(rideStartTime);
+            if(driverAvailability.earliestAvailableTime.isBefore(ride.getStartTime())){
+                ride.setStartTime(ride.getStartTime());
             }else{
                 ride.setStartTime(driverAvailability.earliestAvailableTime);
             }
             ride.setDriver(driverAvailability.driver);
         }else{
-            //TODO obavesti korisnika da nije moguce zakazati voznju
+            for(Passenger passenger : ride.getPassengers()){
+                webSocketService.notifyPassengerAboutRide(-1, passenger.getId());
+            }
             rideRepository.delete(ride);
             return;
         }
@@ -166,8 +177,9 @@ public class RideServiceImpl implements RideService {
     private <T> T unproxy(T object){
         return (T) Hibernate.unproxy(object);
     }
-    private Ride assembleRide(RouteProperties routeProperties, boolean isBabyTransport, boolean isPetTransport, Location rideDestination, Location rideDeparture, VehicleTypePrice vehicleTypePrice, Set<Passenger> passengers, RideStatus rideStatus){
+    private Ride assembleRide(RouteProperties routeProperties, boolean isBabyTransport, boolean isPetTransport, Location rideDestination, Location rideDeparture, VehicleTypePrice vehicleTypePrice, Set<Passenger> passengers, RideStatus rideStatus, LocalDateTime startTime){
         Ride ride = new Ride();
+        ride.setStartTime(startTime);
         ride.setStatus(rideStatus);
         ride.setIsPanicPressed(false);
         ride.setEstimatedTimeInMinutes((int) (routeProperties.getDuration() / 60.0));
@@ -328,7 +340,7 @@ public class RideServiceImpl implements RideService {
     }
     public Ride acceptRide(Integer id){
         Ride ride = get(id);
-        if (ride.getStatus() == RideStatus.PENDING) {
+        if (ride.getStatus() == RideStatus.PENDING || ride.getStatus() == RideStatus.SCHEDULED) {
             ride.setStatus(RideStatus.ACCEPTED);
             save(ride);
             for(Passenger passenger : ride.getPassengers()){
@@ -353,7 +365,7 @@ public class RideServiceImpl implements RideService {
     }
     public Ride rejectRide(Integer id,String reason){
         Ride ride = get(id);
-        if (ride.getStatus() == RideStatus.PENDING) {
+        if (ride.getStatus() == RideStatus.PENDING || ride.getStatus() == RideStatus.SCHEDULED) {
             ride.setStatus(RideStatus.REJECTED);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             User user = (User) auth.getPrincipal();

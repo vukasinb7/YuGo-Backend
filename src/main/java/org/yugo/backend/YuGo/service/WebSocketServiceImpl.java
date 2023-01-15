@@ -20,12 +20,18 @@ public class WebSocketServiceImpl implements WebSocketService {
     public void sendRideRequestToDriver(Integer driverID, Integer rideID){
         RideDTO output = new RideDTO();
         output.rideID = rideID;
+        System.out.println("============================");
+        System.out.println("Vozac je obavesten");
+        System.out.println("============================");
         simpMessagingTemplate.convertAndSend("/ride-topic/driver-request/" + driverID, output);
     }
     @Override
     public void notifyPassengerAboutRide(Integer rideID, Integer passengerID){
         RideDTO output = new RideDTO();
         output.rideID = rideID;
+        System.out.println("============================");
+        System.out.println("Putnik je obavesten");
+        System.out.println("============================");
         simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger/" + passengerID, output);
     }
 
