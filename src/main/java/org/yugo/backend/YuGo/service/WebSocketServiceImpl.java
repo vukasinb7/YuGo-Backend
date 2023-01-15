@@ -34,5 +34,20 @@ public class WebSocketServiceImpl implements WebSocketService {
         System.out.println("============================");
         simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger/" + passengerID, output);
     }
+    @Override
+    public void notifyPassengerAboutRideEnd(Integer passengerID){
+        System.out.println("============================");
+        System.out.println("Putnik je obavesten");
+        System.out.println("============================");
+        simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger-end-ride/" + passengerID,"");
+    }
+
+    @Override
+    public void notifyPassengerAboutRideStart(Integer passengerID){
+        System.out.println("============================");
+        System.out.println("Putnik je obavesten");
+        System.out.println("============================");
+        simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger-start-ride/" + passengerID,"");
+    }
 
 }

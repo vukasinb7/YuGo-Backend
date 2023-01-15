@@ -172,6 +172,7 @@ public class RideController {
                                              @Positive(message = "Id must be positive")
                                              @PathVariable(value="id") Integer id,
                                              @RequestBody @Valid ReasonIn reasonIn){
+        Ride ride= rideService.get(id);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         if (user.getRole().equals("DRIVER")){
@@ -180,12 +181,12 @@ public class RideController {
             }
         }
         else if (user.getRole().equals("PASSENGER")){
-            if (!rideService.get(id).getPassengers().contains((Passenger) user)){
-                throw new NotFoundException("Ride does not exist!");
+            for(Passenger p:ride.getPassengers()){
+                if (!p.getId().equals(user.getId()))
+                    throw new NotFoundException("Ride does not exist!");
             }
         }
 
-        Ride ride= rideService.get(id);
         Panic panic= new Panic(user,ride, LocalDateTime.now(), reasonIn.getReason());
         ride.setIsPanicPressed(true);
         rideService.insert(ride);

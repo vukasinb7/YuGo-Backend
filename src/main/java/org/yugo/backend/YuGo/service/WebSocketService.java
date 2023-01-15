@@ -4,4 +4,8 @@ public interface WebSocketService {
     void sendRideRequestToDriver(Integer driverID, Integer rideID);
 
     void notifyPassengerAboutRide(Integer rideID, Integer passengerID);
+
+    void notifyPassengerAboutRideEnd(Integer passengerID);
+
+    void notifyPassengerAboutRideStart(Integer passengerID);
 }

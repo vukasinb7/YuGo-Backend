@@ -335,6 +335,9 @@ public class RideServiceImpl implements RideService {
         Ride ride =get(id);
         if (ride.getStatus()== RideStatus.ACCEPTED) {
             ride.setStatus(RideStatus.ACTIVE);
+            for (Passenger passenger : ride.getPassengers()){
+                webSocketService.notifyPassengerAboutRideStart(passenger.getId());
+            }
             save(ride);
         }
         else{
@@ -360,6 +363,9 @@ public class RideServiceImpl implements RideService {
         Ride ride =get(id);
         if (ride.getStatus() == RideStatus.ACTIVE) {
             ride.setStatus(RideStatus.FINISHED);
+            for (Passenger passenger : ride.getPassengers()){
+                webSocketService.notifyPassengerAboutRideEnd(passenger.getId());
+            }
             save(ride);
         }
         else{
