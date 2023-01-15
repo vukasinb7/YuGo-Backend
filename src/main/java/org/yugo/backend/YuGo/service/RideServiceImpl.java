@@ -165,6 +165,10 @@ public class RideServiceImpl implements RideService {
         if(availableDrivers.isEmpty()){
             throw new NotFoundException("There are no available drivers at the moment");
         }
+        availableDrivers.removeIf(driver -> rideRepository.findAcceptedRideByDriver(driver.getId()).isPresent());
+        if(availableDrivers.isEmpty()){
+            throw new NotFoundException("There are no available drivers at the moment");
+        }
         availableDrivers.removeIf(driver ->  unproxy(driver.getVehicle()).getVehicleType() != vehicleType ||
                 (!unproxy(driver.getVehicle()).getAreBabiesAllowed() && isBabyTransport) ||
                 (!unproxy(driver.getVehicle()).getArePetsAllowed() && isPetTransport) ||

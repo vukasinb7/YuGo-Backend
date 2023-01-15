@@ -46,4 +46,7 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
 
     @Query(value = "SELECT * FROM rides WHERE status = 'SCHEDULED' AND DATEDIFF(minute, CURRENT_TIMESTAMP, start_time) BETWEEN 0 AND 31", nativeQuery = true)
     List<Ride> findScheduledRidesInNext30Minutes();
+    @Query(value = "SELECT * FROM rides WHERE driver_id = :driver_id AND status='ACCEPTED'", nativeQuery = true)
+    Optional<Ride> findAcceptedRideByDriver(@Param("driver_id") Integer driverID);
+
 }
