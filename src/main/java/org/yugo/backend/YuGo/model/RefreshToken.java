@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter @Setter
-@Entity(name = "Refresh_tokens")
+@Entity(name = "RefreshTokens")
 public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

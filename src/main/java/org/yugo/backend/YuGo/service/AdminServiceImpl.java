@@ -44,7 +44,7 @@ public class AdminServiceImpl implements AdminService {
             admin.setAddress(adminUpdate.getAddress());
             return adminRepository.save(admin);
         }catch (DataIntegrityViolationException e){
-            throw new BadRequestException("Email is already being used by another user!");
+            throw new BadRequestException("User with that email already exists!");
         }
     }
 

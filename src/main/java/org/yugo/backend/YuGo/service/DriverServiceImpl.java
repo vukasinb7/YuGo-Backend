@@ -81,7 +81,7 @@ public class DriverServiceImpl implements DriverService {
             driver.setPassword(passwordEncoder.encode(driver.getPassword()));
             return userRepository.save(driver);
         }catch (DataIntegrityViolationException e){
-            throw new BadRequestException("Email is already being used by another user!");
+            throw new BadRequestException("User with that email already exists!");
         }
     }
 
@@ -155,7 +155,7 @@ public class DriverServiceImpl implements DriverService {
             driver.setAddress(driverUpdate.getAddress());
             return userRepository.save(driver);
         }catch (DataIntegrityViolationException e){
-            throw new BadRequestException("Email is already being used by another user!");
+            throw new BadRequestException("User with that email already exists!");
         }
     }
 

@@ -52,8 +52,9 @@ public class ReviewController {
                                                       @PathVariable(value="rideId") Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Passenger passenger = (Passenger) auth.getPrincipal();
-        if (!rideService.get(rideId).getPassengers().contains(passenger)){
-            throw new NotFoundException("Vehicle does not exist!");
+        for(Passenger p:rideService.get(rideId).getPassengers()){
+            if (!p.getId().equals(passenger.getId()))
+                throw new NotFoundException("Vehicle does not exist!");
         }
         RideReview vehicleReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(passenger.getId()),ReviewType.VEHICLE);
         reviewService.insertRideReview(vehicleReview);
@@ -72,8 +73,9 @@ public class ReviewController {
                                                    @PathVariable(value="rideId") Integer rideId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Passenger passenger = (Passenger) auth.getPrincipal();
-        if (!rideService.get(rideId).getPassengers().contains(passenger)){
-            throw new NotFoundException("Vehicle does not exist!");
+        for(Passenger p:rideService.get(rideId).getPassengers()){
+            if (!p.getId().equals(passenger.getId()))
+                throw new NotFoundException("Ride does not exist!");
         }
         RideReview rideReview= new RideReview(reviewIn.getComment(), reviewIn.getRating(),rideService.get(rideId),passengerService.get(passenger.getId()),ReviewType.DRIVER);
         reviewService.insertRideReview(rideReview);
@@ -119,8 +121,9 @@ public class ReviewController {
             }
         }
         else if (user.getRole().equals("PASSENGER")){
-            if (!rideService.get(id).getPassengers().contains((Passenger) user)){
-                throw new NotFoundException("Ride does not exist!");
+            for(Passenger p:rideService.get(id).getPassengers()){
+                if (!p.getId().equals(user.getId()))
+                    throw new NotFoundException("Ride does not exist!");
             }
         }
 

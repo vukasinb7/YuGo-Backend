@@ -23,5 +23,5 @@ public class RideIn {
     @NotNull(message = "Field (petTransport) is required!")
     private boolean petTransport;
     @Size(max = 50, message = "Field (dateTime) cannot be longer than 50 characters!")
-    private String dateTime;
+    private String timeOfSchedule;
 }

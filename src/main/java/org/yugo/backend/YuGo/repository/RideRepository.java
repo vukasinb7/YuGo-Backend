@@ -28,12 +28,12 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
             nativeQuery = true)
     Optional<Ride> findActiveRideByPassenger(@Param("passenger_id") Integer passengerID);
 
-    @Query(value = "SELECT DISTINCT r FROM Ride r LEFT JOIN r.passengers p WHERE :passengerId = p.id AND r.startTime>=:fromTime AND :toTime>=r.endTime")
+    @Query(value = "SELECT DISTINCT r FROM Ride r LEFT JOIN r.passengers p WHERE :passengerId = p.id AND r.startTime>=:fromTime AND :toTime>=r.startTime")
     Page<Ride> findRidesByPassenger(@Param("passengerId") Integer passengerId,
                                     @Param("fromTime") LocalDateTime fromTime,
                                     @Param("toTime") LocalDateTime toTime, Pageable page);
 
-    @Query(value = "SELECT DISTINCT r FROM Ride r LEFT JOIN r.passengers p WHERE (:userId = p.id OR :userId = r.driver.id) AND r.startTime>=:fromTime AND :toTime>=r.endTime")
+    @Query(value = "SELECT DISTINCT r FROM Ride r LEFT JOIN r.passengers p WHERE (:userId = p.id OR :userId = r.driver.id) AND r.startTime>=:fromTime AND :toTime>=r.startTime")
     Page<Ride> findRidesByUser(@Param("userId") Integer userId,
                                     @Param("fromTime") LocalDateTime fromTime,
                                     @Param("toTime") LocalDateTime toTime, Pageable page);

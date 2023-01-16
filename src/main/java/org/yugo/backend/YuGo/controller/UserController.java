@@ -63,7 +63,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER', 'DRIVER')")
-    public ResponseEntity<UserDetailedInOut> getDriver(@NotNull(message = "Field (id) is required")
+    public ResponseEntity<UserDetailedInOut> getUser(@NotNull(message = "Field (id) is required")
                                                        @Positive(message = "Id must be positive")
                                                        @PathVariable Integer id){
         User user = userService.getUser(id);

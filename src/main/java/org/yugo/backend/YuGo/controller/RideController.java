@@ -60,7 +60,13 @@ public class RideController {
     public ResponseEntity<RideDetailedOut> addRide(@RequestBody @Valid RideIn rideIn) throws Exception {
         Ride ride = rideService.createRide(rideIn);
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-        LocalDateTime rideDateTime = LocalDateTime.parse(rideIn.getDateTime(), formatter);
+
+        LocalDateTime rideDateTime;
+        if (rideIn.getTimeOfSchedule()!=null)
+            rideDateTime= LocalDateTime.parse(rideIn.getTimeOfSchedule(), formatter);
+        else
+            rideDateTime=LocalDateTime.now();
+
         if(LocalDateTime.now().until(rideDateTime, ChronoUnit.MINUTES) <= 30){
             rideService.searchForDriver(ride.getId());
         }

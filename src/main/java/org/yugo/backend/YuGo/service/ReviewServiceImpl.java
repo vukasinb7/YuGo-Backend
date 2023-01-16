@@ -25,6 +25,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public RideReview insertRideReview(RideReview rideReview) {
+        rideService.get(rideReview.getRide().getId());
         return rideReviewRepository.save(rideReview);
     }
 
@@ -61,11 +62,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
     @Override
     public RideReview getDriverReviewsByRideByPassenger(Integer id,Integer passengerId){
+        rideService.get(id);
         return rideReviewRepository.findDriverReviewsByRideByPassenger(id,passengerId);
     }
 
     @Override
     public RideReview getVehicleReviewsByRideByPassenger(Integer id,Integer passengerId){
+        rideService.get(id);
         return rideReviewRepository.findVehicleReviewsByRideByPassenger(id,passengerId);
     }
 }

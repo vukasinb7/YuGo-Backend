@@ -29,6 +29,7 @@ import org.yugo.backend.YuGo.service.UserActivationService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
@@ -100,7 +101,7 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "Passenger does not exist!")
     public ResponseEntity<UserDetailedInOut> updatePassenger(@NotNull(message = "Field (id) is required")
                                                              @Positive(message = "Id must be positive")
                                                              @PathVariable(value="id") Integer id,
@@ -116,7 +117,7 @@ public class PassengerController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
-    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "Passenger does not exist!")
     ResponseEntity<AllRidesOut> getPassengerRides(@NotNull(message = "Field (id) is required")
                                                   @Positive(message = "Id must be positive")
                                                   @PathVariable(value="id") Integer id,
@@ -127,13 +128,24 @@ public class PassengerController {
                                                   @NotNull(message = "Field (size) is required")
                                                   @RequestParam(name="size") int size,
                                                   @RequestParam(name = "sort", required = false) String sort,
-                                                  @NotBlank(message = "Field (from) is required")
-                                                  @RequestParam(name = "from") String from,
-                                                  @NotBlank(message = "Field (to) is required")
-                                                  @RequestParam(name = "to") String to) {
+                                                  @RequestParam(name = "from", required = false) String from,
+                                                  @RequestParam(name = "to", required = false) String to) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime fromTime = LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
-        LocalDateTime toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
+        LocalDateTime fromTime;
+        LocalDateTime toTime;
+        if (from==null)
+            fromTime=LocalDateTime.of(1753, Month.JANUARY,1,0, 0);
+        else
+            fromTime= LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
+
+        if (to==null)
+            toTime=LocalDateTime.of(9998, Month.DECEMBER,31,0,0);
+        else
+            toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
+
+        if (sort==null)
+            sort="startTime";
+
         Page<Ride> rides = rideService.getPassengerRides(id, fromTime, toTime,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
