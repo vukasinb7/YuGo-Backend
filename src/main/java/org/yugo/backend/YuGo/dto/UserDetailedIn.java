@@ -17,7 +17,7 @@ public class UserDetailedIn {
     @Size(max = 50, message = "Field (profilePicture) cannot be longer than 50 characters!")
     private String profilePicture;
     @NotBlank(message = "Field (telephoneNumber) is required!")
-    @Pattern(regexp = "^(\\+\\d{1,2}\\s?)?1?\\-?\\.?\\s?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$",message = "Field telephoneNumber format is not valid!")
+    @Pattern(regexp = "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s./0-9]{0,10}$",message = "Field telephoneNumber format is not valid!")
     private String telephoneNumber;
     @NotBlank(message = "Field (email) is required!")
     @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",message = "Field email format is not valid!")

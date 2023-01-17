@@ -52,7 +52,6 @@ public class DriverController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     public ResponseEntity<UserDetailedInOut> createDriver(@RequestBody @Valid UserDetailedIn driverIn){
         Driver driver = new Driver(driverIn);
         Driver driverNew = driverService.insertDriver(driver);

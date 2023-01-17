@@ -115,7 +115,7 @@ public class DriverServiceImpl implements DriverService {
             throw new BadRequestException("Vehicle is not defined");
         }
         if(workTimeRepository.findWorkTimeByEndTimeIsNull().isPresent()){
-            throw new BadRequestException("Shift already ongoing");
+            throw new BadRequestException("Shift already ongoing!");
         }
         double totalWorkTime = workTimeRepository.getTotalWorkTimeInLast24Hours(driverId);
         if(totalWorkTime >= 8){

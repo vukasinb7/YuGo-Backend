@@ -66,7 +66,7 @@ public class DocumentServiceImpl implements DocumentService {
     public Document get(Integer id) {
         Optional<Document> doc = documentRepository.findById(id);
         if(doc.isEmpty()){
-            throw new NotFoundException("Document does not exist");
+            throw new NotFoundException("Document does not exist!");
         }
         return doc.get();
     }
