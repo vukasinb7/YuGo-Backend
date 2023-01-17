@@ -296,7 +296,7 @@ public class RideServiceImpl implements RideService {
     public Ride getActiveRideByDriver(Integer id){
         Optional<Ride> ride=  rideRepository.findActiveRideByDriver(id);
         if (ride.isEmpty())
-            throw new NotFoundException("Active ride does not exist!");
+            throw new NotFoundException("Active ride does not exist");
         return ride.get();
     }
 
@@ -304,7 +304,7 @@ public class RideServiceImpl implements RideService {
     public Ride getActiveRideByPassenger(Integer id){
         Optional<Ride> ride=  rideRepository.findActiveRideByPassenger(id);
         if (ride.isEmpty())
-            throw new NotFoundException("Active ride does not exist!");
+            throw new NotFoundException("Active ride does not exist");
         return ride.get();
     }
 

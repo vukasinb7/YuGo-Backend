@@ -35,7 +35,7 @@ public class FavoritePathServiceImpl implements FavoritePathService {
         if (favoritePathOptional.isPresent()){
             return favoritePathOptional.get();
         }
-        throw new NotFoundException("Favourite path not found!");
+        throw new NotFoundException("Favorite location does not exist!");
     }
 
     @Override
@@ -44,13 +44,13 @@ public class FavoritePathServiceImpl implements FavoritePathService {
         if (favoritePathListOptional.isPresent()){
             return favoritePathListOptional.get();
         }
-        throw new NotFoundException("Favourite paths not found!");
+        throw new NotFoundException("Favorite location does not exist!");
     }
 
     @Override
     public void delete(Integer id){
         if (favoritePathRepository.findById(id).isEmpty())
-            throw new NotFoundException("Favorite Location does not exist!");
+            throw new NotFoundException("Favorite location does not exist!");
         favoritePathRepository.deleteById(id);
     }
 }

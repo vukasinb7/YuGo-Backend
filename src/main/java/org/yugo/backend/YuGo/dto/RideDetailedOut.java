@@ -25,6 +25,7 @@ public class RideDetailedOut {
     private boolean petTransport;
     private RejectionOut rejection;
     private String status;
+    private String scheduledTime;
 
     public RideDetailedOut(Ride ride) {
         this.id= ride.getId();
@@ -53,5 +54,6 @@ public class RideDetailedOut {
         this.status = ride.getStatus().toString();
         if (ride.getRejection()!=null)
             this.rejection=new RejectionOut(ride.getRejection());
+        this.scheduledTime=ride.getStartTime().toString();
     }
 }

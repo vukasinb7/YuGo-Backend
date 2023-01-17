@@ -41,7 +41,7 @@ public class VehicleController {
             value = "/{id}/location",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
+    @PreAuthorize("hasAnyRole('DRIVER', 'PASSENGER')")
     public ResponseEntity<Void> changeLocation(@RequestBody @Valid LocationInOut locationInOut,
                                                @NotNull(message = "Field (id) is required")
                                                @Positive(message = "Id must be positive")
