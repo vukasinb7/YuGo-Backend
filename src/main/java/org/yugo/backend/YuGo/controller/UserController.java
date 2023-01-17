@@ -31,6 +31,7 @@ import org.yugo.backend.YuGo.security.TokenUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
@@ -118,7 +119,7 @@ public class UserController {
             produces = MediaType.TEXT_PLAIN_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User does not exist!")
     public ResponseEntity<?> changePassword(@NotNull(message = "Field (id) is required")
                                             @Positive(message = "Id must be positive")
                                             @PathVariable(value="id") Integer id,
@@ -175,6 +176,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User does not exist!")
     ResponseEntity<AllRidesOut> getUserRides(@NotNull(message = "Field (id) is required")
                                              @Positive(message = "Id must be positive")
                                              @PathVariable(value="id") Integer id,
@@ -184,14 +186,25 @@ public class UserController {
                                              @Positive(message = "size must be positive")
                                              @NotNull(message = "Field (size) is required")
                                              @RequestParam(name="size") int size,
-                                             @NotBlank(message = "Field (from) is required")
-                                             @RequestParam(name = "from") String from,
-                                             @NotBlank(message = "Field (to) is required")
-                                             @RequestParam(name = "to") String to,
-                                             @RequestParam(name = "sort", required = false) String sort){
+                                             @RequestParam(name = "sort", required = false) String sort,
+                                             @RequestParam(name = "from", required = false) String from,
+                                             @RequestParam(name = "to", required = false) String to) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime fromTime = LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
-        LocalDateTime toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
+        LocalDateTime fromTime;
+        LocalDateTime toTime;
+        if (from==null)
+            fromTime=LocalDateTime.of(1753, Month.JANUARY,1,0, 0);
+        else
+            fromTime= LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
+
+        if (to==null)
+            toTime=LocalDateTime.of(9998, Month.DECEMBER,31,0,0);
+        else
+            toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
+
+        if (sort==null)
+            sort="startTime";
+
         Page<Ride> rides = rideService.getUserRides(id, fromTime, toTime,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
 
@@ -230,7 +243,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    @AuthorizeSelf(pathToUserId = "[0]", message = "User not found!")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User does not exist!")
     public ResponseEntity<AllUserMessagesOut> getUserMessages(@NotNull(message = "Field (id) is required")
                                                               @Positive(message = "Id must be positive")
                                                               @PathVariable(value="id") Integer id){

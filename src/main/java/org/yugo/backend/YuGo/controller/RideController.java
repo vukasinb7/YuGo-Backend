@@ -195,7 +195,7 @@ public class RideController {
 
         Panic panic= new Panic(user,ride, LocalDateTime.now(), reasonIn.getReason());
         ride.setIsPanicPressed(true);
-        rideService.insert(ride);
+        rideService.save(ride);
         panicService.insert(panic);
 
         return new ResponseEntity<>(new PanicOut(panic), HttpStatus.OK);

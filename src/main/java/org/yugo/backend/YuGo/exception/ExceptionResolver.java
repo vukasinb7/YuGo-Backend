@@ -84,7 +84,7 @@ public class ExceptionResolver {
         return new ResponseEntity<>("Field "+ exception.getName()+" is not valid!", headers, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<String> handleConstraintViolationException(MethodArgumentNotValidException exception) {
         List<ObjectError> errorList = exception.getBindingResult().getAllErrors();
         StringBuilder sb = new StringBuilder();
@@ -96,11 +96,11 @@ public class ExceptionResolver {
         return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class})
+    @ExceptionHandler(IllegalArgumentException.class)
     protected ResponseEntity<String> illegalArgument(IllegalArgumentException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler({DateTimeParseException.class})
+    @ExceptionHandler(DateTimeParseException.class)
     protected ResponseEntity<String> dateTimeParse(DateTimeParseException exception) {
         return new ResponseEntity<>("Value " + exception.getParsedString() + " is not valid DateTime format", HttpStatus.BAD_REQUEST);
     }
