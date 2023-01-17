@@ -77,8 +77,8 @@ public class RideController {
             value = "/driver/{id}/active",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasRole('DRIVER')")
-    @AuthorizeSelf(pathToUserId = "[0]", message = "Active ride does not exist!")
+    @PreAuthorize("hasAnyRole('DRIVER','ADMIN')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "Active ride does not exist")
     public ResponseEntity<RideDetailedOut> getActiveRideByDriver(@NotNull(message = "Field (id) is required")
                                                                   @Positive(message = "Id must be positive")
                                                                   @PathVariable(value="id") Integer id){
@@ -89,8 +89,8 @@ public class RideController {
             value = "/passenger/{id}/active",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasRole('PASSENGER')")
-    @AuthorizeSelf(pathToUserId = "[0]", message = "Active ride does not exist!")
+    @PreAuthorize("hasRole('ADMIN')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "Active ride does not exist")
     public ResponseEntity<RideDetailedOut> getActiveRideByPassenger(@NotNull(message = "Field (id) is required")
                                                                      @Positive(message = "Id must be positive")
                                                                      @PathVariable(value="id") Integer id){
@@ -119,8 +119,10 @@ public class RideController {
                                                       @PathVariable(value="id") Integer id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Passenger passenger = (Passenger) auth.getPrincipal();
-        if (!rideService.get(id).getPassengers().contains(passenger)){
-            throw new NotFoundException("Ride does not exist!");
+        Ride ride=rideService.get(id);
+        for(Passenger p:ride.getPassengers()){
+            if (!p.getId().equals(passenger.getId()))
+                throw new NotFoundException("Ride does not exist!");
         }
         return new ResponseEntity<>(new RideDetailedOut(rideService.cancelRide(id)), HttpStatus.OK);
     }
@@ -160,6 +162,7 @@ public class RideController {
     public ResponseEntity<RideDetailedOut> endRide(@NotNull(message = "Field (id) is required")
                                                    @Positive(message = "Id must be positive")
                                                    @PathVariable(value="id") Integer id){
+        rideService.get(id);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Integer senderID = ((Driver) auth.getPrincipal()).getId();
         Integer driverID = rideService.get(id).getDriver().getId();
@@ -241,7 +244,7 @@ public class RideController {
             value = "/favorites",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
+    @PreAuthorize("hasRole('PASSENGER')")
     public ResponseEntity<List<FavoritePathOut>> getFavoritePathByPassengerId(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
@@ -253,13 +256,13 @@ public class RideController {
     @DeleteMapping(
             value = "/favorites/{id}"
     )
-    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER')")
+    @PreAuthorize("hasRole( 'PASSENGER')")
     ResponseEntity<Void> deleteFavoritePath(@NotNull(message = "Field (id) is required")
                                             @Positive(message = "Id must be positive")
                                             @PathVariable(value="id") Integer id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Passenger passenger = (Passenger) auth.getPrincipal();
-        if (!favoritePathService.get(id).getOwner().equals(passenger)){
+        if (!favoritePathService.get(id).getOwner().getId().equals(passenger.getId())){
             throw new NotFoundException("Favorite path does not exist!");
         }
         favoritePathService.delete(id);

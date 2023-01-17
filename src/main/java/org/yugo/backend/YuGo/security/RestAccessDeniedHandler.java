@@ -18,7 +18,7 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
         response.setContentType(MediaType.TEXT_PLAIN_VALUE);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         OutputStream responseStream = response.getOutputStream();
-        responseStream.write("Unauthorized!".getBytes());
+        responseStream.write("Access Denied!".getBytes());
         responseStream.flush();
     }
 }
