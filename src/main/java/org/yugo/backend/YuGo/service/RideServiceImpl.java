@@ -77,8 +77,8 @@ public class RideServiceImpl implements RideService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime rideDateTime;
-        if (rideIn.getTimeOfSchedule()!=null)
-            rideDateTime= LocalDateTime.parse(rideIn.getTimeOfSchedule(), formatter);
+        if (rideIn.getScheduledTime()!=null)
+            rideDateTime= LocalDateTime.parse(rideIn.getScheduledTime(), formatter);
         else
             rideDateTime=LocalDateTime.now();
         LocalDateTime now = LocalDateTime.now();
