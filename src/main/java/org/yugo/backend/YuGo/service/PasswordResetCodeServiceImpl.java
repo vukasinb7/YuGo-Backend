@@ -34,7 +34,8 @@ public class PasswordResetCodeServiceImpl implements PasswordResetCodeService {
         Optional<PasswordResetCode> passwordResetCodeOpt = passwordResetCodeRepository.findById(code);
         if (passwordResetCodeOpt.isPresent()){
             PasswordResetCode passwordResetCode = passwordResetCodeOpt.get();
-            if (!passwordResetCode.getDateCreated().plus(passwordResetCode.getLifeSpan()).isBefore(LocalDateTime.now())){
+            if (passwordResetCode.getDateCreated().plus(passwordResetCode.getLifeSpan()).isAfter(LocalDateTime.now())
+                    && passwordResetCode.isValid()){
                 return passwordResetCode;
             }
             setCodeInvalid(passwordResetCode);

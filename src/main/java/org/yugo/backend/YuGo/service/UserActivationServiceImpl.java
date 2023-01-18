@@ -49,7 +49,8 @@ public class UserActivationServiceImpl implements UserActivationService {
             UserActivation userActivation = userActivationOpt.get();
             User user = userActivation.getUser();
 
-            if (userActivation.getDateCreated().plus(userActivation.getLifeSpan()).isAfter(LocalDateTime.now())){
+            if (userActivation.getDateCreated().plus(userActivation.getLifeSpan()).isAfter(LocalDateTime.now())
+                    && userActivation.isValid()){
                 user.setActive(true);
                 userRepository.save(user);
                 userActivation.setValid(false);
