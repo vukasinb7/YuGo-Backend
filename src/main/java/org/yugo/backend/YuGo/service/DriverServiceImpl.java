@@ -79,6 +79,7 @@ public class DriverServiceImpl implements DriverService {
             roles.add(roleService.findRoleByName("ROLE_DRIVER"));
             driver.setRoles(roles);
             driver.setPassword(passwordEncoder.encode(driver.getPassword()));
+            driver.setProfilePicture("DEFAULT.jpg");
             return userRepository.save(driver);
         }catch (DataIntegrityViolationException e){
             throw new BadRequestException("User with that email already exists!");

@@ -44,6 +44,7 @@ public class PassengerServiceImpl implements PassengerService {
             roles.add(roleService.findRoleByName("ROLE_PASSENGER"));
             passenger.setRoles(roles);
             passenger.setPassword(passwordEncoder.encode(passenger.getPassword()));
+            passenger.setProfilePicture("DEFAULT.jpg");
             passenger = passengerRepository.save(passenger);
             mailService.sendActivationMail(passenger);
             return passenger;
