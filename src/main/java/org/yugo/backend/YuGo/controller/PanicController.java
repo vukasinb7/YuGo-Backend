@@ -1,14 +1,15 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.dto.AllPanicsOut;
 import org.yugo.backend.YuGo.service.*;
 
@@ -27,7 +28,12 @@ public class PanicController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AllPanicsOut> getPanics(){
-        return new ResponseEntity<>(new AllPanicsOut(panicService.getAll()), HttpStatus.OK);
+public ResponseEntity<AllPanicsOut> getPanics(@Min(value=0, message = "Page must be 0 or greater")
+                                              @NotNull(message = "Field (page) is required")
+                                              @RequestParam(name="page") int page,
+                                              @Positive(message = "Size must be positive")
+                                              @NotNull(message = "Field (size) is required")
+                                              @RequestParam(name="size") int size){
+        return new ResponseEntity<>(new AllPanicsOut(panicService.getAll(PageRequest.of(page, size))), HttpStatus.OK);
     }
 }

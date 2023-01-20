@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.service.DocumentService;
 import org.yugo.backend.YuGo.service.UserService;
@@ -59,6 +60,24 @@ public class ImageController {
         return null;
     }
 
+    @GetMapping(
+            value = "/profilePicture/{name}"
+    )
+    ResponseEntity<byte[]> getProfilePicture(@PathVariable String name){
+        File img = new File("./src/main/resources/profilePictures/" + name);
+        if(img.exists() && !img.isDirectory()){
+            try {
+                byte[] imgBytes = Files.readAllBytes(img.toPath());
+                return ResponseEntity.ok()
+                        .contentType(MediaType.valueOf(Files.probeContentType(img.toPath())))
+                        .body(imgBytes);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        throw new NotFoundException("Profile picture not found!");
+    }
+
     @PostMapping(value = "/{id}/profilePicture",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
@@ -69,8 +88,8 @@ public class ImageController {
                                                @NotNull(message = "Field (file) is required")
                                                @RequestParam("image") MultipartFile file)
             throws IOException {
-        String pictureName = id+"_PROFILE_PICTURE"+".jpg";
-        String path="src\\main\\resources\\img\\" + pictureName;
+        String pictureName = file.hashCode()+".jpg";
+        String path="src\\main\\resources\\profilePictures\\" + pictureName;
         Files.write(Paths.get(path),file.getBytes());
         HashMap<String, String> response = new HashMap<>();
         response.put("pictureName", pictureName);

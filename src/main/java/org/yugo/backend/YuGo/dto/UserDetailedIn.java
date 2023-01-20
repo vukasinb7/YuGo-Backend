@@ -13,7 +13,6 @@ public class UserDetailedIn {
     @NotBlank(message = "Field (surname) is required!")
     @Size(max = 50, message = "Field (surname) cannot be longer than 50 characters!")
     private String surname;
-    @NotBlank(message = "Field (profilePicture) is required!")
     @Size(max = 50, message = "Field (profilePicture) cannot be longer than 50 characters!")
     private String profilePicture;
     @NotBlank(message = "Field (telephoneNumber) is required!")

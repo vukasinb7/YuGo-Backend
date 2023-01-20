@@ -5,10 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.yugo.backend.YuGo.dto.RideIn;
 import org.yugo.backend.YuGo.model.Ride;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface RideService {
     Ride insert(Ride ride);
