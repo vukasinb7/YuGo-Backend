@@ -103,6 +103,8 @@ INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
 VALUES ('1','6');
 
 INSERT INTO PANICS (reason, time_pressed, ride_id, user_id) VALUES ('testtest', '2022-12-05 23:35:33.172279', '1', '1');
+INSERT INTO PANICS (reason, time_pressed, ride_id, user_id) VALUES ('testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest', '2022-12-05 23:35:33.172279', '1', '1');
+INSERT INTO PANICS (reason, time_pressed, ride_id, user_id) VALUES ('testtest', '2022-12-05 23:34:33.172279', '1', '1');
 
 INSERT INTO work_times (end_time, start_time, driver_id) VALUES ('2022-12-05 23:35:33.172279', '2022-12-05 23:35:33.172279', '2');
 

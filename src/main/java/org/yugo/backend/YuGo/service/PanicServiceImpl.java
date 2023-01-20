@@ -1,6 +1,8 @@
 package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.Panic;
@@ -23,8 +25,8 @@ public class PanicServiceImpl implements PanicService {
     }
 
     @Override
-    public List<Panic> getAll() {
-        return panicRepository.findAll();
+    public Page<Panic> getAll(Pageable page) {
+        return panicRepository.findAllPanics(page);
     }
 
     @Override
