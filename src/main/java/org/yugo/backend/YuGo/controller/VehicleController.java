@@ -46,8 +46,7 @@ public class VehicleController {
                                                @NotNull(message = "Field (id) is required")
                                                @Positive(message = "Id must be positive")
                                                @PathVariable(value="id") Integer id){
-        Vehicle vehicle=vehicleService.getVehicle(id);
-        vehicle.setCurrentLocation(LocationMapper.fromDTOtoLocation(locationInOut));
+        vehicleService.updateVehicleLocation(LocationMapper.fromDTOtoLocation(locationInOut), id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

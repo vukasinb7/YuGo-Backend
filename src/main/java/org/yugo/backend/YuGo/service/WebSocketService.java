@@ -8,4 +8,6 @@ public interface WebSocketService {
     void notifyPassengerAboutRideEnd(Integer passengerID);
 
     void notifyPassengerAboutRideStart(Integer passengerID);
+
+    void notifyPassengerAboutVehicleLocation(Integer passengerID, double longitude, double latitude);
 }

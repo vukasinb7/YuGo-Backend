@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.dto.LocationInOut;
 import org.yugo.backend.YuGo.exception.BadRequestException;
 import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.*;
@@ -37,6 +38,16 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.save(vehicle);
     }
 
+    @Override
+    public void updateVehicleLocation(Location location, Integer vehicleID){
+        Optional<Vehicle> vehicleOpt = vehicleRepository.findById(vehicleID);
+        if(vehicleOpt.isEmpty()){
+            throw new NotFoundException("Vehicle with given id doesn't exist!");
+        }
+        Vehicle vehicle = vehicleOpt.get();
+        vehicle.setCurrentLocation(location);
+        vehicleRepository.save(vehicle);
+    }
     @Override public Vehicle updateVehicle(Vehicle vehicle){
         Optional<Vehicle> vehicleOpt = vehicleRepository.findById(vehicle.getId());
         if(vehicleOpt.isEmpty()){

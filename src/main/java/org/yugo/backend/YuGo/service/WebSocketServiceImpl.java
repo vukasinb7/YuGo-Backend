@@ -49,5 +49,16 @@ public class WebSocketServiceImpl implements WebSocketService {
         System.out.println("============================");
         simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger-start-ride/" + passengerID,"");
     }
+    private class CoordinatesDTO{
+        public double longitude;
+        public double latitude;
+    }
+    @Override
+    public void notifyPassengerAboutVehicleLocation(Integer passengerID, double longitude, double latitude){
+        CoordinatesDTO coordinates = new CoordinatesDTO();
+        coordinates.latitude = latitude;
+        coordinates.longitude = longitude;
+        simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger-vehicle-location/" + passengerID, coordinates);
+    }
 
 }
