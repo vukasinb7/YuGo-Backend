@@ -4,14 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.yugo.backend.YuGo.exception.BadRequestException;
 import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.Role;
-import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.repository.PassengerRepository;
 
 import java.util.ArrayList;
@@ -37,6 +35,14 @@ public class PassengerServiceImpl implements PassengerService {
         this.userService = userService;
     }
 
+    @Override
+    public Passenger getPassengerByEmail(String email){
+        Optional<Passenger> userOpt= passengerRepository.findPassengerByEmail(email);
+        if (userOpt.isEmpty()){
+            throw new NotFoundException(String.format("No user found with username '%s'.", email));
+        }
+        return userOpt.get();
+    }
     @Override
     public Passenger insert(Passenger passenger) {
         try{

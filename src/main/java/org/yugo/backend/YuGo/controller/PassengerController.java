@@ -1,10 +1,7 @@
 package org.yugo.backend.YuGo.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
-import org.yugo.backend.YuGo.dto.AllPassengersOut;
-import org.yugo.backend.YuGo.dto.AllRidesOut;
-import org.yugo.backend.YuGo.dto.UserDetailedIn;
-import org.yugo.backend.YuGo.dto.UserDetailedInOut;
+import org.yugo.backend.YuGo.dto.*;
 import org.yugo.backend.YuGo.mapper.UserDetailedMapper;
 import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.Ride;
@@ -110,6 +104,18 @@ public class PassengerController {
         passengerUpdate.setId(id);
         Passenger updatedPassenger = passengerService.update(passengerUpdate);
         return new ResponseEntity<>(UserDetailedMapper.fromUsertoDTO(updatedPassenger), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','PASSENGER')")
+    @GetMapping(
+            value = "/email/{email}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<UserSimplifiedOut> getPassengerByEmail(@NotBlank(message = "Field (email) is required")
+                                                            @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",message = "Field Email format invalid")
+                                                            @PathVariable String email){
+        UserSimplifiedOut user = new UserSimplifiedOut(passengerService.getPassengerByEmail(email));
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping(
