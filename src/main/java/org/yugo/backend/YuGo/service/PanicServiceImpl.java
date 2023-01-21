@@ -13,15 +13,19 @@ import java.util.Optional;
 @Service
 public class PanicServiceImpl implements PanicService {
     private final PanicRepository panicRepository;
+    private final WebSocketService webSocketService;
 
     @Autowired
-    public PanicServiceImpl(PanicRepository panicRepository){
+    public PanicServiceImpl(PanicRepository panicRepository, WebSocketService webSocketService){
         this.panicRepository = panicRepository;
+        this.webSocketService = webSocketService;
     }
 
     @Override
     public Panic insert(Panic panic){
-        return panicRepository.save(panic);
+        Panic createdPanic = panicRepository.save(panic);
+        webSocketService.notifyAdminAboutPanic(createdPanic.getId());
+        return createdPanic;
     }
 
     @Override
