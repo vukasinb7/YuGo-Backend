@@ -37,7 +37,6 @@ public class RideServiceImpl implements RideService {
     private final UserService userService;
     private final PassengerService passengerService;
     private final VehicleService vehicleService;
-
     private final WebSocketService webSocketService;
     private final WorkTimeRepository workTimeRepository;
     @Autowired

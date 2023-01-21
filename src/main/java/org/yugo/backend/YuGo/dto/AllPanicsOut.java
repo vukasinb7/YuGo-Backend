@@ -17,7 +17,7 @@ public class AllPanicsOut {
 
     public AllPanicsOut(Page<Panic> panics){
         this.results = panics.stream()
-                .map(PanicMapper::fromPanictoDTO)
+                .map(PanicMapper::fromPanicToDTO)
                 .toList();
         this.totalCount = panics.getTotalElements();
     }

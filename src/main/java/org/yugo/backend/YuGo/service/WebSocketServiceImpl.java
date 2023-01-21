@@ -13,9 +13,24 @@ public class WebSocketServiceImpl implements WebSocketService {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
+    private class PanicDTO{
+        public Integer panicId;
+    }
+
+    @Override
+    public void notifyAdminAboutPanic(Integer panicId){
+        PanicDTO output = new PanicDTO();
+        output.panicId = panicId;
+        System.out.println("============================");
+        System.out.println("Admin je obavesten");
+        System.out.println("============================");
+        simpMessagingTemplate.convertAndSend("/ride-topic/notify-admin-panic", output);
+    }
+
     private class RideDTO{
         public Integer rideID;
     }
+
     @Override
     public void sendRideRequestToDriver(Integer driverID, Integer rideID){
         RideDTO output = new RideDTO();
