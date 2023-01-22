@@ -115,12 +115,17 @@ public class RideServiceImpl implements RideService {
             throw new NotFoundException("Active ride does not exist!");
         return ride.get();
     }
-
+    @Override
     public Page<Ride> getPassengerRides(Integer passengerId, LocalDateTime from, LocalDateTime to, Pageable page){
         passengerService.get(passengerId);
         return rideRepository.findRidesByPassenger(passengerId, from, to, page);
     }
-
+    @Override
+    public List<Ride> getPassengerRidesNonPagable(Integer passengerId, LocalDateTime from, LocalDateTime to){
+        passengerService.get(passengerId);
+        return rideRepository.findRidesByPassenger(passengerId, from, to);
+    }
+    @Override
     public Page<Ride> getUserRides(Integer userId, LocalDateTime from, LocalDateTime to, Pageable page){
         userService.getUser(userId);
         return rideRepository.findRidesByUser(userId, from, to, page);
@@ -128,6 +133,11 @@ public class RideServiceImpl implements RideService {
 
     public Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end){
         return rideRepository.findRidesByDriverAndStartTimeAndEndTimePageable(driverId, page, start, end);
+    }
+    @Override
+    public List<Ride> getRidesByDriverNonPageable(Integer driverId, LocalDateTime start, LocalDateTime end){
+        driverService.getDriver(driverId);
+        return rideRepository.findRidesByDriverAndStartTimeAndEndTimePageable(driverId, start, end);
     }
 
     public Ride cancelRide(Integer id){
