@@ -363,7 +363,7 @@ public class RideServiceImpl implements RideService {
         return ride;
     }
     public Ride endRide(Integer id){
-        Ride ride =get(id);
+        Ride ride = get(id);
         if (ride.getStatus() == RideStatus.ACTIVE) {
             ride.setStatus(RideStatus.FINISHED);
             for (Passenger passenger : ride.getPassengers()){
