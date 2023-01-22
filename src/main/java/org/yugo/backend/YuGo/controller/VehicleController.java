@@ -84,7 +84,7 @@ public class VehicleController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity acceptVehicleChangeRequest(@PathVariable Integer requestId){
+    public ResponseEntity<?> acceptVehicleChangeRequest(@PathVariable Integer requestId){
         vehicleService.acceptVehicleChangeRequest(requestId);
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Driver vehicle changed successfully!");
@@ -96,7 +96,7 @@ public class VehicleController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity rejectVehicleChangeRequest(@PathVariable Integer requestId){
+    public ResponseEntity<?> rejectVehicleChangeRequest(@PathVariable Integer requestId){
         vehicleService.rejectVehicleChangeRequest(requestId);
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Vehicle change request rejected successfully!");

@@ -7,8 +7,7 @@ import java.util.Optional;
 
 public interface LocationService {
     Location insert(Location location);
-
     List<Location> getAll();
-
     Location get(Integer id);
+    void delete(Integer id);
 }

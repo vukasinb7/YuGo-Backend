@@ -18,7 +18,7 @@ public class WebSocketServiceImpl implements WebSocketService {
     }
 
     @Override
-    public void notifyAdminAboutPanic(Integer panicId){
+    public void notifyAdminsAboutPanic(Integer panicId){
         PanicDTO output = new PanicDTO();
         output.panicId = panicId;
         System.out.println("============================");
@@ -75,5 +75,4 @@ public class WebSocketServiceImpl implements WebSocketService {
         coordinates.longitude = longitude;
         simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger-vehicle-location/" + passengerID, coordinates);
     }
-
 }

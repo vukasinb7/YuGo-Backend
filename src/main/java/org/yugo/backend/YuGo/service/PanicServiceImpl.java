@@ -8,7 +8,6 @@ import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.Panic;
 import org.yugo.backend.YuGo.repository.PanicRepository;
 
-import java.util.List;
 import java.util.Optional;
 @Service
 public class PanicServiceImpl implements PanicService {
@@ -24,7 +23,7 @@ public class PanicServiceImpl implements PanicService {
     @Override
     public Panic insert(Panic panic){
         Panic createdPanic = panicRepository.save(panic);
-        webSocketService.notifyAdminAboutPanic(createdPanic.getId());
+        webSocketService.notifyAdminsAboutPanic(createdPanic.getId());
         return createdPanic;
     }
 
