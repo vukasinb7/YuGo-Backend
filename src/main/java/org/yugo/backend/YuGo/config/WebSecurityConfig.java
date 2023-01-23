@@ -82,6 +82,8 @@ public class WebSecurityConfig {
                 requestMatchers(HttpMethod.POST,"/api/user/{email}/resetPassword").permitAll().
                 requestMatchers(HttpMethod.PUT,"/api/user/resetPassword").permitAll().
                 requestMatchers(HttpMethod.POST,"/api/unregisteredUser").permitAll().
+                requestMatchers(HttpMethod.GET,"/api/vehicle/vehicles").permitAll().
+                requestMatchers(HttpMethod.GET,"/api/ride/driver/{id}/active").permitAll().
                 requestMatchers("/api/image/**").permitAll().
                 requestMatchers("/api/vehicleType").permitAll().
                 requestMatchers("/api/socket/**").permitAll().

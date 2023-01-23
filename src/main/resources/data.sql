@@ -62,7 +62,7 @@ UPDATE vehicles SET location_id=4 WHERE id=2;
 UPDATE vehicles SET location_id=1 WHERE id=1;
 
 INSERT INTO RIDES (includes_babies,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
-VALUES ('0','10','0','1','2023-01-08 19:15:33.172279','ACTIVE','100.0','6',null,'1');
+VALUES ('0','10','0','1','2023-01-08 19:15:33.172279','FINISHED','100.0','6',null,'1');
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)
 VALUES ('0','2022-12-06 23:35:33.172279','15','0','1','2022-12-06 23:35:33.172279','FINISHED','13.0','6',null,'1');
 INSERT INTO RIDES (includes_babies,end_time,estimated_time,is_panic_pressed,includes_pets,start_time,status,price,driver_id,rejection_id,vehicle_type_id)

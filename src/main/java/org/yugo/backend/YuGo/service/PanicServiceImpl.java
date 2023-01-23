@@ -44,7 +44,7 @@ public class PanicServiceImpl implements PanicService {
 
     @Override
     public Panic getByRideId(Integer rideId){
-        Optional<Panic> panicOptional = panicRepository.findByRideId(rideId);
+        Optional<Panic> panicOptional = panicRepository.findFirstByRideId(rideId);
         if (panicOptional.isPresent()){
             return panicOptional.get();
         }

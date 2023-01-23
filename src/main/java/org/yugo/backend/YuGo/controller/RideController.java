@@ -78,8 +78,6 @@ public class RideController {
             value = "/driver/{id}/active",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAnyRole('DRIVER','ADMIN')")
-    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "Active ride does not exist")
     public ResponseEntity<RideDetailedOut> getActiveRideByDriver(@NotNull(message = "Field (id) is required")
                                                                   @Positive(message = "Id must be positive")
                                                                   @PathVariable(value="id") Integer id){
