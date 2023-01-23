@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.yugo.backend.YuGo.dto.LocationInOut;
 import org.yugo.backend.YuGo.exception.BadRequestException;
 import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.*;
+import org.yugo.backend.YuGo.repository.RideRepository;
 import org.yugo.backend.YuGo.repository.VehicleChangeRequestRepository;
 import org.yugo.backend.YuGo.repository.VehicleRepository;
 import org.yugo.backend.YuGo.repository.VehicleTypeRepository;
@@ -19,17 +19,21 @@ import java.util.Optional;
 public class VehicleServiceImpl implements VehicleService {
     private final VehicleRepository vehicleRepository;
     private final VehicleTypeRepository vehicleTypeRepository;
+    private final RideRepository rideRepository;
     private final VehicleChangeRequestRepository vehicleChangeRequestRepository;
     private final DriverService driverService;
 
+    private final WebSocketService webSocketService;
     @Autowired
     public VehicleServiceImpl(VehicleRepository vehicleRepository, VehicleTypeRepository vehicleTypeRepository,
-                              VehicleChangeRequestRepository vehicleChangeRequestRepository,
-                              DriverService driverService) {
+                              RideRepository rideRepository, VehicleChangeRequestRepository vehicleChangeRequestRepository,
+                              DriverService driverService, WebSocketService webSocketService) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleTypeRepository = vehicleTypeRepository;
+        this.rideRepository = rideRepository;
         this.vehicleChangeRequestRepository = vehicleChangeRequestRepository;
         this.driverService = driverService;
+        this.webSocketService = webSocketService;
     }
 
     /* =========================== Vehicle =========================== */
@@ -46,6 +50,13 @@ public class VehicleServiceImpl implements VehicleService {
         }
         Vehicle vehicle = vehicleOpt.get();
         vehicle.setCurrentLocation(location);
+        Optional<Ride> rideOpt = rideRepository.getStartedRideByVehicle(vehicleID);
+        if(rideOpt.isPresent()){
+            for(Passenger passenger : rideOpt.get().getPassengers()){
+                webSocketService.notifyPassengerAboutVehicleLocation(passenger.getId(), location.getLongitude(), location.getLatitude());
+            }
+        }
+
         vehicleRepository.save(vehicle);
     }
     @Override public Vehicle updateVehicle(Vehicle vehicle){

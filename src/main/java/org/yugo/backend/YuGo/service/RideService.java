@@ -11,6 +11,9 @@ import java.util.List;
 public interface RideService {
     Ride insert(Ride ride);
     Ride createRide(RideIn rideIn) throws Exception;
+
+    Ride getUnresolvedRide(Integer userID);
+
     Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
     Ride get(Integer id);
     void searchForDriver(Integer id);
