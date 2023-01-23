@@ -16,6 +16,9 @@ public interface DriverService {
     List<User> getAllDrivers();
     Page<User> getDriversPage(Pageable page);
     Driver getDriver(Integer id);
+
+    void updateDriverStatus(Integer driverID, boolean isOnline);
+
     Vehicle getDriverVehicle(Integer driverID);
     WorkTime insertWorkTime(Integer driverId, WorkTime workTime);
     List<WorkTime> getAllWorkTimes();

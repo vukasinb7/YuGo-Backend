@@ -59,6 +59,31 @@ public class DriverController {
     }
 
     @GetMapping(
+            value = "/status/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER', 'DRIVER')")
+    public ResponseEntity<DriverStatus> getDriverStatus(@NotNull(message = "Field (id) is required")
+                                                @Positive(message = "Id must be positive")
+                                                @PathVariable Integer id){
+        Driver driver = driverService.getDriver(id);
+        return new ResponseEntity<>(new DriverStatus(driver.isOnline()), HttpStatus.OK);
+    }
+    @PutMapping(
+            value = "/status/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER', 'DRIVER')")
+    public ResponseEntity<Void> updateDriverStatus(@NotNull(message = "Field (id) is required")
+                                                        @Positive(message = "Id must be positive")
+                                                        @PathVariable Integer id,
+                                                        @RequestBody @Valid DriverStatus status){
+        driverService.updateDriverStatus(id, status.isOnline());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )

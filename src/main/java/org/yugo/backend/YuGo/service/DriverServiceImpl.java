@@ -99,6 +99,12 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    public void updateDriverStatus(Integer driverID, boolean isOnline){
+        Driver driver = getDriver(driverID);
+        driver.setOnline(isOnline);
+        userRepository.save(driver);
+    }
+    @Override
     public Vehicle getDriverVehicle(Integer driverID){
         Driver driver = getDriver(driverID);
         Vehicle vehicle = driver.getVehicle();
