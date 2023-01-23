@@ -13,5 +13,6 @@ public interface PanicService {
     Page<Panic> getAll(Pageable page);
 
     Panic get(Integer id);
+    Panic getByRideId(Integer rideId);
 
 }

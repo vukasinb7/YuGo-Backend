@@ -61,6 +61,11 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
+    public List<Vehicle> getAllVehiclesWithDriver(){
+        return vehicleRepository.findAllVehiclesWithDriver();
+    }
+
+    @Override
     public Vehicle getVehicle(Integer id){
         Optional<Vehicle> vehicle= vehicleRepository.findById(id);
         if (vehicle.isEmpty())

@@ -12,12 +12,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.yugo.backend.YuGo.annotation.AuthorizeSelf;
 import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.dto.AllVehicleChangeRequestsOut;
 import org.yugo.backend.YuGo.dto.LocationInOut;
 import org.yugo.backend.YuGo.dto.VehicleIn;
+import org.yugo.backend.YuGo.dto.VehicleOut;
 import org.yugo.backend.YuGo.mapper.LocationMapper;
+import org.yugo.backend.YuGo.mapper.NoteMapper;
+import org.yugo.backend.YuGo.mapper.VehicleMapper;
 import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.model.Vehicle;
 import org.yugo.backend.YuGo.model.VehicleChangeRequest;
@@ -25,6 +27,7 @@ import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.VehicleService;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/vehicle")
@@ -101,5 +104,15 @@ public class VehicleController {
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Vehicle change request rejected successfully!");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "/vehicles",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<VehicleOut>> getAllVehicles(){;
+        return new ResponseEntity<>(vehicleService.getAllVehiclesWithDriver().stream()
+                .map(VehicleMapper::fromVehicleToDTO).toList(), HttpStatus.OK);
     }
 }

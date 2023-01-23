@@ -14,6 +14,7 @@ public interface VehicleService {
     /* =========================== Vehicle =========================== */
     Vehicle insertVehicle(Vehicle vehicle);
     List<Vehicle> getAllVehicles();
+    List<Vehicle> getAllVehiclesWithDriver();
     Vehicle getVehicle(Integer id);
     Integer getVehiclesDriver(Integer id);
 
