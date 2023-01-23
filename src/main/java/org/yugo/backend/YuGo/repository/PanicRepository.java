@@ -12,5 +12,5 @@ public interface PanicRepository extends JpaRepository<Panic,Integer> {
     @Query(value = "SELECT p FROM Panic p ORDER BY p.time DESC")
     Page<Panic> findAllPanics(Pageable page);
 
-    Optional<Panic> findByRideId(Integer rideId);
+    Optional<Panic> findFirstByRideId(Integer rideId);
 }

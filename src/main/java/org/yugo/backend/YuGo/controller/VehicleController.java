@@ -110,7 +110,6 @@ public class VehicleController {
             value = "/vehicles",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<VehicleOut>> getAllVehicles(){;
         return new ResponseEntity<>(vehicleService.getAllVehiclesWithDriver().stream()
                 .map(VehicleMapper::fromVehicleToDTO).toList(), HttpStatus.OK);

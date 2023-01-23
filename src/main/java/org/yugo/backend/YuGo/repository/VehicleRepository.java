@@ -15,6 +15,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle,Integer> {
     @Query(value = "select driver_id from vehicles where id=:vehicleId",nativeQuery = true)
     Optional<Integer> findDriverByVehicleId(@Param("vehicleId") Integer vehicleId);
 
-    @Query(value = "SELECT v from Vehicle v WHERE v.driver != null")
+    @Query(value = "SELECT v from Vehicle v WHERE v.driver != null AND v.driver.isOnline = true")
     List<Vehicle> findAllVehiclesWithDriver();
 }
