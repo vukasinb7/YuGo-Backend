@@ -138,6 +138,12 @@ public class RideServiceImpl implements RideService {
         Location rideDeparture = ride.getLocations().get(0).getDeparture();
         Location rideDestination = ride.getLocations().get(0).getDestination();
         List<Driver> availableDrivers = filterDrivers(rideDeparture, ride.getVehicleTypePrice().getVehicleType(), ride.getBabyTransport(), ride.getPetTransport(), ride.getPassengers().size());
+        if(availableDrivers.isEmpty()){
+            for(Passenger passenger : ride.getPassengers()){
+                webSocketService.notifyPassengerAboutRide(-1, passenger.getId());
+                return;
+            }
+        }
         DriverAvailability driverAvailability = findDriver(availableDrivers, ride.getStartTime(), ride.getEstimatedTimeInMinutes(), rideDeparture, rideDestination);
         if(driverAvailability != null){
             if(driverAvailability.earliestAvailableTime.isBefore(ride.getStartTime())){
@@ -159,27 +165,24 @@ public class RideServiceImpl implements RideService {
     private List<Driver> filterDrivers(Location rideDeparture, VehicleType vehicleType, boolean isBabyTransport, boolean isPetTransport, int passengerCount){
         List<Driver> availableDrivers = driverService.getDriversInRange(rideDeparture.getLatitude(), rideDeparture.getLongitude(), 10000);
         if(availableDrivers.isEmpty()){
-            throw new NotFoundException("There are no available drivers at the moment");
+            return availableDrivers;
         }
         availableDrivers.removeIf(driver -> !driver.isOnline());
         if(availableDrivers.isEmpty()){
-            throw new NotFoundException("There are no available drivers at the moment");
+            return availableDrivers;
         }
         availableDrivers.removeIf(driver -> workTimeRepository.getTotalWorkTimeInLast24Hours(driver.getId()) >= 8);
         if(availableDrivers.isEmpty()){
-            throw new NotFoundException("There are no available drivers at the moment");
+            return availableDrivers;
         }
         availableDrivers.removeIf(driver -> rideRepository.findAcceptedRideByDriver(driver.getId()).isPresent());
         if(availableDrivers.isEmpty()){
-            throw new NotFoundException("There are no available drivers at the moment");
+            return availableDrivers;
         }
         availableDrivers.removeIf(driver ->  unproxy(driver.getVehicle()).getVehicleType() != vehicleType ||
                 (!unproxy(driver.getVehicle()).getAreBabiesAllowed() && isBabyTransport) ||
                 (!unproxy(driver.getVehicle()).getArePetsAllowed() && isPetTransport) ||
                 unproxy(driver.getVehicle()).getNumberOfSeats() < passengerCount);
-        if(availableDrivers.isEmpty()){
-            throw new NotFoundException("There are no available drivers at the moment");
-        }
         return availableDrivers;
     }
     private <T> T unproxy(T object){
