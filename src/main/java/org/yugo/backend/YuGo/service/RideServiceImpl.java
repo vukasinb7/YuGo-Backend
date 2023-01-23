@@ -7,7 +7,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.util.EnumUtils;
-import org.yugo.backend.YuGo.dto.LocationInOut;
 import org.yugo.backend.YuGo.dto.PathInOut;
 import org.yugo.backend.YuGo.dto.RideIn;
 import org.yugo.backend.YuGo.dto.RouteProperties;
@@ -23,7 +22,6 @@ import org.yugo.backend.YuGo.repository.RideRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class RideServiceImpl implements RideService {
@@ -90,6 +88,11 @@ public class RideServiceImpl implements RideService {
     @Override
     public List<Ride> getAll() {
         return rideRepository.findAll();
+    }
+
+    @Override
+    public List<Ride> getAllByDate(LocalDateTime from, LocalDateTime to) {
+        return rideRepository.findAllByDate(from,to);
     }
 
     @Override

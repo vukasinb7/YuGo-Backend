@@ -54,6 +54,30 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
+    public ReportOut getTotalNumberOfRides(LocalDateTime from, LocalDateTime to){
+        List<Ride> rides=rideService.getAllByDate(from,to);
+        HashMap<LocalDate,Double> result= new HashMap<LocalDate, Double>();
+        for (Ride ride:rides) {
+            if (result.containsKey(ride.getStartTime().toLocalDate()))
+                result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+1);
+            else
+                result.put(ride.getStartTime().toLocalDate(), 1.0);
+        }
+        ArrayList<LocalDate> sortedKeys
+                = new ArrayList<LocalDate>(result.keySet());
+
+        Collections.sort(sortedKeys);
+        ArrayList<Double> sortedValues=new ArrayList<>();
+        for (LocalDate key:sortedKeys) {
+            sortedValues.add(result.get(key));
+        }
+
+        return new ReportOut(sortedKeys,sortedValues);
+
+
+    }
+
+    @Override
     public ReportOut getTotalCostOfRidesByUser(Integer userId, LocalDateTime from, LocalDateTime to){
         List<Ride> rides;
         try{
@@ -83,6 +107,30 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
+    public ReportOut getTotalCostOfRides(LocalDateTime from, LocalDateTime to){
+        List<Ride> rides=rideService.getAllByDate(from,to);
+        HashMap<LocalDate,Double> result= new HashMap<LocalDate, Double>();
+        for (Ride ride:rides) {
+            if (result.containsKey(ride.getStartTime().toLocalDate()))
+                result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+ride.getTotalCost());
+            else
+                result.put(ride.getStartTime().toLocalDate(), ride.getTotalCost());
+        }
+        ArrayList<LocalDate> sortedKeys
+                = new ArrayList<LocalDate>(result.keySet());
+
+        Collections.sort(sortedKeys);
+        ArrayList<Double> sortedValues=new ArrayList<>();
+        for (LocalDate key:sortedKeys) {
+            sortedValues.add(result.get(key));
+        }
+
+        return new ReportOut(sortedKeys,sortedValues);
+
+
+    }
+
+    @Override
     public ReportOut getDistanceByUser(Integer userId, LocalDateTime from, LocalDateTime to){
         List<Ride> rides;
         try{
@@ -90,6 +138,31 @@ public class ReportServiceImpl implements ReportService{
         }catch (Exception e){
             rides=rideService.getRidesByDriverNonPageable(userId,from,to);
         }
+        HashMap<LocalDate,Double> result= new HashMap<LocalDate, Double>();
+        for (Ride ride:rides) {
+            Double distance=routingService.getRouteProperties(ride.getLocations().get(0).getDeparture().getLatitude(),ride.getLocations().get(0).getDeparture().getLongitude(),ride.getLocations().get(0).getDestination().getLatitude(),ride.getLocations().get(0).getDestination().getLongitude()).getDistance()/1000;
+            if (result.containsKey(ride.getStartTime().toLocalDate()))
+                result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+distance);
+            else
+                result.put(ride.getStartTime().toLocalDate(), distance);
+        }
+        ArrayList<LocalDate> sortedKeys
+                = new ArrayList<LocalDate>(result.keySet());
+
+        Collections.sort(sortedKeys);
+        ArrayList<Double> sortedValues=new ArrayList<>();
+        for (LocalDate key:sortedKeys) {
+            sortedValues.add(result.get(key));
+        }
+
+        return new ReportOut(sortedKeys,sortedValues);
+
+
+    }
+
+    @Override
+    public ReportOut getTotalDistance( LocalDateTime from, LocalDateTime to){
+        List<Ride> rides=rideService.getAllByDate(from,to);
         HashMap<LocalDate,Double> result= new HashMap<LocalDate, Double>();
         for (Ride ride:rides) {
             Double distance=routingService.getRouteProperties(ride.getLocations().get(0).getDeparture().getLatitude(),ride.getLocations().get(0).getDeparture().getLongitude(),ride.getLocations().get(0).getDestination().getLatitude(),ride.getLocations().get(0).getDestination().getLongitude()).getDistance()/1000;

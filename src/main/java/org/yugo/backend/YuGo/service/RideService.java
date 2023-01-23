@@ -14,6 +14,9 @@ public interface RideService {
     Ride insert(Ride ride);
     Ride createRide(RideIn rideIn) throws Exception;
     Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
+
+    List<Ride> getAllByDate(LocalDateTime from, LocalDateTime to);
+
     Ride get(Integer id);
 
     List<Ride> getAll();

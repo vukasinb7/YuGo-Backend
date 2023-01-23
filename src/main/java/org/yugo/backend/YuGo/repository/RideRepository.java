@@ -12,6 +12,7 @@ import org.yugo.backend.YuGo.model.WorkTime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface RideRepository extends JpaRepository<Ride,Integer> {
@@ -45,4 +46,7 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
 
     @Query(value = "SELECT * FROM rides WHERE :userId in (SELECT passenger_id FROM PASSENGER_RIDES where  id=ride_id) AND  status='PENDING'",nativeQuery = true)
     Ride findPendingRidesByUser(@Param("userId") Integer userId);
+
+    @Query(value = "SELECT * FROM rides WHERE start_time>=:from and end_time<=:to",nativeQuery = true)
+    List<Ride> findAllByDate(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 }
