@@ -11,23 +11,15 @@ public interface DriverService {
     List<Driver> getDriversInRange(double latitude, double longitude, double rangeInMeters);
     Driver insertDriver(Driver driver);
     Driver updateDriver(Driver driverUpdate);
-    Driver updateDriverVehicle(Integer driverId, Vehicle vehicle);
+    Vehicle createDriverVehicle(Integer driverId, Vehicle vehicle);
+    Vehicle updateDriverVehicle(Integer driverId, Vehicle updatedVehicle);
     List<User> getAllDrivers();
     Page<User> getDriversPage(Pageable page);
-
     Driver getDriver(Integer id);
-
     Vehicle getDriverVehicle(Integer driverID);
-
     WorkTime insertWorkTime(Integer driverId, WorkTime workTime);
-
     List<WorkTime> getAllWorkTimes();
-
     WorkTime getWorkTime(Integer id);
-
     Page<WorkTime> getDriverWorkingTimesPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
-
     WorkTime endWorkTime(Integer workingTimeID, LocalDateTime endTime);
-
-    Vehicle changeVehicle(Driver driver, Vehicle vehicle);
 }

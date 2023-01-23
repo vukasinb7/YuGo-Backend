@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.yugo.backend.YuGo.dto.RideIn;
 import org.yugo.backend.YuGo.dto.RouteProperties;
 import org.yugo.backend.YuGo.dto.UserSimplifiedOut;
+import org.yugo.backend.YuGo.exception.NoContentException;
 import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.model.User;
@@ -295,7 +296,7 @@ public class RideServiceImpl implements RideService {
     public Ride getActiveRideByDriver(Integer id){
         Optional<Ride> ride=  rideRepository.findActiveRideByDriver(id);
         if (ride.isEmpty())
-            throw new NotFoundException("Active ride does not exist");
+            throw new NoContentException("Active ride does not exist");
         return ride.get();
     }
 

@@ -36,4 +36,11 @@ public class LocationServiceImpl implements LocationService {
         }
         throw new NotFoundException("Location not found!");
     }
+
+    @Override
+    public void delete(Integer id){
+        if (locationRepository.findById(id).isEmpty())
+            throw new NotFoundException("Location does not exist!");
+        locationRepository.deleteById(id);
+    }
 }

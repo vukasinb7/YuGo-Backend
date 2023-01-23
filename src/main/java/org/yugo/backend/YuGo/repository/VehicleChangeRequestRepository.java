@@ -16,6 +16,7 @@ public interface VehicleChangeRequestRepository extends JpaRepository<VehicleCha
     @Transactional
     @Modifying
     @Query(value = "UPDATE VehicleChangeRequest r SET " +
-            "r.status = org.yugo.backend.YuGo.model.VehicleChangeRequestStatus.REJECTED WHERE r.driver.id = :driverId")
+            "r.status = org.yugo.backend.YuGo.model.VehicleChangeRequestStatus.REJECTED WHERE r.driver.id = :driverId " +
+            "AND r.status = org.yugo.backend.YuGo.model.VehicleChangeRequestStatus.PENDING")
     void rejectDriversVehicleChangeRequests(@Param("driverId") Integer driverId);
 }

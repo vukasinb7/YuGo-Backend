@@ -19,7 +19,6 @@ import java.util.Optional;
 
 @Service
 public class DriverServiceImpl implements DriverService {
-    private final UserService userService;
     private final UserRepository userRepository;
     private final WorkTimeRepository workTimeRepository;
     private final VehicleRepository vehicleRepository;
@@ -29,13 +28,12 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     public DriverServiceImpl(UserRepository userRepository, WorkTimeRepository workTimeRepository,
                              VehicleRepository vehicleRepository, RoleService roleService,
-                             BCryptPasswordEncoder passwordEncoder, UserService userService){
+                             BCryptPasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.workTimeRepository = workTimeRepository;
         this.vehicleRepository = vehicleRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
-        this.userService = userService;
     }
 
     @Override
@@ -161,16 +159,46 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Driver updateDriverVehicle(Integer driverId, Vehicle vehicle){
+    public Vehicle createDriverVehicle(Integer driverId, Vehicle vehicle){
         Optional<User> driverOpt = userRepository.findById(driverId);
         if(driverOpt.isEmpty()){
-            return null;
+            throw new NotFoundException("Driver not found");
         }
         Driver driver = (Driver) driverOpt.get();
-        driver.setVehicle(vehicle);
+        Vehicle oldVehicle = driver.getVehicle();
+
+
+        if (oldVehicle != null){
+            oldVehicle.setDriver(null);
+            vehicleRepository.save(oldVehicle);
+        }
+
         vehicle.setDriver(driver);
-        vehicleRepository.save(vehicle);
-        return userRepository.save(driver);
+        Vehicle output = vehicleRepository.save(vehicle);
+        driver.setVehicle(vehicle);
+        userRepository.save(driver);
+
+        return output;
+    }
+
+    @Override
+    public Vehicle updateDriverVehicle(Integer driverId, Vehicle updatedVehicle){
+        Optional<User> driverOpt = userRepository.findById(driverId);
+        if(driverOpt.isEmpty()){
+            throw new NotFoundException("Driver not found!");
+        }
+        Driver driver = (Driver) driverOpt.get();
+        if (driver.getVehicle() == null){
+            throw new NotFoundException("Driver vehicle not found!");
+        }
+        Vehicle vehicle = driver.getVehicle();
+        vehicle.setAreBabiesAllowed(updatedVehicle.getAreBabiesAllowed());
+        vehicle.setArePetsAllowed(updatedVehicle.getArePetsAllowed());
+        vehicle.setLicencePlateNumber(updatedVehicle.getLicencePlateNumber());
+        vehicle.setNumberOfSeats(updatedVehicle.getNumberOfSeats());
+        vehicle.setVehicleType(updatedVehicle.getVehicleType());
+
+        return vehicleRepository.save(vehicle);
     }
 
     @Override
@@ -196,23 +224,5 @@ public class DriverServiceImpl implements DriverService {
         WorkTime workTime = workTimeOpt.get();
         workTime.setEndTime(endTime);
         return workTimeRepository.save(workTime);
-    }
-
-    @Override
-    public Vehicle changeVehicle(Driver driver, Vehicle vehicle){
-
-        Vehicle vehicleCurrent = driver.getVehicle();
-
-        if(vehicleCurrent != null){
-            vehicle.setId(vehicle.getId());
-        }
-
-        vehicle.setDriver(driver);
-        Vehicle output = vehicleRepository.save(vehicle);
-
-        driver.setVehicle(vehicle);
-        userRepository.save(driver);
-
-        return output;
     }
 }

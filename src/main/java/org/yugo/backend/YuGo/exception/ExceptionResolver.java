@@ -21,9 +21,17 @@ import java.util.List;
 
 @ControllerAdvice
 public class ExceptionResolver {
+    @ExceptionHandler(NoContentException.class)
+    public ResponseEntity<?> badRequestException(NoContentException exception) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", exception.getMessage());
+        return new ResponseEntity<>(response, headers, HttpStatus.NO_CONTENT);
+    }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity badRequestException(BadRequestException exception) {
+    public ResponseEntity<?> badRequestException(BadRequestException exception) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HashMap<String, String> response = new HashMap<>();

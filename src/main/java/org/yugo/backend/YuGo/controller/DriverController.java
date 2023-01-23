@@ -94,9 +94,8 @@ public class DriverController {
                                                     @Positive(message = "Id must be positive")
                                                     @PathVariable Integer id,
                                                     @RequestBody @Valid VehicleIn vehicleIn){
-        Driver driver = driverService.getDriver(id);
         Vehicle vehicle = new Vehicle(vehicleIn);
-        Vehicle vehicleUpdated = driverService.changeVehicle(driver, vehicle);
+        Vehicle vehicleUpdated = driverService.createDriverVehicle(id, vehicle);
         return new ResponseEntity<>(new VehicleOut(vehicleUpdated), HttpStatus.OK);
     }
 
@@ -212,9 +211,8 @@ public class DriverController {
                                              @Positive(message = "Id must be positive")
                                              @PathVariable Integer id,
                                              @RequestBody @Valid VehicleIn vehicleIn){
-        Driver driver = driverService.getDriver(id);
         Vehicle vehicle = new Vehicle(vehicleIn);
-        Vehicle vehicleUpdated = driverService.changeVehicle(driver, vehicle);
+        Vehicle vehicleUpdated = driverService.updateDriverVehicle(id, vehicle);
 
         return new ResponseEntity<>(new VehicleOut(vehicleUpdated), HttpStatus.OK);
     }

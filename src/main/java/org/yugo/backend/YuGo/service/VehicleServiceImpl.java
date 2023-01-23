@@ -72,6 +72,11 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
+    public List<Vehicle> getAllVehiclesWithDriver(){
+        return vehicleRepository.findAllVehiclesWithDriver();
+    }
+
+    @Override
     public Vehicle getVehicle(Integer id){
         Optional<Vehicle> vehicle= vehicleRepository.findById(id);
         if (vehicle.isEmpty())
@@ -123,8 +128,14 @@ public class VehicleServiceImpl implements VehicleService {
         Optional<VehicleChangeRequest> vehicleChangeRequestOptional = vehicleChangeRequestRepository.findById(requestId);
         if (vehicleChangeRequestOptional.isPresent()){
             VehicleChangeRequest vehicleChangeRequest = vehicleChangeRequestOptional.get();
-            driverService.updateDriverVehicle(vehicleChangeRequest.getDriver().getId(),
-                    vehicleChangeRequest.getVehicle());
+            if (vehicleChangeRequest.getVehicle().getModel().equals(vehicleChangeRequest.getDriver().getVehicle().getModel())){
+                driverService.updateDriverVehicle(vehicleChangeRequest.getDriver().getId(),
+                        vehicleChangeRequest.getVehicle());
+            }
+            else{
+                driverService.createDriverVehicle(vehicleChangeRequest.getDriver().getId(),
+                        vehicleChangeRequest.getVehicle());
+            }
             vehicleChangeRequestRepository.rejectDriversVehicleChangeRequests(vehicleChangeRequest.getDriver().getId());
             vehicleChangeRequest.setStatus(VehicleChangeRequestStatus.ACCEPTED);
             vehicleChangeRequestRepository.save(vehicleChangeRequest);

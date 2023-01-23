@@ -47,4 +47,13 @@ public class PanicController {
     public ResponseEntity<PanicOut> getPanic(@PathVariable Integer id){
         return new ResponseEntity<>(PanicMapper.fromPanicToDTO(panicService.get(id)), HttpStatus.OK);
     }
+
+    @GetMapping(
+            value = "/ride/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PanicOut> getPanicByRideId(@PathVariable Integer id){
+        return new ResponseEntity<>(PanicMapper.fromPanicToDTO(panicService.getByRideId(id)), HttpStatus.OK);
+    }
 }

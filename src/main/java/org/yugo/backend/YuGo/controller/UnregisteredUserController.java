@@ -11,9 +11,9 @@ import org.yugo.backend.YuGo.dto.RideAssumptionOut;
 
 @RestController
 @RequestMapping("/api/unregisteredUser")
-public class UnregisteredUser {
+public class UnregisteredUserController {
     @Autowired
-    public UnregisteredUser(){
+    public UnregisteredUserController(){
     }
 
     @PostMapping(
