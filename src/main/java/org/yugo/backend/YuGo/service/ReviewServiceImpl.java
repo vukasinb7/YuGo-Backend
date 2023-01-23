@@ -11,14 +11,21 @@ import java.util.List;
 @Service
 public class ReviewServiceImpl implements ReviewService {
     private final RideReviewRepository rideReviewRepository;
+    private final DriverService driverService;
+    private final VehicleService vehicleService;
+    private final RideService rideService;
 
     @Autowired
-    public ReviewServiceImpl(RideReviewRepository rideReviewRepository) {
+    public ReviewServiceImpl(RideReviewRepository rideReviewRepository,RideService rideService,DriverService driverService,VehicleService vehicleService) {
         this.rideReviewRepository = rideReviewRepository;
+        this.driverService=driverService;
+        this.vehicleService=vehicleService;
+        this.rideService=rideService;
     }
 
     @Override
     public RideReview insertRideReview(RideReview rideReview) {
+        rideService.get(rideReview.getRide().getId());
         return rideReviewRepository.save(rideReview);
     }
 
@@ -34,11 +41,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<RideReview> getRideReviewsByDriver(Integer id) {
+        driverService.getDriver(id);
         return rideReviewRepository.findReviewsByDriver(id);
     }
 
     @Override
     public List<RideReview> getRideReviewsByVehicle(Integer id) {
+        vehicleService.getVehicle(id);
         return rideReviewRepository.findReviewsByVehicle(id);
     }
 
@@ -52,8 +61,14 @@ public class ReviewServiceImpl implements ReviewService {
         return rideReviewRepository.findVehicleReviewsByRide(id);
     }
     @Override
-    public RideReview getDriverReviewsByRideByPassenger(Integer id,Integer passengerId){return rideReviewRepository.findDriverReviewsByRideByPassenger(id,passengerId);}
+    public RideReview getDriverReviewsByRideByPassenger(Integer id,Integer passengerId){
+        rideService.get(id);
+        return rideReviewRepository.findDriverReviewsByRideByPassenger(id,passengerId);
+    }
 
     @Override
-    public RideReview getVehicleReviewsByRideByPassenger(Integer id,Integer passengerId){return rideReviewRepository.findVehicleReviewsByRideByPassenger(id,passengerId);}
+    public RideReview getVehicleReviewsByRideByPassenger(Integer id,Integer passengerId){
+        rideService.get(id);
+        return rideReviewRepository.findVehicleReviewsByRideByPassenger(id,passengerId);
+    }
 }

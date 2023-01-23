@@ -21,12 +21,12 @@ public class TokenUtils {
     private String APP_NAME;
 
     // Tajna koju samo backend aplikacija treba da zna kako bi mogla da generise i proveri JWT https://jwt.io/
-    @Value("somesecret")
+    @Value("sorcererstone")
     public String SECRET;
 
     // Period vazenja tokena - 30 minuta
     @Value("1800000")
-    private int EXPIRES_IN;
+    private int ACCESS_TOKEN_EXPIRES_IN;
 
     // Naziv headera kroz koji ce se prosledjivati JWT u komunikaciji server-klijent
     @Value("Authorization")
@@ -42,7 +42,7 @@ public class TokenUtils {
     private static final String AUDIENCE_WEB = "web";
 
     // Algoritam za potpisivanje JWT
-    private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
+    private final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
 
     // ============= Funkcije za generisanje JWT tokena =============
@@ -54,7 +54,7 @@ public class TokenUtils {
      * @return JWT token
      */
     public String generateToken(User user) {
-        return Jwts.builder().claim("id", user.getId()).claim("role", user.getRole())
+        return Jwts.builder().claim("id", user.getId()).claim("role", user.getRole()).claim("type","Bearer").claim("email", user.getEmail())
                 .setIssuer(APP_NAME)
                 .setSubject(user.getUsername())
                 .setAudience(generateAudience())
@@ -93,7 +93,7 @@ public class TokenUtils {
      * @return Datum do kojeg je JWT validan.
      */
     private Date generateExpirationDate() {
-        return new Date(new Date().getTime() + EXPIRES_IN);
+        return new Date(new Date().getTime() + ACCESS_TOKEN_EXPIRES_IN);
     }
 
     // =================================================================
@@ -261,7 +261,7 @@ public class TokenUtils {
      * @return Period važenja tokena.
      */
     public int getExpiredIn() {
-        return EXPIRES_IN;
+        return ACCESS_TOKEN_EXPIRES_IN;
     }
 
     /**

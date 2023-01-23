@@ -30,7 +30,7 @@ public class Ride {
     @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "passenger_rides", joinColumns = @JoinColumn(name = "ride_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "passenger_id", referencedColumnName = "id"))
     private Set<Passenger> passengers = new HashSet<>();
-    @JoinColumn(name = "path_id")
+
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST})
     private List<Path> locations;
     @Column(name = "estimated_time")
@@ -68,5 +68,23 @@ public class Ride {
         this.babyTransport = includesBabies;
         this.petTransport = includesPets;
         this.vehicleTypePrice = vehicleTypePrice;
+    }
+
+    public Ride(Ride other) {
+        this.id = other.id;
+        this.startTime = other.startTime;
+        this.endTime = other.endTime;
+        this.totalCost = other.totalCost;
+        this.driver = other.driver;
+        this.passengers = other.passengers;
+        this.locations = other.locations;
+        this.estimatedTimeInMinutes = other.estimatedTimeInMinutes;
+        this.rideReviews = other.rideReviews;
+        this.status = other.status;
+        this.rejection = other.rejection;
+        this.isPanicPressed = other.isPanicPressed;
+        this.babyTransport = other.babyTransport;
+        this.petTransport = other.petTransport;
+        this.vehicleTypePrice = other.vehicleTypePrice;
     }
 }

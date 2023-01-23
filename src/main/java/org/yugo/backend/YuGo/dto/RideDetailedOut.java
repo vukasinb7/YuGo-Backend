@@ -25,21 +25,35 @@ public class RideDetailedOut {
     private boolean petTransport;
     private RejectionOut rejection;
     private String status;
+    private String scheduledTime;
 
     public RideDetailedOut(Ride ride) {
         this.id= ride.getId();
-        this.startTime = ride.getStartTime().toString();
-        this.endTime = ride.getEndTime().toString();
+        if(ride.getStartTime() != null){
+            this.startTime = ride.getStartTime().toString();
+        }else{
+            this.startTime = null;
+        }
+        if(ride.getEndTime() != null){
+            this.endTime = ride.getEndTime().toString();
+        }else{
+            this.endTime = null;
+        }
         this.totalCost = ride.getTotalCost();
-        this.driver = UserSimplifiedMapper.fromUsertoDTO(ride.getDriver());
+        if(ride.getDriver() != null){
+            this.driver = UserSimplifiedMapper.fromUsertoDTO(ride.getDriver());
+        }else{
+            this.driver = null;
+        }
         this.passengers = ride.getPassengers().stream().map(UserSimplifiedMapper::fromUsertoDTO).toList();
         this.estimatedTimeInMinutes = ride.getEstimatedTimeInMinutes();
-        this.vehicleType = ride.getDriver().getVehicle().getVehicleType().toString();
+        this.vehicleType = ride.getVehicleTypePrice().getVehicleType().toString();
         this.babyTransport = ride.getBabyTransport();
         this.petTransport = ride.getPetTransport();
         this.locations = ride.getLocations().stream().map(PathMapper::fromPathtoDTO).toList();
         this.status = ride.getStatus().toString();
         if (ride.getRejection()!=null)
             this.rejection=new RejectionOut(ride.getRejection());
+        this.scheduledTime=ride.getStartTime().toString();
     }
 }

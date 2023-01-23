@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yugo.backend.YuGo.dto.MessageOut;
+import org.yugo.backend.YuGo.dto.VehicleChangeRequestOut;
 import org.yugo.backend.YuGo.model.Message;
 
 @Component
@@ -20,6 +21,6 @@ public class MessageMapper {
     }
 
     public static MessageOut fromMessagetoDTO(Message message) {
-        return modelMapper.map(message, MessageOut.class);
+        return new MessageOut(message);
     }
 }

@@ -18,6 +18,11 @@ public class WorkTimeOut {
     }
 
     public WorkTimeOut(WorkTime workTime){
-        this(workTime.getId(), workTime.getStartTime().toString(), workTime.getEndTime().toString());
+        String endTime=null;
+        if (workTime.getEndTime()!=null)
+            endTime=workTime.getEndTime().toString();
+        this.id=workTime.getId();
+        this.start=workTime.getStartTime().toString();
+        this.end=endTime;
     }
 }

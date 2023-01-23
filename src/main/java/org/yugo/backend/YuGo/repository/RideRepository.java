@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RideRepository extends JpaRepository<Ride,Integer> {
+
+    @Query(value = "SELECT * FROM RIDES WHERE driver_id = :driver_id AND start_time = (SELECT MIN(start_time) FROM RIDES WHERE start_time > CURRENT_TIMESTAMP AND status = 'ACEPTED')",
+            nativeQuery = true)
+    Optional<Ride> getNextRide(@Param("driver_id") Integer driverID);
     @Query(value = "SELECT * FROM RIDES r WHERE r.driver_id = :driver_id and r.status='ACTIVE'",
             nativeQuery = true)
     Optional<Ride> findActiveRideByDriver(@Param("driver_id") Integer driverID);
@@ -24,7 +28,7 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
             nativeQuery = true)
     Optional<Ride> findActiveRideByPassenger(@Param("passenger_id") Integer passengerID);
 
-    @Query(value = "SELECT DISTINCT r FROM Ride r LEFT JOIN r.passengers p WHERE :passengerId = p.id AND r.startTime>=:fromTime AND :toTime>=r.endTime")
+    @Query(value = "SELECT DISTINCT r FROM Ride r LEFT JOIN r.passengers p WHERE :passengerId = p.id AND r.startTime>=:fromTime AND :toTime>=r.startTime")
     Page<Ride> findRidesByPassenger(@Param("passengerId") Integer passengerId,
                                     @Param("fromTime") LocalDateTime fromTime,
                                     @Param("toTime") LocalDateTime toTime, Pageable page);
@@ -33,7 +37,7 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
                                     @Param("fromTime") LocalDateTime fromTime,
                                     @Param("toTime") LocalDateTime toTime);
 
-    @Query(value = "SELECT DISTINCT r FROM Ride r LEFT JOIN r.passengers p WHERE (:userId = p.id OR :userId = r.driver.id) AND r.startTime>=:fromTime AND :toTime>=r.endTime")
+    @Query(value = "SELECT DISTINCT r FROM Ride r LEFT JOIN r.passengers p WHERE (:userId = p.id OR :userId = r.driver.id) AND r.startTime>=:fromTime AND :toTime>=r.startTime")
     Page<Ride> findRidesByUser(@Param("userId") Integer userId,
                                     @Param("fromTime") LocalDateTime fromTime,
                                     @Param("toTime") LocalDateTime toTime, Pageable page);
@@ -49,4 +53,9 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
 
     @Query(value = "SELECT * FROM rides WHERE start_time>=:from and end_time<=:to",nativeQuery = true)
     List<Ride> findAllByDate(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
+    @Query(value = "SELECT * FROM rides WHERE status = 'SCHEDULED' AND DATEDIFF(minute, CURRENT_TIMESTAMP, start_time) BETWEEN 0 AND 31", nativeQuery = true)
+    List<Ride> findScheduledRidesInNext30Minutes();
+    @Query(value = "SELECT * FROM rides WHERE driver_id = :driver_id AND status='ACCEPTED'", nativeQuery = true)
+    Optional<Ride> findAcceptedRideByDriver(@Param("driver_id") Integer driverID);
+
 }

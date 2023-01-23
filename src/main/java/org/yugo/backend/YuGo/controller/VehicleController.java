@@ -1,5 +1,8 @@
 package org.yugo.backend.YuGo.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,10 +12,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
 import org.yugo.backend.YuGo.dto.AllVehicleChangeRequestsOut;
 import org.yugo.backend.YuGo.dto.LocationInOut;
 import org.yugo.backend.YuGo.dto.VehicleIn;
+import org.yugo.backend.YuGo.dto.VehicleOut;
 import org.yugo.backend.YuGo.mapper.LocationMapper;
+import org.yugo.backend.YuGo.mapper.NoteMapper;
+import org.yugo.backend.YuGo.mapper.VehicleMapper;
 import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.model.Vehicle;
 import org.yugo.backend.YuGo.model.VehicleChangeRequest;
@@ -20,6 +27,7 @@ import org.yugo.backend.YuGo.service.DriverService;
 import org.yugo.backend.YuGo.service.VehicleService;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/vehicle")
@@ -36,10 +44,12 @@ public class VehicleController {
             value = "/{id}/location",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'PASSENGER')")
-    public ResponseEntity<Void> changeLocation(@RequestBody LocationInOut locationInOut, @PathVariable Integer id){
-        Vehicle vehicle=vehicleService.getVehicle(id);
-        vehicle.setCurrentLocation(LocationMapper.fromDTOtoLocation(locationInOut));
+    @PreAuthorize("hasAnyRole('DRIVER', 'PASSENGER')")
+    public ResponseEntity<Void> changeLocation(@RequestBody @Valid LocationInOut locationInOut,
+                                               @NotNull(message = "Field (id) is required")
+                                               @Positive(message = "Id must be positive")
+                                               @PathVariable(value="id") Integer id){
+        vehicleService.updateVehicleLocation(LocationMapper.fromDTOtoLocation(locationInOut), id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -48,10 +58,12 @@ public class VehicleController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    public ResponseEntity makeVehicleChangeRequest(@PathVariable Integer id, @RequestBody VehicleIn vehicleIn){
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
+    public ResponseEntity makeVehicleChangeRequest(@PathVariable @NotNull @Positive Integer id,
+                                                   @RequestBody @Valid VehicleIn vehicleIn){
         Vehicle vehicle = new Vehicle(vehicleIn);
         vehicleService.insertVehicle(vehicle);
-        Driver driver = driverService.getDriver(id).get(); //TODO promeniti kad servis uradi handling
+        Driver driver = driverService.getDriver(id);
         VehicleChangeRequest vehicleChangeRequest = new VehicleChangeRequest(driver, vehicle);
         vehicleService.insertVehicleChangeRequest(vehicleChangeRequest);
         HashMap<String, String> response = new HashMap<>();
@@ -75,7 +87,7 @@ public class VehicleController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity acceptVehicleChangeRequest(@PathVariable Integer requestId){
+    public ResponseEntity<?> acceptVehicleChangeRequest(@PathVariable Integer requestId){
         vehicleService.acceptVehicleChangeRequest(requestId);
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Driver vehicle changed successfully!");
@@ -87,10 +99,20 @@ public class VehicleController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity rejectVehicleChangeRequest(@PathVariable Integer requestId){
+    public ResponseEntity<?> rejectVehicleChangeRequest(@PathVariable Integer requestId){
         vehicleService.rejectVehicleChangeRequest(requestId);
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Vehicle change request rejected successfully!");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "/vehicles",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<VehicleOut>> getAllVehicles(){;
+        return new ResponseEntity<>(vehicleService.getAllVehiclesWithDriver().stream()
+                .map(VehicleMapper::fromVehicleToDTO).toList(), HttpStatus.OK);
     }
 }

@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
-import org.yugo.backend.YuGo.exceptions.NotFoundException;
+import org.yugo.backend.YuGo.dto.LocationInOut;
+import org.yugo.backend.YuGo.exception.BadRequestException;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.repository.VehicleChangeRequestRepository;
 import org.yugo.backend.YuGo.repository.VehicleRepository;
@@ -37,6 +38,16 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.save(vehicle);
     }
 
+    @Override
+    public void updateVehicleLocation(Location location, Integer vehicleID){
+        Optional<Vehicle> vehicleOpt = vehicleRepository.findById(vehicleID);
+        if(vehicleOpt.isEmpty()){
+            throw new NotFoundException("Vehicle with given id doesn't exist!");
+        }
+        Vehicle vehicle = vehicleOpt.get();
+        vehicle.setCurrentLocation(location);
+        vehicleRepository.save(vehicle);
+    }
     @Override public Vehicle updateVehicle(Vehicle vehicle){
         Optional<Vehicle> vehicleOpt = vehicleRepository.findById(vehicle.getId());
         if(vehicleOpt.isEmpty()){
@@ -47,6 +58,11 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public List<Vehicle> getAllVehicles(){
         return vehicleRepository.findAll();
+    }
+
+    @Override
+    public List<Vehicle> getAllVehiclesWithDriver(){
+        return vehicleRepository.findAllVehiclesWithDriver();
     }
 
     @Override
@@ -80,7 +96,9 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleTypeRepository.findById(id).orElse(null);
     }
     @Override
-    public VehicleTypePrice getVehicleTypeByName(String name){ return vehicleTypeRepository.findByType(name);}
+    public VehicleTypePrice getVehicleTypeByName(String name){
+        return vehicleTypeRepository.findByType(name);
+    }
 
 
     /* =========================== VehicleChangeRequest =========================== */
@@ -99,8 +117,14 @@ public class VehicleServiceImpl implements VehicleService {
         Optional<VehicleChangeRequest> vehicleChangeRequestOptional = vehicleChangeRequestRepository.findById(requestId);
         if (vehicleChangeRequestOptional.isPresent()){
             VehicleChangeRequest vehicleChangeRequest = vehicleChangeRequestOptional.get();
-            driverService.updateDriverVehicle(vehicleChangeRequest.getDriver().getId(),
-                    vehicleChangeRequest.getVehicle());
+            if (vehicleChangeRequest.getVehicle().getModel().equals(vehicleChangeRequest.getDriver().getVehicle().getModel())){
+                driverService.updateDriverVehicle(vehicleChangeRequest.getDriver().getId(),
+                        vehicleChangeRequest.getVehicle());
+            }
+            else{
+                driverService.createDriverVehicle(vehicleChangeRequest.getDriver().getId(),
+                        vehicleChangeRequest.getVehicle());
+            }
             vehicleChangeRequestRepository.rejectDriversVehicleChangeRequests(vehicleChangeRequest.getDriver().getId());
             vehicleChangeRequest.setStatus(VehicleChangeRequestStatus.ACCEPTED);
             vehicleChangeRequestRepository.save(vehicleChangeRequest);

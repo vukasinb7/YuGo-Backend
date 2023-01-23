@@ -10,5 +10,5 @@ public interface PathService {
 
     List<Path> getAll();
 
-    Optional<Path> get(Integer id);
+    Path get(Integer id);
 }

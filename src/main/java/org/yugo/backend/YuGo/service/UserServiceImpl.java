@@ -3,36 +3,29 @@ package org.yugo.backend.YuGo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
-import org.yugo.backend.YuGo.exceptions.NotFoundException;
+import org.yugo.backend.YuGo.exception.BadRequestException;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.PasswordResetCode;
 import org.yugo.backend.YuGo.model.User;
-import org.yugo.backend.YuGo.model.UserActivation;
-import org.yugo.backend.YuGo.repository.UserActivationRepository;
 import org.yugo.backend.YuGo.repository.UserRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final UserActivationRepository userActivationRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final SendGridMailService sendGridMailService;
+    private final MailService mailService;
     private final PasswordResetCodeService passwordResetCodeService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserActivationRepository userActivationRepository,
-                           BCryptPasswordEncoder passwordEncoder, SendGridMailService sendGridMailService,
-                           PasswordResetCodeService passwordResetCodeService){
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder,
+                           MailService mailService, PasswordResetCodeService passwordResetCodeService){
         this.userRepository = userRepository;
-        this.userActivationRepository = userActivationRepository;
         this.passwordEncoder = passwordEncoder;
-        this.sendGridMailService = sendGridMailService;
+        this.mailService = mailService;
         this.passwordResetCodeService = passwordResetCodeService;
     }
 
@@ -60,7 +53,7 @@ public class UserServiceImpl implements UserService {
     public User getUserByEmail(String email){
         Optional<User> userOpt= userRepository.findByEmail(email);
         if (userOpt.isEmpty()){
-            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", email));
+            throw new NotFoundException(String.format("No user found with username '%s'.", email));
         }
         return userOpt.get();
     }
@@ -75,21 +68,6 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userUpdate.getEmail());
         user.setAddress(userUpdate.getAddress());
         return userRepository.save(user);
-    }
-
-    @Override
-    public UserActivation insertUserActivation(UserActivation userActivation){
-        return userActivationRepository.save(userActivation);
-    }
-
-    @Override
-    public List<UserActivation> getAllUserActivations() {
-        return userActivationRepository.findAll();
-    }
-
-    @Override
-    public Optional<UserActivation> getUserActivation(Integer id) {
-        return userActivationRepository.findById(id);
     }
 
     @Override
@@ -132,38 +110,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public void sendPasswordResetCode(Integer userId){
         User user = getUser(userId);
-        sendGridMailService.sendMail(user);
+        mailService.sendPasswordResetMail(user);
     }
 
     @Override
-    public void resetPassword(Integer userId, String newPassword, String code){
+    public void sendPasswordResetCodeEfficient(String email){
+        User user = getUserByEmail(email);
+        mailService.sendPasswordResetMail(user);
+    }
+
+    @Override
+    public void resetPassword(Integer userId, String newPassword, Integer code){
         getUser(userId);
-        PasswordResetCode passwordResetCode = passwordResetCodeService.getValidCode(userId);
-        if (code.equals(passwordResetCode.getCode())){
-            User user = passwordResetCode.getUser();
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userRepository.save(user);
-            passwordResetCodeService.setCodeInvalid(passwordResetCode);
-        }
-        else{
-            throw new BadRequestException("Code is expired or not correct!");
-        }
+        PasswordResetCode passwordResetCode = passwordResetCodeService.get(code);
+        User user = getUser(passwordResetCode.getUser().getId());
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        passwordResetCodeService.setCodeInvalid(passwordResetCode);
     }
 
     @Override
-    public void activateUser(Integer activationId){
-        Optional<UserActivation> userActivationOpt = userActivationRepository.findById(activationId);
-        if (userActivationOpt.isPresent()){
-            UserActivation userActivation = userActivationOpt.get();
-
-            if (userActivation.getDateCreated().plus(userActivation.getLifeSpan()).isBefore(LocalDateTime.now())){
-                throw new BadRequestException("Activation expired. Register again!");
-            }
-            userActivation.getUser().setActive(true);
-            userActivationRepository.save(userActivation);
-        }
-        else{
-            throw new NotFoundException("Activation with entered id does not exist!");
-        }
+    public void resetPasswordEfficient(Integer code, String newPassword){
+        PasswordResetCode passwordResetCode = passwordResetCodeService.get(code);
+        User user = getUser(passwordResetCode.getUser().getId());
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        passwordResetCodeService.setCodeInvalid(passwordResetCode);
     }
 }

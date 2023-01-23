@@ -2,7 +2,7 @@ package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.yugo.backend.YuGo.exceptions.BadRequestException;
+import org.yugo.backend.YuGo.exception.BadRequestException;
 import org.yugo.backend.YuGo.model.PasswordResetCode;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.repository.PasswordResetCodeRepository;
@@ -30,11 +30,12 @@ public class PasswordResetCodeServiceImpl implements PasswordResetCodeService {
     }
 
     @Override
-    public PasswordResetCode getValidCode(Integer userId) {
-        Optional<PasswordResetCode> passwordResetCodeOpt = passwordResetCodeRepository.findByUserIdAndValidTrue(userId);
+    public PasswordResetCode get(Integer code){
+        Optional<PasswordResetCode> passwordResetCodeOpt = passwordResetCodeRepository.findById(code);
         if (passwordResetCodeOpt.isPresent()){
             PasswordResetCode passwordResetCode = passwordResetCodeOpt.get();
-            if (!passwordResetCode.getDateCreated().plus(passwordResetCode.getLifeSpan()).isBefore(LocalDateTime.now())){
+            if (passwordResetCode.getDateCreated().plus(passwordResetCode.getLifeSpan()).isAfter(LocalDateTime.now())
+                    && passwordResetCode.isValid()){
                 return passwordResetCode;
             }
             setCodeInvalid(passwordResetCode);
@@ -46,18 +47,5 @@ public class PasswordResetCodeServiceImpl implements PasswordResetCodeService {
     public void setCodeInvalid(PasswordResetCode code) {
         code.setValid(false);
         passwordResetCodeRepository.save(code);
-    }
-
-    @Override
-    public User getUserByCode(String code){
-        Optional<PasswordResetCode> passwordResetCodeOpt = passwordResetCodeRepository.findByCodeAndValidTrue(code);
-        if (passwordResetCodeOpt.isPresent()){
-            PasswordResetCode passwordResetCode = passwordResetCodeOpt.get();
-            if (!passwordResetCode.getDateCreated().plus(passwordResetCode.getLifeSpan()).isBefore(LocalDateTime.now())){
-                return passwordResetCode.getUser();
-            }
-            setCodeInvalid(passwordResetCode);
-        }
-        throw new BadRequestException("Code is expired or not correct!");
     }
 }
