@@ -318,6 +318,17 @@ public class RideServiceImpl implements RideService {
         return rideRepository.findRidesByUser(userId, from, to, page);
     }
 
+    @Override
+    public Ride getUnresolvedRide(Integer userID){
+        Optional<Ride> ride = rideRepository.findUnresolvedRideByPassenger(userID);
+        if(ride.isPresent()){
+            return ride.get();
+        }
+        else {
+            throw new NotFoundException("There are not unresolved rides");
+        }
+    }
+
     public Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end){
         driverService.getDriver(driverId);
         return rideRepository.findRidesByDriverAndStartTimeAndEndTimePageable(driverId, page, start, end);
@@ -364,13 +375,19 @@ public class RideServiceImpl implements RideService {
         return ride;
     }
     public Ride endRide(Integer id){
-        Ride ride =get(id);
+        System.out.println("==================");
+        System.out.println(id);
+        System.out.println("==================");
+        Ride ride = get(id);
         if (ride.getStatus() == RideStatus.ACTIVE) {
             ride.setStatus(RideStatus.FINISHED);
+            System.out.println("==================");
+            System.out.println("Ride with id: " + id + " finished");
+            System.out.println("==================");
+            save(ride);
             for (Passenger passenger : ride.getPassengers()){
                 webSocketService.notifyPassengerAboutRideEnd(passenger.getId());
             }
-            save(ride);
         }
         else{
             throw new BadRequestException("Cannot accept a ride that is not in status FINISHED!");

@@ -28,6 +28,9 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
             nativeQuery = true)
     Optional<Ride> findActiveRideByPassenger(@Param("passenger_id") Integer passengerID);
 
+    @Query(value = "SELECT * FROM rides WHERE :passenger_id in (SELECT passenger_id FROM PASSENGER_RIDES where  id=ride_id) AND  status IN ('PENDING', 'SCHEDULED')", nativeQuery = true)
+    Optional<Ride> findUnresolvedRideByPassenger(@Param("passenger_id") Integer passengerID);
+
     @Query(value = "SELECT DISTINCT r FROM Ride r LEFT JOIN r.passengers p WHERE :passengerId = p.id AND r.startTime>=:fromTime AND :toTime>=r.startTime")
     Page<Ride> findRidesByPassenger(@Param("passengerId") Integer passengerId,
                                     @Param("fromTime") LocalDateTime fromTime,
@@ -48,5 +51,8 @@ public interface RideRepository extends JpaRepository<Ride,Integer> {
     List<Ride> findScheduledRidesInNext30Minutes();
     @Query(value = "SELECT * FROM rides WHERE driver_id = :driver_id AND status='ACCEPTED'", nativeQuery = true)
     Optional<Ride> findAcceptedRideByDriver(@Param("driver_id") Integer driverID);
+
+    @Query(value = "SELECT * FROM rides WHERE status='ACTIVE' AND driver_id IN (SELECT id FROM users WHERE vehicle_id = :vehicleID)", nativeQuery = true)
+    Optional<Ride> getStartedRideByVehicle(Integer vehicleID);
 
 }

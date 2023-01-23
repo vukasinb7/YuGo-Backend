@@ -98,6 +98,18 @@ public class RideController {
     }
 
     @GetMapping(
+            value = "/passenger/{id}/unresolved",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('PASSENGER')")
+    public ResponseEntity<RideDetailedOut> getUnresolvedRide(@NotNull(message = "Field (id) is required")
+                                                             @Positive(message = "Id must be postive")
+                                                             @PathVariable(value = "id") Integer id){
+        RideDetailedOut ride = new RideDetailedOut(rideService.getUnresolvedRide(id));
+        return new ResponseEntity<>(ride, HttpStatus.OK);
+    }
+
+    @GetMapping(
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
