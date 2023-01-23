@@ -57,6 +57,31 @@ public class ReportController {
         ReportOut results= reportService.getNumberOfRidesByUser(id,fromTime,toTime);
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
+
+    @GetMapping(
+            value = "/totalRidesPerDay",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ReportOut> getTotalRidesPerDay(@RequestParam(name = "from", required = false) String from,
+                                                         @RequestParam(name = "to", required = false) String to) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime fromTime;
+        LocalDateTime toTime;
+        if (from==null)
+            fromTime=LocalDateTime.of(1753, Month.JANUARY,1,0, 0);
+        else
+            fromTime= LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
+
+        if (to==null)
+            toTime=LocalDateTime.of(9998, Month.DECEMBER,31,0,0);
+        else
+            toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
+        ReportOut results= reportService.getTotalNumberOfRides(fromTime,toTime);
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
+
     @GetMapping(
             value = "/{id}/kilometersPerDay",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -84,6 +109,29 @@ public class ReportController {
     }
 
     @GetMapping(
+            value = "/totalKilometersPerDay",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ReportOut> getKilometersPerDay(@RequestParam(name = "from", required = false) String from,
+                                                         @RequestParam(name = "to", required = false) String to) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime fromTime;
+        LocalDateTime toTime;
+        if (from==null)
+            fromTime=LocalDateTime.of(1753, Month.JANUARY,1,0, 0);
+        else
+            fromTime= LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
+
+        if (to==null)
+            toTime=LocalDateTime.of(9998, Month.DECEMBER,31,0,0);
+        else
+            toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
+        ReportOut results= reportService.getTotalDistance(fromTime,toTime);
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
+    @GetMapping(
             value = "/{id}/totalCostPerDay",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -106,6 +154,30 @@ public class ReportController {
         else
             toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
         ReportOut results= reportService.getTotalCostOfRidesByUser(id,fromTime,toTime);
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "totalCostPerDay",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ReportOut> getTotalCostByUser(
+                                                        @RequestParam(name = "from", required = false) String from,
+                                                        @RequestParam(name = "to", required = false) String to) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime fromTime;
+        LocalDateTime toTime;
+        if (from==null)
+            fromTime=LocalDateTime.of(1753, Month.JANUARY,1,0, 0);
+        else
+            fromTime= LocalDate.parse(from, formatter).atTime(LocalTime.MIDNIGHT);
+
+        if (to==null)
+            toTime=LocalDateTime.of(9998, Month.DECEMBER,31,0,0);
+        else
+            toTime = LocalDate.parse(to, formatter).atTime(LocalTime.MIDNIGHT);
+        ReportOut results= reportService.getTotalCostOfRides(fromTime,toTime);
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 }

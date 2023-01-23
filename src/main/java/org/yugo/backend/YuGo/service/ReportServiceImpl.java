@@ -33,11 +33,12 @@ public class ReportServiceImpl implements ReportService{
             rides=rideService.getRidesByDriverNonPageable(userId,from,to);
         }
         HashMap<LocalDate,Double> result= new HashMap<LocalDate, Double>();
+        for (LocalDate date = from.toLocalDate(); date.isBefore(to.toLocalDate()); date = date.plusDays(1))
+        {
+            result.put(date, 0.0);
+        }
         for (Ride ride:rides) {
-            if (result.containsKey(ride.getStartTime().toLocalDate()))
-                result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+1);
-            else
-                result.put(ride.getStartTime().toLocalDate(), 1.0);
+            result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+1);
         }
         ArrayList<LocalDate> sortedKeys
                 = new ArrayList<LocalDate>(result.keySet());
@@ -57,11 +58,12 @@ public class ReportServiceImpl implements ReportService{
     public ReportOut getTotalNumberOfRides(LocalDateTime from, LocalDateTime to){
         List<Ride> rides=rideService.getAllByDate(from,to);
         HashMap<LocalDate,Double> result= new HashMap<LocalDate, Double>();
+        for (LocalDate date = from.toLocalDate(); date.isBefore(to.toLocalDate()); date = date.plusDays(1))
+        {
+            result.put(date, 0.0);
+        }
         for (Ride ride:rides) {
-            if (result.containsKey(ride.getStartTime().toLocalDate()))
-                result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+1);
-            else
-                result.put(ride.getStartTime().toLocalDate(), 1.0);
+            result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+1);
         }
         ArrayList<LocalDate> sortedKeys
                 = new ArrayList<LocalDate>(result.keySet());
@@ -86,11 +88,12 @@ public class ReportServiceImpl implements ReportService{
             rides=rideService.getRidesByDriverNonPageable(userId,from,to);
         }
         HashMap<LocalDate,Double> result= new HashMap<LocalDate, Double>();
+        for (LocalDate date = from.toLocalDate(); date.isBefore(to.toLocalDate()); date = date.plusDays(1))
+        {
+            result.put(date, 0.0);
+        }
         for (Ride ride:rides) {
-            if (result.containsKey(ride.getStartTime().toLocalDate()))
-                result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+ride.getTotalCost());
-            else
-                result.put(ride.getStartTime().toLocalDate(), ride.getTotalCost());
+            result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+ride.getTotalCost());
         }
         ArrayList<LocalDate> sortedKeys
                 = new ArrayList<LocalDate>(result.keySet());
@@ -110,11 +113,13 @@ public class ReportServiceImpl implements ReportService{
     public ReportOut getTotalCostOfRides(LocalDateTime from, LocalDateTime to){
         List<Ride> rides=rideService.getAllByDate(from,to);
         HashMap<LocalDate,Double> result= new HashMap<LocalDate, Double>();
+        for (LocalDate date = from.toLocalDate(); date.isBefore(to.toLocalDate()); date = date.plusDays(1))
+        {
+            result.put(date, 0.0);
+        }
         for (Ride ride:rides) {
-            if (result.containsKey(ride.getStartTime().toLocalDate()))
-                result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+ride.getTotalCost());
-            else
-                result.put(ride.getStartTime().toLocalDate(), ride.getTotalCost());
+            result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+ride.getTotalCost());
+
         }
         ArrayList<LocalDate> sortedKeys
                 = new ArrayList<LocalDate>(result.keySet());
@@ -139,12 +144,13 @@ public class ReportServiceImpl implements ReportService{
             rides=rideService.getRidesByDriverNonPageable(userId,from,to);
         }
         HashMap<LocalDate,Double> result= new HashMap<LocalDate, Double>();
+        for (LocalDate date = from.toLocalDate(); date.isBefore(to.toLocalDate()); date = date.plusDays(1))
+        {
+            result.put(date, 0.0);
+        }
         for (Ride ride:rides) {
             Double distance=routingService.getRouteProperties(ride.getLocations().get(0).getDeparture().getLatitude(),ride.getLocations().get(0).getDeparture().getLongitude(),ride.getLocations().get(0).getDestination().getLatitude(),ride.getLocations().get(0).getDestination().getLongitude()).getDistance()/1000;
-            if (result.containsKey(ride.getStartTime().toLocalDate()))
-                result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+distance);
-            else
-                result.put(ride.getStartTime().toLocalDate(), distance);
+            result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+distance);
         }
         ArrayList<LocalDate> sortedKeys
                 = new ArrayList<LocalDate>(result.keySet());
@@ -164,12 +170,13 @@ public class ReportServiceImpl implements ReportService{
     public ReportOut getTotalDistance( LocalDateTime from, LocalDateTime to){
         List<Ride> rides=rideService.getAllByDate(from,to);
         HashMap<LocalDate,Double> result= new HashMap<LocalDate, Double>();
+        for (LocalDate date = from.toLocalDate(); date.isBefore(to.toLocalDate()); date = date.plusDays(1))
+        {
+            result.put(date, 0.0);
+        }
         for (Ride ride:rides) {
             Double distance=routingService.getRouteProperties(ride.getLocations().get(0).getDeparture().getLatitude(),ride.getLocations().get(0).getDeparture().getLongitude(),ride.getLocations().get(0).getDestination().getLatitude(),ride.getLocations().get(0).getDestination().getLongitude()).getDistance()/1000;
-            if (result.containsKey(ride.getStartTime().toLocalDate()))
-                result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+distance);
-            else
-                result.put(ride.getStartTime().toLocalDate(), distance);
+            result.put(ride.getStartTime().toLocalDate(), result.get(ride.getStartTime().toLocalDate())+distance);
         }
         ArrayList<LocalDate> sortedKeys
                 = new ArrayList<LocalDate>(result.keySet());
