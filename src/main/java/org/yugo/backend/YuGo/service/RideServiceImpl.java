@@ -70,7 +70,7 @@ public class RideServiceImpl implements RideService {
     public Ride createRide(RideIn rideIn){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
-        if (rideRepository.findPendingRidesByUser(user.getId())!=null)
+        if (rideRepository.findUnresolvedRideByPassenger(user.getId()).isPresent())
             throw new BadRequestException("Cannot create a ride while you have one already pending!");
 
         Ride ride;
@@ -144,6 +144,7 @@ public class RideServiceImpl implements RideService {
         if(availableDrivers.isEmpty()){
             for(Passenger passenger : ride.getPassengers()){
                 webSocketService.notifyPassengerAboutRide(-1, passenger.getId());
+                rideRepository.delete(ride);
                 return;
             }
         }
@@ -349,8 +350,8 @@ public class RideServiceImpl implements RideService {
     }
 
     public Ride cancelRide(Integer id){
-        Ride ride =get(id);
-        if (ride.getStatus()== RideStatus.ACTIVE || ride.getStatus()==RideStatus.PENDING) {
+        Ride ride = get(id);
+        if (ride.getStatus()== RideStatus.ACTIVE || ride.getStatus()==RideStatus.PENDING || ride.getStatus()==RideStatus.SCHEDULED) {
             ride.setStatus(RideStatus.CANCELED);
             save(ride);
         }
