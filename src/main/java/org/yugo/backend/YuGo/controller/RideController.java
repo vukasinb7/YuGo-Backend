@@ -73,6 +73,17 @@ public class RideController {
         rideOut.setScheduledTime(rideDateTime.toString());
         return new ResponseEntity<>(rideOut, HttpStatus.OK);
     }
+    @PostMapping(
+            value = "/vehicle-arrived/{id}"
+    )
+    @PreAuthorize("hasRole('DRIVER')")
+    public ResponseEntity<Void> notifyPassengerThatVehicleHasArrived(
+            @NotNull(message = "Field (id) is required")
+            @Positive(message = "Id must be positive")
+            @PathVariable(value = "id") Integer rideID){
+        this.rideService.notifyPassengersThatVehicleHasArrived(rideID);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
     @GetMapping(
             value = "/driver/{id}/active",

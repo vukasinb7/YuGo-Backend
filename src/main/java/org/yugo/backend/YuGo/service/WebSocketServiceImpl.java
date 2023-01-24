@@ -75,4 +75,16 @@ public class WebSocketServiceImpl implements WebSocketService {
         coordinates.longitude = longitude;
         simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger-vehicle-location/" + passengerID, coordinates);
     }
+    @Override
+    public void notifyAddedPassenger(Integer passengerID, Integer rideID){
+        RideDTO ride = new RideDTO();
+        ride.rideID = rideID;
+        simpMessagingTemplate.convertAndSend("/ride-topic/notify-added-passenger/" + passengerID, ride);
+    }
+    @Override
+    public void notifyPassengerThatVehicleHasArrived(Integer passengerID, Integer rideID){
+        RideDTO ride = new RideDTO();
+        ride.rideID = rideID;
+        simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger-vehicle-arrival/" + passengerID, ride);
+    }
 }

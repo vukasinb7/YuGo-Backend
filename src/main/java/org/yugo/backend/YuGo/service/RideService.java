@@ -14,6 +14,8 @@ public interface RideService {
 
     Ride getUnresolvedRide(Integer userID);
 
+    void notifyPassengersThatVehicleHasArrived(Integer rideID);
+
     Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
     Ride get(Integer id);
     void searchForDriver(Integer id);

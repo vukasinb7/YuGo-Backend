@@ -125,8 +125,11 @@ public class RideServiceImpl implements RideService {
                     RideStatus.PENDING,
                     rideDateTime);
         }
-
-        return rideRepository.save(ride);
+        Ride savedRide = rideRepository.save(ride);
+        for(Passenger passenger : ride.getPassengers()){
+            this.webSocketService.notifyAddedPassenger(passenger.getId(), savedRide.getId());
+        }
+        return savedRide;
     }
 
     @Async
@@ -329,6 +332,14 @@ public class RideServiceImpl implements RideService {
         }
         else {
             throw new NotFoundException("There are not unresolved rides");
+        }
+    }
+
+    @Override
+    public void notifyPassengersThatVehicleHasArrived(Integer rideID){
+        Ride ride = get(rideID);
+        for(Passenger passenger : ride.getPassengers()){
+            webSocketService.notifyPassengerThatVehicleHasArrived(passenger.getId(), rideID);
         }
     }
 
