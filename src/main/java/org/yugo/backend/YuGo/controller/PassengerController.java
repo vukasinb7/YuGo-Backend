@@ -26,6 +26,7 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/passenger")
@@ -154,6 +155,23 @@ public class PassengerController {
 
         Page<Ride> rides = rideService.getPassengerRides(id, fromTime, toTime,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,sort)));
+
+        return new ResponseEntity<>(new AllRidesOut(rides), HttpStatus.OK);
+    }
+    @GetMapping(
+            value = "/{id}/rides",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASSENGER','DRIVER')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "Passenger does not exist!")
+    ResponseEntity<AllRidesOut> getPassengerRidesNonPagable(@NotNull(message = "Field (id) is required")
+                                                  @Positive(message = "Id must be positive")
+                                                  @PathVariable(value="id") Integer id) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime fromTime=LocalDateTime.of(1753, Month.JANUARY,1,0, 0);
+        LocalDateTime toTime=LocalDateTime.of(9998, Month.DECEMBER,31,0,0);
+
+        List<Ride> rides = rideService.getPassengerRidesNonPagable(id, fromTime, toTime);
 
         return new ResponseEntity<>(new AllRidesOut(rides), HttpStatus.OK);
     }
