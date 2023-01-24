@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.util.EnumUtils;
+import org.yugo.backend.YuGo.dto.PathInOut;
 import org.springframework.transaction.annotation.Transactional;
 import org.yugo.backend.YuGo.dto.RideIn;
 import org.yugo.backend.YuGo.dto.RouteProperties;
@@ -292,6 +294,11 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
+    public List<Ride> getAllByDate(LocalDateTime from, LocalDateTime to) {
+        return rideRepository.findAllByDate(from,to);
+    }
+
+    @Override
     public Ride get(Integer id) {
         Optional<Ride> ride=  rideRepository.findById(id);
         if (ride.isEmpty())
@@ -314,12 +321,17 @@ public class RideServiceImpl implements RideService {
             throw new NotFoundException("Active ride does not exist");
         return ride.get();
     }
-
+    @Override
     public Page<Ride> getPassengerRides(Integer passengerId, LocalDateTime from, LocalDateTime to, Pageable page){
         passengerService.get(passengerId);
         return rideRepository.findRidesByPassenger(passengerId, from, to, page);
     }
-
+    @Override
+    public List<Ride> getPassengerRidesNonPagable(Integer passengerId, LocalDateTime from, LocalDateTime to){
+        passengerService.get(passengerId);
+        return rideRepository.findRidesByPassenger(passengerId, from, to);
+    }
+    @Override
     public Page<Ride> getUserRides(Integer userId, LocalDateTime from, LocalDateTime to, Pageable page){
         userService.getUser(userId);
         return rideRepository.findRidesByUser(userId, from, to, page);
@@ -347,6 +359,11 @@ public class RideServiceImpl implements RideService {
     public Page<Ride> getRidesByDriverPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end){
         driverService.getDriver(driverId);
         return rideRepository.findRidesByDriverAndStartTimeAndEndTimePageable(driverId, page, start, end);
+    }
+    @Override
+    public List<Ride> getRidesByDriverNonPageable(Integer driverId, LocalDateTime start, LocalDateTime end){
+        driverService.getDriver(driverId);
+        return rideRepository.findRidesByDriverAndStartTimeAndEndTimePageable(driverId, start, end);
     }
 
     public Ride cancelRide(Integer id){

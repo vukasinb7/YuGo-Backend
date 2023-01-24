@@ -19,4 +19,11 @@ public class AllRidesOut {
                 .toList();
         this.totalCount = rides.getTotalElements();
     }
+
+    public AllRidesOut(List<Ride> rides){
+        this.results = rides.stream()
+                .map(RideMapper::fromRidetoDTO)
+                .toList();
+        this.totalCount = rides.size();
+    }
 }
