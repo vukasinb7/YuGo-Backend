@@ -116,7 +116,7 @@ public class ReviewController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         if (user.getRole().equals("DRIVER")){
-            if (!rideService.get(id).getDriver().equals(user)){
+            if (!rideService.get(id).getDriver().getId().equals(user.getId())){
                 throw new NotFoundException("Ride does not exist!");
             }
         }

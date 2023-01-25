@@ -92,6 +92,8 @@ INSERT INTO RIDES_LOCATIONS (ride_id, locations_id) VALUES  (6, 6);
 INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
 VALUES ('1','1');
 INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
+VALUES ('3','1');
+INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
 VALUES ('1','2');
 INSERT INTO PASSENGER_RIDES (passenger_id,ride_id)
 VALUES ('1','3');
