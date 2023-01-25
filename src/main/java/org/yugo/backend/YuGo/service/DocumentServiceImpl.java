@@ -45,8 +45,6 @@ public class DocumentServiceImpl implements DocumentService {
     public Document upload(Document document, MultipartFile file) throws IOException {
         document.getDriver();
         Path path = Paths.get(document.getImage());
-        if (!Files.exists(path))
-            throw new BadRequestException("Path does not exist!");
         if (file.getSize()>5000000)
             throw new BadRequestException("File is bigger than 5mb!");
         String fileName=file.getOriginalFilename();

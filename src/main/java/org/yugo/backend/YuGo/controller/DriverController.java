@@ -186,7 +186,6 @@ public class DriverController {
             value = "/document/{document-id}"
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
-    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
     ResponseEntity<Void> deleteDocument(@PathVariable(name = "document-id")
                                         @NotNull(message = "Field (document-id) is required")
                                         @Positive(message = "Document-id must be positive") Integer documentId){
