@@ -219,6 +219,12 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    public List<WorkTime> getDriverWorkingTimes(Integer driverId, LocalDateTime start, LocalDateTime end){
+        getDriver(driverId);
+        return workTimeRepository.findWorkTimesByDriverAndStartTimeAndEndTime(driverId, start, end);
+    }
+
+    @Override
     public WorkTime endWorkTime(Integer workingTimeID, LocalDateTime endTime){
         Optional<WorkTime> workTimeOpt = workTimeRepository.findById(workingTimeID);
         if(workTimeOpt.isEmpty()){

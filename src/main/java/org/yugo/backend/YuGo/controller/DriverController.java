@@ -22,6 +22,7 @@ import org.yugo.backend.YuGo.mapper.WorkingTimeMapper;
 import org.yugo.backend.YuGo.model.*;
 import org.yugo.backend.YuGo.service.DocumentService;
 import org.yugo.backend.YuGo.service.DriverService;
+import org.yugo.backend.YuGo.service.ReportService;
 import org.yugo.backend.YuGo.service.RideService;
 
 import java.io.IOException;
@@ -41,11 +42,13 @@ public class DriverController {
     private final DriverService driverService;
     private final DocumentService documentService;
     private final RideService rideService;
+    private final ReportService reportService;
     @Autowired
-    public DriverController(DriverService driverService, DocumentService documentService, RideService rideService) {
+    public DriverController(DriverService driverService, DocumentService documentService, RideService rideService,ReportService reportService) {
         this.driverService = driverService;
         this.documentService = documentService;
         this.rideService = rideService;
+        this.reportService=reportService;
     }
 
     @PostMapping(
@@ -347,6 +350,18 @@ public class DriverController {
         LocalDateTime toTime=LocalDateTime.of(9998, Month.DECEMBER,31,0,0);
         List<Ride> rides = rideService.getRidesByDriverNonPageable(id,fromTime,toTime);
         return new ResponseEntity<>(new AllRidesOut(rides), HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "/{id}/statistics",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('DRIVER','ADMIN')")
+    @AuthorizeSelfAndAdmin(pathToUserId = "[0]", message = "User not found!")
+    ResponseEntity<StatisticsOut> getDriverStatistics(@NotNull(message = "Field (id) is required")
+                                                            @Positive(message = "Id must be positive")
+                                                            @PathVariable(value="id") Integer id){
+        return new ResponseEntity<>(reportService.getStatistics(id), HttpStatus.OK);
     }
 
     @PutMapping(

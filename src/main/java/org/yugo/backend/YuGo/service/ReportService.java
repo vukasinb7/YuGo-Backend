@@ -1,6 +1,7 @@
 package org.yugo.backend.YuGo.service;
 
 import org.yugo.backend.YuGo.dto.ReportOut;
+import org.yugo.backend.YuGo.dto.StatisticsOut;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,4 +20,6 @@ public interface ReportService {
     ReportOut getDistanceByUser(Integer userId, LocalDateTime from, LocalDateTime to);
 
     ReportOut getTotalDistance(LocalDateTime from, LocalDateTime to);
+
+    StatisticsOut getStatistics(Integer driverId);
 }

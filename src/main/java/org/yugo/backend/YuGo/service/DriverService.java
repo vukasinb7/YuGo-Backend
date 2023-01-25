@@ -24,5 +24,8 @@ public interface DriverService {
     List<WorkTime> getAllWorkTimes();
     WorkTime getWorkTime(Integer id);
     Page<WorkTime> getDriverWorkingTimesPage(Integer driverId, Pageable page, LocalDateTime start, LocalDateTime end);
+
+    List<WorkTime> getDriverWorkingTimes(Integer driverId, LocalDateTime start, LocalDateTime end);
+
     WorkTime endWorkTime(Integer workingTimeID, LocalDateTime endTime);
 }
