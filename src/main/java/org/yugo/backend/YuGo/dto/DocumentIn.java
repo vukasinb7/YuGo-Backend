@@ -12,8 +12,6 @@ import org.yugo.backend.YuGo.model.DocumentType;
 @Getter @Setter
 @NoArgsConstructor
 public class DocumentIn {
-
-
     @NotBlank(message = "Field (name) is required")
     @Size(max = 50,message = "Name cannot be longer than 50 characters")
     private String name;

@@ -13,7 +13,6 @@ public class DocumentOut {
     private String name;
     private String documentImage;
     private Integer driverId;
-
     private DocumentType documentType;
 
     public DocumentOut(Integer id, String name, String documentImage, Integer driverId,DocumentType documentType) {
