@@ -139,7 +139,9 @@ public class ReviewController {
             result.add(acumulatedReviewsOut);
 
         }
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        if (result.size()==1 && result.get(0).getDriverReview()==null && result.get(0).getVehicleReview()==null)
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
