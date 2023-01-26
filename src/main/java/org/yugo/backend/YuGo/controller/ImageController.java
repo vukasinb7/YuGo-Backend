@@ -111,6 +111,10 @@ public class ImageController {
         Files.write(Paths.get(path),file.getBytes());
         HashMap<String, String> response = new HashMap<>();
         response.put("pictureName", pictureName);
+
+        User updatedUser = userService.getUser(id);
+        updatedUser.setProfilePicture(pictureName);
+        userService.insertUser(updatedUser);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
