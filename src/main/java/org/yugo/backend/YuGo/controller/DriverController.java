@@ -140,8 +140,7 @@ public class DriverController {
                                                       @PathVariable Integer id,
                                                       @RequestBody @Valid DocumentIn documentIn) throws IOException {
         Driver driver = driverService.getDriver(id);
-        Document document = new Document(documentIn.getName(), documentIn.getDocumentImage(), driver,
-                DocumentType.DRIVING_LICENCE);
+        Document document = new Document(documentIn.getDocumentImage(), driver, DocumentType.DRIVING_LICENCE);
         documentService.insert(document);
         return new ResponseEntity<>(new DocumentOut(document), HttpStatus.OK);
     }
@@ -156,11 +155,10 @@ public class DriverController {
                                                       @NotBlank(message = "Field (documentType) is required")
                                                       @PathVariable String documentType,
                                                       @NotNull(message = "Field (file) is required")
-                                                      @RequestParam("image") MultipartFile file)
-            throws IOException {
-        String path="src\\main\\resources\\img\\"+id+"_"+documentType+".jpg";
-        Document document= new Document(id+"_"+documentType+".jpg",path,driverService.getDriver(id),DocumentType.valueOf(documentType));
-        documentService.upload(document,file);
+                                                      @RequestParam("image") MultipartFile file) throws IOException {
+        Driver driver = driverService.getDriver(id);
+        Document document= new Document(Math.abs(driver.hashCode() + file.hashCode()) + ".jpg", driver, DocumentType.valueOf(documentType));
+        documentService.upload(document, file);
         return new ResponseEntity<>(new DocumentOut(document), HttpStatus.OK);
     }
 

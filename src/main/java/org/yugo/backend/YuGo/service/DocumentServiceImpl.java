@@ -28,30 +28,20 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document insert(Document document) throws IOException {
-        document.getDriver();
-        Path path = Paths.get(document.getImage());
-        if (!Files.exists(path))
-            throw new BadRequestException("Path does not exist!");
-        if (Files.size(path)>5000000)
-            throw new BadRequestException("File is bigger than 5mb!");
-        String fileName=document.getImage();
-        String extension=fileName.substring(fileName.lastIndexOf(".") + 1);
-        if (!extension.equals("jpg") && !extension.equals("png") && !extension.equals("jpeg"))
-            throw new BadRequestException("File is not an image!");
         return documentRepository.save(document);
     }
 
     @Override
     public Document upload(Document document, MultipartFile file) throws IOException {
-        document.getDriver();
-        Path path = Paths.get(document.getImage());
-        if (file.getSize()>5000000)
-            throw new BadRequestException("File is bigger than 5mb!");
         String fileName=file.getOriginalFilename();
         String extension=fileName.substring(fileName.lastIndexOf(".") + 1);
         if (!extension.equals("jpg") && !extension.equals("png") && !extension.equals("jpeg"))
             throw new BadRequestException("File is not an image!");
-        Files.write(Paths.get(document.getImage()),file.getBytes());
+        if (file.getSize()>5000000)
+            throw new BadRequestException("File is bigger than 5mb!");
+
+        String path="src\\main\\resources\\documents\\"+document.getName();
+        Files.write(Paths.get(path),file.getBytes());
         return documentRepository.save(document);
     }
 
