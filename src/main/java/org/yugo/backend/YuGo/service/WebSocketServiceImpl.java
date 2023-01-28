@@ -3,6 +3,8 @@ package org.yugo.backend.YuGo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.dto.MessageOut;
+import org.yugo.backend.YuGo.model.Message;
 
 @Service
 public class WebSocketServiceImpl implements WebSocketService {
@@ -11,6 +13,12 @@ public class WebSocketServiceImpl implements WebSocketService {
     @Autowired
     public WebSocketServiceImpl(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
+    }
+
+    @Override
+    public void notifyUserAboutMessage(Integer receiverId, Message message){
+        MessageOut messageOut = new MessageOut(message);
+        simpMessagingTemplate.convertAndSend("/message-topic/" + receiverId, messageOut);
     }
 
     private class PanicDTO{

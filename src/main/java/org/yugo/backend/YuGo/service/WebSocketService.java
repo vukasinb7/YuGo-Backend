@@ -1,6 +1,9 @@
 package org.yugo.backend.YuGo.service;
 
+import org.yugo.backend.YuGo.model.Message;
+
 public interface WebSocketService {
+    void notifyUserAboutMessage(Integer userId, Message message);
     void notifyAdminsAboutPanic(Integer panicId);
     void sendRideRequestToDriver(Integer driverID, Integer rideID);
     void notifyPassengerAboutRide(Integer rideID, Integer passengerID);

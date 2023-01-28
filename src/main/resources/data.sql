@@ -127,5 +127,5 @@ INSERT INTO PATHS (starting_point, destination, fav_path_id) VALUES ('2', '3', '
 INSERT INTO PATHS (starting_point, destination, fav_path_id) VALUES ('3', '1', '3');
 
 INSERT INTO MESSAGES (message_content, message_type, sending_time, receiver_id, ride_id, sender_id) VALUES ('awdafsetserser', 'RIDE', '2022-12-05 23:35:33.172279', '1', '1', '6');
-INSERT INTO MESSAGES (message_content, message_type, sending_time, receiver_id, ride_id, sender_id) VALUES ('awdafsetserser', 'RIDE', '2022-12-06 01:40:33.172279', '6', '1', '1');
+INSERT INTO MESSAGES (message_content, message_type, sending_time, receiver_id, ride_id, sender_id) VALUES ('awdaaerser', 'RIDE', '2022-12-06 01:40:33.172279', '6', '1', '1');
 INSERT INTO MESSAGES (message_content, message_type, sending_time, receiver_id, ride_id, sender_id) VALUES ('sdfsdfsfsdfsf', 'RIDE', '2022-12-07 23:35:33.172279', '3', '1', '6');
