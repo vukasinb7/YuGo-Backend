@@ -61,6 +61,24 @@ public class ImageController {
     }
 
     @GetMapping(
+            value = "/document/{name}"
+    )
+    ResponseEntity<byte[]> getDocumentPicture(@PathVariable String name){
+        File img = new File("./src/main/resources/documents/" + name);
+        if(img.exists() && !img.isDirectory()){
+            try {
+                byte[] imgBytes = Files.readAllBytes(img.toPath());
+                return ResponseEntity.ok()
+                        .contentType(MediaType.valueOf(Files.probeContentType(img.toPath())))
+                        .body(imgBytes);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        throw new NotFoundException("Document not found!");
+    }
+
+    @GetMapping(
             value = "/profilePicture/{name}"
     )
     ResponseEntity<byte[]> getProfilePicture(@PathVariable String name){
@@ -93,6 +111,10 @@ public class ImageController {
         Files.write(Paths.get(path),file.getBytes());
         HashMap<String, String> response = new HashMap<>();
         response.put("pictureName", pictureName);
+
+        User updatedUser = userService.getUser(id);
+        updatedUser.setProfilePicture(pictureName);
+        userService.insertUser(updatedUser);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

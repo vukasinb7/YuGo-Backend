@@ -16,7 +16,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/ride-topic");     // You subscribe to topic to receive data FROM server
+        registry.enableSimpleBroker("/ride-topic", "/message-topic");     // You subscribe to topic to receive data FROM server
         registry.setApplicationDestinationPrefixes("/ws-receiver");    // You send data to receiver to send data TO server
     }
 

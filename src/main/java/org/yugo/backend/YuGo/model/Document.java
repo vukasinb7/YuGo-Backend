@@ -23,13 +23,8 @@ public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(name = "image")
-    private String image;
-
-    public Document(String name, String image, Driver driver,DocumentType documentType) {
+    public Document(String name, Driver driver,DocumentType documentType) {
         this.name = name;
-        this.image = image;
         this.driver = driver;
         this.type=documentType;
     }

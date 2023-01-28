@@ -13,16 +13,21 @@ import java.util.Optional;
 public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final UserService userService;
+    private final WebSocketService webSocketService;
 
     @Autowired
-    public MessageServiceImpl(MessageRepository messageRepository, UserService userService){
+    public MessageServiceImpl(MessageRepository messageRepository, UserService userService,
+                              WebSocketService webSocketService){
         this.messageRepository = messageRepository;
         this.userService = userService;
+        this.webSocketService = webSocketService;
     }
 
     @Override
     public Message insert(Message message){
-        return messageRepository.save(message);
+        Message savedMessage = messageRepository.save(message);
+        webSocketService.notifyUserAboutMessage(message.getReceiver().getId(), savedMessage);
+        return savedMessage;
     }
 
     @Override

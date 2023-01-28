@@ -86,7 +86,7 @@ public class RideServiceImpl implements RideService {
         LocalDateTime now = LocalDateTime.now();
 
         VehicleTypePrice vehicleTypePrice = vehicleService.getVehicleTypeByName(rideIn.getVehicleType());
-        Set<Passenger> passengers = new HashSet<>();
+        List<Passenger> passengers = new ArrayList<>();
         for(UserSimplifiedOut passenger : rideIn.getPassengers()){
             passengers.add((Passenger) userService.getUser(passenger.getId()));
         }
@@ -194,7 +194,7 @@ public class RideServiceImpl implements RideService {
     private <T> T unproxy(T object){
         return (T) Hibernate.unproxy(object);
     }
-    private Ride assembleRide(RouteProperties routeProperties, boolean isBabyTransport, boolean isPetTransport, Location rideDestination, Location rideDeparture, VehicleTypePrice vehicleTypePrice, Set<Passenger> passengers, RideStatus rideStatus, LocalDateTime startTime){
+    private Ride assembleRide(RouteProperties routeProperties, boolean isBabyTransport, boolean isPetTransport, Location rideDestination, Location rideDeparture, VehicleTypePrice vehicleTypePrice, List<Passenger> passengers, RideStatus rideStatus, LocalDateTime startTime){
         Ride ride = new Ride();
         ride.setStartTime(startTime);
         ride.setStatus(rideStatus);
