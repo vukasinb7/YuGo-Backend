@@ -407,22 +407,17 @@ public class RideServiceImpl implements RideService {
         return ride;
     }
     public Ride endRide(Integer id){
-        System.out.println("==================");
-        System.out.println(id);
-        System.out.println("==================");
         Ride ride = get(id);
         if (ride.getStatus() == RideStatus.ACTIVE) {
             ride.setStatus(RideStatus.FINISHED);
-            System.out.println("==================");
-            System.out.println("Ride with id: " + id + " finished");
-            System.out.println("==================");
+            ride.setEndTime(LocalDateTime.now());
             save(ride);
             for (Passenger passenger : ride.getPassengers()){
                 webSocketService.notifyPassengerAboutRideEnd(passenger.getId());
             }
         }
         else{
-            throw new BadRequestException("Cannot accept a ride that is not in status FINISHED!");
+            throw new BadRequestException("Cannot end a ride that is not in status ACTIVE!");
         }
         return ride;
     }
