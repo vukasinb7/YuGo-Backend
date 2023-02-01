@@ -58,11 +58,13 @@ public class WebSocketServiceImpl implements WebSocketService {
         simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger/" + passengerID, output);
     }
     @Override
-    public void notifyPassengerAboutRideEnd(Integer passengerID){
+    public void notifyPassengerAboutRideEnd(Integer passengerID,Integer rideID){
+        RideDTO output = new RideDTO();
+        output.rideID = rideID;
         System.out.println("============================");
         System.out.println("Putnik je obavesten");
         System.out.println("============================");
-        simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger-end-ride/" + passengerID,"");
+        simpMessagingTemplate.convertAndSend("/ride-topic/notify-passenger-end-ride/" + passengerID,output);
     }
 
     @Override

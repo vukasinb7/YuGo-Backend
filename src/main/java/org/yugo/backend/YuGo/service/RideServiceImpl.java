@@ -413,7 +413,7 @@ public class RideServiceImpl implements RideService {
             ride.setEndTime(LocalDateTime.now());
             save(ride);
             for (Passenger passenger : ride.getPassengers()){
-                webSocketService.notifyPassengerAboutRideEnd(passenger.getId());
+                webSocketService.notifyPassengerAboutRideEnd(passenger.getId(),id);
             }
         }
         else{

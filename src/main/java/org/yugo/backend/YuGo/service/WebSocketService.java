@@ -7,7 +7,7 @@ public interface WebSocketService {
     void notifyAdminsAboutPanic(Integer panicId);
     void sendRideRequestToDriver(Integer driverID, Integer rideID);
     void notifyPassengerAboutRide(Integer rideID, Integer passengerID);
-    void notifyPassengerAboutRideEnd(Integer passengerID);
+    void notifyPassengerAboutRideEnd(Integer passengerID,Integer rideId);
     void notifyPassengerAboutRideStart(Integer passengerID);
     void notifyPassengerAboutVehicleLocation(Integer passengerID, double longitude, double latitude);
 
