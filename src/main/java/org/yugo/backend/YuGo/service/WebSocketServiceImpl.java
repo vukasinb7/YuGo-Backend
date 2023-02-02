@@ -3,8 +3,10 @@ package org.yugo.backend.YuGo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.dto.LiveMessageIn;
 import org.yugo.backend.YuGo.dto.MessageOut;
 import org.yugo.backend.YuGo.model.Message;
+import org.yugo.backend.YuGo.model.User;
 
 @Service
 public class WebSocketServiceImpl implements WebSocketService {
@@ -13,6 +15,16 @@ public class WebSocketServiceImpl implements WebSocketService {
     @Autowired
     public WebSocketServiceImpl(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
+    }
+
+    @Override
+    public void notifyAdminAboutLiveChatMessage(LiveMessageIn liveMessageIn){
+        simpMessagingTemplate.convertAndSend("/live-chat-topic/admin", liveMessageIn);
+    }
+
+    @Override
+    public void notifyUserAboutLiveChatResponse(Integer senderId, LiveMessageIn liveMessageIn){
+        simpMessagingTemplate.convertAndSend("/live-chat-topic/" + senderId, liveMessageIn);
     }
 
     @Override

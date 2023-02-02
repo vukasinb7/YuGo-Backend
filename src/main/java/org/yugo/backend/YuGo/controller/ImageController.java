@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.yugo.backend.YuGo.annotation.AuthorizeSelfAndAdmin;
+import org.yugo.backend.YuGo.exception.BadRequestException;
 import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.User;
 import org.yugo.backend.YuGo.service.DocumentService;
@@ -106,6 +107,13 @@ public class ImageController {
                                                @NotNull(message = "Field (file) is required")
                                                @RequestParam("image") MultipartFile file)
             throws IOException {
+        String fileName=file.getOriginalFilename();
+        String extension=fileName.substring(fileName.lastIndexOf(".") + 1);
+        if (!extension.equals("jpg") && !extension.equals("png") && !extension.equals("jpeg"))
+            throw new BadRequestException("File is not an image!");
+        if (file.getSize()>5000000)
+            throw new BadRequestException("File is bigger than 5mb!");
+
         String pictureName = file.hashCode()+".jpg";
         String path="src\\main\\resources\\profilePictures\\" + pictureName;
         Files.write(Paths.get(path),file.getBytes());
