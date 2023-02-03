@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.repository.RideRepository;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 
@@ -23,9 +25,10 @@ public class ScheduledTasks {
 
     @Scheduled(fixedRate = 60000)
     public void scheduleRides() {
-        List<Ride> ridesToSchedule = rideRepository.findScheduledRidesInNext30Minutes();
+        List<Ride> ridesToSchedule = rideRepository.findScheduledRides();
         for(Ride ride : ridesToSchedule){
-            rideService.searchForDriver(ride.getId());
+            if (ChronoUnit.MINUTES.between(LocalDateTime.now(), ride.getStartTime())<31)
+                rideService.searchForDriver(ride.getId());
         }
     }
 }

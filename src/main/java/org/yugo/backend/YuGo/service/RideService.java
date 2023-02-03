@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RideService {
-    Ride insert(Ride ride);
     Ride createRide(RideIn rideIn) throws Exception;
 
     Ride getUnresolvedRide(Integer userID);

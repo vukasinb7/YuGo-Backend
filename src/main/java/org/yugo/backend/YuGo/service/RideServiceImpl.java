@@ -54,14 +54,6 @@ public class RideServiceImpl implements RideService {
         this.workTimeRepository = workTimeRepository;
     }
 
-    @Override
-    public Ride insert(Ride ride){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
-        if (rideRepository.findPendingRidesByUser(user.getId())!=null)
-            throw new BadRequestException("Cannot create a ride while you have one already pending!");
-        return rideRepository.save(ride);
-    }
 
     @Override
     public Ride save(Ride ride){
