@@ -121,9 +121,13 @@ public class ReviewController {
             }
         }
         else if (user.getRole().equals("PASSENGER")){
+            boolean found=false;
             for(Passenger p:rideService.get(id).getPassengers()){
-                if (!p.getId().equals(user.getId()))
-                    throw new NotFoundException("Ride does not exist!");
+                if (p.getId().equals(user.getId()))
+                    found=true;
+            }
+            if (!found){
+                throw new NotFoundException("Ride does not exist!");
             }
         }
 

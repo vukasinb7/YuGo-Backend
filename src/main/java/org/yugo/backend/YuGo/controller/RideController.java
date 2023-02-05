@@ -143,8 +143,14 @@ public class RideController {
         Passenger passenger = (Passenger) auth.getPrincipal();
         Ride ride=rideService.get(id);
         for(Passenger p:ride.getPassengers()){
-            if (!p.getId().equals(passenger.getId()))
+            boolean found=false;
+            for(Passenger pass:rideService.get(id).getPassengers()){
+                if (pass.getId().equals(passenger.getId()))
+                    found=true;
+            }
+            if (!found){
                 throw new NotFoundException("Ride does not exist!");
+            }
         }
         return new ResponseEntity<>(new RideDetailedOut(rideService.cancelRide(id)), HttpStatus.OK);
     }
@@ -212,9 +218,13 @@ public class RideController {
             }
         }
         else if (user.getRole().equals("PASSENGER")){
-            for(Passenger p:ride.getPassengers()){
-                if (!p.getId().equals(user.getId()))
-                    throw new NotFoundException("Ride does not exist!");
+            boolean found=false;
+            for(Passenger p:rideService.get(id).getPassengers()){
+                if (p.getId().equals(user.getId()))
+                    found=true;
+            }
+            if (!found){
+                throw new NotFoundException("Ride does not exist!");
             }
         }
 
