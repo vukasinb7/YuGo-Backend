@@ -2,6 +2,7 @@ package org.yugo.backend.YuGo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yugo.backend.YuGo.exception.NotFoundException;
 import org.yugo.backend.YuGo.model.Rejection;
 import org.yugo.backend.YuGo.repository.RejectionRepository;
 
@@ -27,7 +28,11 @@ public class RejectionServiceImpl implements RejectionService {
     }
 
     @Override
-    public Optional<Rejection> get(Integer id) {
-        return rejectionRepository.findById(id);
+    public Rejection get(Integer id) {
+        Optional<Rejection> rejectionOptional = rejectionRepository.findById(id);
+        if (rejectionOptional.isPresent()){
+            return rejectionOptional.get();
+        }
+        throw new NotFoundException("Reject not found!");
     }
 }

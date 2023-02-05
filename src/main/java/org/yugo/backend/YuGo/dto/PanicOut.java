@@ -16,14 +16,14 @@ public class PanicOut {
     Integer id;
     UserDetailedOut user;
     RideDetailedOut ride;
-    LocalDateTime time;
+    String time;
     String reason;
 
     public PanicOut(Integer id, UserDetailedOut user, Ride ride, LocalDateTime time, String reason) {
         this.id = id;
         this.user = user;
         this.ride = RideMapper.fromRidetoDTO(ride);
-        this.time = time;
+        this.time = time.toString();
         this.reason = reason;
     }
 
@@ -31,7 +31,7 @@ public class PanicOut {
         this.id = panic.getId();
         this.user = new UserDetailedOut(panic.getUser());
         this.ride = RideMapper.fromRidetoDTO(panic.getRide());
-        this.time = panic.getTime();
+        this.time = panic.getTime().toString();
         this.reason = panic.getReason();
     }
 }

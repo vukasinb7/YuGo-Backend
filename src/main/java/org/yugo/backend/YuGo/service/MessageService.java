@@ -10,7 +10,9 @@ public interface MessageService {
 
     List<Message> getAll();
 
-    Optional<Message> get(Integer id);
+    Message get(Integer id);
 
     List<Message> getUserMessages(Integer userId);
+
+    List<Message> getUsersConversation(Integer user1Id, Integer user2Id);
 }

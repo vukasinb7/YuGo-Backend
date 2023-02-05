@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,8 +30,8 @@ public class Ride {
     private Driver driver;
     @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "passenger_rides", joinColumns = @JoinColumn(name = "ride_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "passenger_id", referencedColumnName = "id"))
-    private Set<Passenger> passengers = new HashSet<>();
-    @JoinColumn(name = "path_id")
+    private List<Passenger> passengers = new ArrayList<>();
+
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST})
     private List<Path> locations;
     @Column(name = "estimated_time")
@@ -53,7 +54,7 @@ public class Ride {
     @JoinColumn(name = "vehicle_type_id")
     private VehicleTypePrice vehicleTypePrice;
 
-    public Ride(LocalDateTime startTime, LocalDateTime endTime, double price, Driver driver, Set<Passenger> passengers, List<Path> paths, int estimatedTime, Set<RideReview> rideReviews, RideStatus status, Rejection rejection, Boolean isPanicPressed, Boolean includesBabies, Boolean includesPets, VehicleTypePrice vehicleTypePrice) {
+    public Ride(LocalDateTime startTime, LocalDateTime endTime, double price, Driver driver, List<Passenger> passengers, List<Path> paths, int estimatedTime, Set<RideReview> rideReviews, RideStatus status, Rejection rejection, Boolean isPanicPressed, Boolean includesBabies, Boolean includesPets, VehicleTypePrice vehicleTypePrice) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.totalCost = price;
@@ -68,5 +69,23 @@ public class Ride {
         this.babyTransport = includesBabies;
         this.petTransport = includesPets;
         this.vehicleTypePrice = vehicleTypePrice;
+    }
+
+    public Ride(Ride other) {
+        this.id = other.id;
+        this.startTime = other.startTime;
+        this.endTime = other.endTime;
+        this.totalCost = other.totalCost;
+        this.driver = other.driver;
+        this.passengers = other.passengers;
+        this.locations = other.locations;
+        this.estimatedTimeInMinutes = other.estimatedTimeInMinutes;
+        this.rideReviews = other.rideReviews;
+        this.status = other.status;
+        this.rejection = other.rejection;
+        this.isPanicPressed = other.isPanicPressed;
+        this.babyTransport = other.babyTransport;
+        this.petTransport = other.petTransport;
+        this.vehicleTypePrice = other.vehicleTypePrice;
     }
 }

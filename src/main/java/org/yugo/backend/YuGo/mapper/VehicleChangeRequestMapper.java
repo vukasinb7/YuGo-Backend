@@ -16,7 +16,7 @@ public class VehicleChangeRequestMapper {
     }
 
     public static VehicleChangeRequestOut fromVehicleChangeRequestToDTO(VehicleChangeRequest vehicleChangeRequest) {
-        return modelMapper.map(vehicleChangeRequest, VehicleChangeRequestOut.class);
+        return new VehicleChangeRequestOut(vehicleChangeRequest);
     }
 }
 

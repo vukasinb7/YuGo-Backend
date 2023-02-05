@@ -5,9 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.yugo.backend.YuGo.model.Passenger;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PassengerService {
+    Passenger getPassengerByEmail(String email);
+
     Passenger insert(Passenger passenger);
     Passenger update(Passenger passengerUpdate);
     List<Passenger> getAll();

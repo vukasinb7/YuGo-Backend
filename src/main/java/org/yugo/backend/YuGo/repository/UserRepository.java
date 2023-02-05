@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.yugo.backend.YuGo.model.Driver;
 import org.yugo.backend.YuGo.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,4 +27,5 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     public Page<User> findAllUsers(Pageable page);
 
     Optional<User> findByEmail(String email);
+
 }

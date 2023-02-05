@@ -7,10 +7,14 @@ import org.springframework.data.repository.query.Param;
 import org.yugo.backend.YuGo.model.Ride;
 import org.yugo.backend.YuGo.model.Vehicle;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface VehicleRepository extends JpaRepository<Vehicle,Integer> {
 
     @Query(value = "select driver_id from vehicles where id=:vehicleId",nativeQuery = true)
     Optional<Integer> findDriverByVehicleId(@Param("vehicleId") Integer vehicleId);
+
+    @Query(value = "SELECT v from Vehicle v WHERE v.driver != null AND v.driver.isOnline = true")
+    List<Vehicle> findAllVehiclesWithDriver();
 }

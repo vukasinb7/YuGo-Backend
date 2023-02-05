@@ -8,6 +8,7 @@ import org.yugo.backend.YuGo.model.Passenger;
 import org.yugo.backend.YuGo.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PassengerRepository extends JpaRepository<Passenger,Integer> {
     @Query(value = "SELECT p FROM Passenger p")
@@ -15,4 +16,6 @@ public interface PassengerRepository extends JpaRepository<Passenger,Integer> {
 
     @Query(value = "SELECT p FROM Passenger p")
     public Page<Passenger> findAllPassengers(Pageable page);
+
+    public Optional<Passenger> findPassengerByEmail(String email);
 }

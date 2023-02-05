@@ -19,7 +19,7 @@ public class PanicMapper {
         return modelMapper.map(dto, Panic.class);
     }
 
-    public static PanicOut fromPanictoDTO(Panic panic) {
+    public static PanicOut fromPanicToDTO(Panic panic) {
         return modelMapper.map(panic, PanicOut.class);
     }
 }

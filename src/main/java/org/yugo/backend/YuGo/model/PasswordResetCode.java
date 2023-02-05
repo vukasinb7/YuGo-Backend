@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.modelmapper.internal.bytebuddy.utility.RandomString;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.random.RandomGenerator;
 
 @Entity
 @Getter @Setter
@@ -21,19 +21,17 @@ public class PasswordResetCode {
     private LocalDateTime dateCreated;
     @Column(name = "life_span", nullable = false)
     private Duration lifeSpan;
-    @Column(name = "code", nullable = false)
-    private String code;
     @Column(name = "valid", nullable = false)
     private boolean valid;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "code", nullable = false)
+    private Integer code;
 
     public PasswordResetCode(User user, Duration lifeSpan) {
-        this.code = RandomString.make(5) + user.hashCode();
         this.user = user;
-        this.dateCreated = LocalDateTime.now();
+        this.dateCreated = LocalDateTime.now();;
         this.lifeSpan = lifeSpan;
         this.valid = true;
+        this.code = Math.abs(user.hashCode() + dateCreated.hashCode() + RandomGenerator.getDefault().nextInt(100));
     }
 }
